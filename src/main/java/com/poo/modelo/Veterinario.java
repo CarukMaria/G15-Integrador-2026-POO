@@ -30,6 +30,13 @@ public class Veterinario {
     @Column(name = "especialidad")
     private List<String> especialidades; // O List<Especialidad> si prefieres crear un Enum o Entidad separada
 
+
+    //VAMOS A HACER UN ENUM enum Especialidad
+/*@Enumerated(EnumType.STRING)
+@ElementCollection
+private List<Especialidad> especialidades;*/
+
+
     // 1. Constructor vacío OBLIGATORIO por especificación de JPA
     public Veterinario() {
         this.especialidades = new ArrayList<>();

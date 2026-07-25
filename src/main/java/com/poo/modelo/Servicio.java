@@ -5,10 +5,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 
 @Entity
 @Table(name = "servicios")
-public class Servicio {
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class Servicio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
