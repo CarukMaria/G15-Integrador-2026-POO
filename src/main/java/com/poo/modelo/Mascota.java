@@ -6,8 +6,10 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,28 +24,29 @@ public class Mascota {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idMascota;
 
+    @ManyToOne
+    @JoinColumn(name = "cliente_id") // Esta columna guardará el id del dueño en la tabla de mascotas
+    private Cliente cliente;
+
     private String numeroFicha;
     private String nombre;
     private String raza;
     private LocalDate fechaNacimiento;
+    
 
     // Guarda el Enum como un String en la base de datos (más seguro que un número)
     @Enumerated(EnumType.STRING)
     private Especie especie;
 
     // --- Relaciones estructurales deducidas de tus métodos ---
-    // (Te darán error temporal hasta que creemos las clases HistorialMedico y Turno)
     
-    /* @ManyToOne
-    @JoinColumn(name = "cliente_id")
-    private Cliente dueño;
-    
-    @OneToMany(mappedBy = "mascota")
+    /*@OneToMany(mappedBy = "mascota")
     private List<HistorialMedico> historiales = new ArrayList<>();
+    */
 
     @OneToMany(mappedBy = "mascota")
     private List<Turno> turnos = new ArrayList<>();
-    */
+    
 
     // 1. Constructor vacío OBLIGATORIO por especificación de JPA
     public Mascota() {
@@ -107,6 +110,14 @@ public class Mascota {
         this.especie = especie;
     }
 
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
     // 4. Métodos de Comportamiento (Modelo Rico)
 
     // Método que devolverá la lista de historiales médicos
@@ -116,21 +127,20 @@ public class Mascota {
     }
 
     // Valida si un nuevo turno se choca con los que ya tiene la mascota
-    public boolean tieneTurnoSolapado(LocalDateTime fechaHoraNuevo, int duracionMinutos) {
-        LocalDateTime finNuevo = fechaHoraNuevo.plusMinutes(duracionMinutos);
+    public boolean tieneTurnoSolapado(LocalDateTime fechaHoraNuevo, int duracionMinutosNuevo) {
+        LocalDateTime finNuevo = fechaHoraNuevo.plusMinutes(duracionMinutosNuevo);
 
-        /* Lógica real (descomentar cuando Turno exista):
         for (Turno turnoExistente : turnos) {
             LocalDateTime inicioExistente = turnoExistente.getFechaHora();
-            LocalDateTime finExistente = inicioExistente.plusMinutes(turnoExistente.getDuracion());
+            
+            // ¡Magia de la POO! Le pedimos al turno existente que calcule su propio fin
+            LocalDateTime finExistente = turnoExistente.calcularFechaHoraFin();
 
-            // Si el nuevo inicio es antes de que termine el existente Y 
-            // el nuevo fin es después de que empiece el existente, HAY SOLAPAMIENTO.
             if (fechaHoraNuevo.isBefore(finExistente) && finNuevo.isAfter(inicioExistente)) {
                 return true; 
             }
         }
-        */
+        
         return false; 
     }
 

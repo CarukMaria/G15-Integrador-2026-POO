@@ -8,6 +8,7 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 
+
 @Entity
 @Table(name = "servicios")
 @Inheritance(strategy = InheritanceType.JOINED)
