@@ -27,7 +27,7 @@ public class Veterinario {
     private String apellido;
 
     // Mapeo para una lista de elementos simples/enums utilizando JPA (@ElementCollection)
-    @ElementCollection
+    @ElementCollection(fetch = jakarta.persistence.FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     @CollectionTable(
         name = "veterinario_especialidades",
