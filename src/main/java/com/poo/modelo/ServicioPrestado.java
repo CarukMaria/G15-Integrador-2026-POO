@@ -1,6 +1,7 @@
 package com.poo.modelo;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "servicios_prestados")
@@ -9,9 +10,12 @@ public class ServicioPrestado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idServicioPrestado;
-
+    @Column(nullable = false)
     private double precioServicioPrestado;
+    @Column(nullable = false)
     private int duracionServicioPrestado;
+    @Column(nullable = false)
+    private LocalDateTime fechaPrestacion;
 
     // Relación con Servicio (Muchos servicios prestados corresponden a un Servicio)
     @ManyToOne
@@ -31,6 +35,7 @@ public class ServicioPrestado {
     public ServicioPrestado(double precioServicioPrestado, int duracionServicioPrestado, Servicio servicio, Turno turno) {
         this.precioServicioPrestado = precioServicioPrestado;
         this.duracionServicioPrestado = duracionServicioPrestado;
+        this.fechaPrestacion = LocalDateTime.now();
         this.servicio = servicio;
         this.turno = turno;
     }
@@ -58,6 +63,14 @@ public class ServicioPrestado {
 
     public void setDuracionServicioPrestado(int duracionServicioPrestado) {
         this.duracionServicioPrestado = duracionServicioPrestado;
+    }
+
+    public LocalDateTime getFechaPrestacion() {
+        return fechaPrestacion;
+    }
+
+    public void setFechaPrestacion(LocalDateTime fechaPrestacion) {
+        this.fechaPrestacion = fechaPrestacion;
     }
 
     public Servicio getServicio() {

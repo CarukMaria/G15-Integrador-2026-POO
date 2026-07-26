@@ -67,16 +67,7 @@ public abstract class Servicio {
     }
 
     // 4. Comportamiento de dominio exigido por la regla de oro (Modelo Rico)
-    public boolean validarRequisitos(Mascota mascota) {
-        // Lógica de negocio de ejemplo basada en el dominio:
-        // Por ejemplo, verificar que la mascota exista y cumpla condiciones básicas para el servicio
-        if (mascota == null) {
-            return false;
-        }
-        
-        // Aquí puedes agregar validaciones propias de tu veterinaria (ej: edad mínima, especie permitida, etc.)
-        return true; 
-    }
+    public abstract boolean validarRequisitos(Mascota mascota);
 
     // Método opcional para actualizar precio respetando encapsulamiento
     public void actualizarPrecio(double nuevoPrecio) {

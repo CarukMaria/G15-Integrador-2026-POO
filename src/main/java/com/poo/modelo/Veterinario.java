@@ -11,6 +11,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 
 @Entity
 @Table(name = "veterinarios")
@@ -26,15 +28,13 @@ public class Veterinario {
 
     // Mapeo para una lista de elementos simples/enums utilizando JPA (@ElementCollection)
     @ElementCollection
-    @CollectionTable(name = "veterinario_especialidades", joinColumns = @JoinColumn(name = "idVeterinario"))
+    @Enumerated(EnumType.STRING)
+    @CollectionTable(
+        name = "veterinario_especialidades",
+        joinColumns = @JoinColumn(name = "idVeterinario")
+    )
     @Column(name = "especialidad")
-    private List<String> especialidades; // O List<Especialidad> si prefieres crear un Enum o Entidad separada
-
-
-    //VAMOS A HACER UN ENUM enum Especialidad
-/*@Enumerated(EnumType.STRING)
-@ElementCollection
-private List<Especialidad> especialidades;*/
+    private List<Especialidad> especialidades;
 
 
     // 1. Constructor vacío OBLIGATORIO por especificación de JPA
@@ -83,18 +83,18 @@ private List<Especialidad> especialidades;*/
         this.apellido = apellido;
     }
 
-    public List<String> getEspecialidades() {
+    public List<Especialidad> getEspecialidades() {
         return especialidades;
     }
 
-    public void setEspecialidades(List<String> especialidades) {
+    public void setEspecialidades(List<Especialidad> especialidades) {
         this.especialidades = especialidades;
     }
 
-    // 4. Métodos de dominio (Modelo Rico) para manejar la colección de forma segura
-    public void agregarEspecialidad(String especialidad) {
-        if (especialidad != null && !especialidad.trim().isEmpty()) {
-            this.especialidades.add(especialidad);
+    // 4. Métodos de dominio (Modelo Rico) para manejar el enum de forma segura
+    public void agregarEspecialidad(Especialidad especialidad) {
+        if (especialidad != null) {
+            especialidades.add(especialidad);
         }
     }
 

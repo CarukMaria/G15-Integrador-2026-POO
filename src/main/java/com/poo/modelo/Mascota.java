@@ -124,7 +124,7 @@ public class Mascota {
     public List<?> obtenerHistorialMedico() {
         // return historiales; (Descomentar cuando exista la clase)
         return new ArrayList<>(); 
-    }
+    } //Revisar si es necesario 
 
     // Valida si un nuevo turno se choca con los que ya tiene la mascota
     public boolean tieneTurnoSolapado(LocalDateTime fechaHoraNuevo, int duracionMinutosNuevo) {

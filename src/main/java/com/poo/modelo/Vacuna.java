@@ -32,6 +32,10 @@ public class Vacuna {
         this.periodicidad = periodicidad;
     }
 
+    @Override
+    public String toString() {
+        return nombre;
+    }
     // --- MÉTODO DE NEGOCIO ---
     
     // Verifica si la vacuna sigue haciendo efecto hoy, basado en cuándo se aplicó
@@ -48,7 +52,7 @@ public class Vacuna {
     }
 
     // --- GETTERS Y SETTERS ---
-
+    
     public Long getIdVacuna() {
         return idVacuna;
     }
