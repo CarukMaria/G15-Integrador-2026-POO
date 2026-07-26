@@ -20,6 +20,11 @@ public class Consulta extends Servicio {
         this.tratamiento = tratamiento;
     }
 
+    @Override
+    public boolean validarRequisitos(Mascota mascota) {
+        return mascota != null;
+    }
+
     // 3. Getters y Setters
     public String getDiagnostico() {
         return diagnostico;

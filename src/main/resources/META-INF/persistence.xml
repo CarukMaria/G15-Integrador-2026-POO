@@ -10,8 +10,16 @@
 
         <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
 
+        <class>com.poo.modelo.Cliente</class>
         <class>com.poo.modelo.Mascota</class>
         <class>com.poo.modelo.Servicio</class>
+        <class>com.poo.modelo.Consulta</class>
+        <class>com.poo.modelo.Guarderia</class>
+        <class>com.poo.modelo.Peluqueria</class>
+        <class>com.poo.modelo.Vacunacion</class>
+        <class>com.poo.modelo.Turno</class>
+        <class>com.poo.modelo.ServicioPrestado</class>
+        <class>com.poo.modelo.Vacuna</class>
         <class>com.poo.modelo.Veterinario</class>
 
         <properties>

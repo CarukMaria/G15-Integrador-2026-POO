@@ -16,6 +16,11 @@ public class Vacunacion extends Servicio {
         super();
     }
 
+    @Override
+    public boolean validarRequisitos(Mascota mascota) {
+        return verificarPeriodicidad(mascota);
+    }
+
     // Método de negocio solicitado
     public boolean verificarPeriodicidad(Mascota m) {
         // Lógica de negocio para verificar la periodicidad de la vacuna en la mascota

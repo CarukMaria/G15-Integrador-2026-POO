@@ -35,13 +35,12 @@ public class Turno {
 
     // Un turno puede tener varios servicios (ej: Vacuna + Baño) 
     // y un servicio puede estar en muchos turnos. Se crea una tabla intermedia.
-    @ManyToMany
-    @JoinTable(
-        name = "turno_servicio",
-        joinColumns = @JoinColumn(name = "turno_id"),
-        inverseJoinColumns = @JoinColumn(name = "servicio_id")
+    @OneToMany(
+        mappedBy = "turno",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
     )
-    private List<Servicio> servicios = new ArrayList<>();
+    private List<ServicioPrestado> serviciosPrestados = new ArrayList<>();
 
     // 1. Constructor vacío requerido por JPA
     public Turno() {
@@ -72,9 +71,9 @@ public class Turno {
     // Calcula el total sumando el precio de cada servicio de la lista
     public double calcularPrecioFinal() {
         double total = 0.0;
-        for (Servicio servicio : servicios) {
+        for (ServicioPrestado servicio : serviciosPrestados) {
             // Asumo que tu clase Servicio tiene un método getPrecio()
-            total += servicio.getPrecio(); 
+            total += servicio.getPrecioServicioPrestado(); 
         }
         return total;
     }
@@ -82,9 +81,9 @@ public class Turno {
     // Calcula la duración sumando el tiempo de cada servicio
     public int calcularDuracionTotal() {
         int totalMinutos = 0;
-        for (Servicio servicio : servicios) {
+        for (ServicioPrestado servicio : serviciosPrestados) {
             // Asumo que tu clase Servicio tiene un atributo de duración y su getDuracion()
-            totalMinutos += servicio.getDuracion(); 
+            totalMinutos += servicio.getDuracionServicioPrestado(); 
         }
         return totalMinutos;
     }
@@ -95,8 +94,9 @@ public class Turno {
     }
 
     // Método extra útil para agregar servicios al turno
-    public void agregarServicio(Servicio servicio) {
-        this.servicios.add(servicio);
+    public void agregarServicioPrestado(ServicioPrestado servicio) {
+        serviciosPrestados.add(servicio);
+        servicio.setTurno(this);
     }
 
     /* --- GETTERS Y SETTERS --- */
@@ -137,11 +137,11 @@ public class Turno {
         this.veterinario = veterinario;
     }
 
-    public List<Servicio> getServicios() {
-        return servicios;
+    public List<ServicioPrestado> getServiciosPrestados() {
+        return serviciosPrestados;
     }
 
-    public void setServicios(List<Servicio> servicios) {
-        this.servicios = servicios;
+    public void setServiciosPrestados(List<ServicioPrestado> serviciosPrestados) {
+        this.serviciosPrestados = serviciosPrestados;
     }
 }

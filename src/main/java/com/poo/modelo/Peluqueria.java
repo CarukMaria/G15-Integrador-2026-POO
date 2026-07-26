@@ -9,4 +9,9 @@ public class Peluqueria extends Servicio {
     public Peluqueria() {
         super();
     }
+
+    @Override
+    public boolean validarRequisitos(Mascota mascota) {
+        return mascota != null;
+    }
 }
