@@ -1,5 +1,5 @@
 package com.poo.modelo;
-
+//
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
