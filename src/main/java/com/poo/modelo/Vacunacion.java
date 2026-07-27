@@ -1,39 +1,51 @@
 package com.poo.modelo;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "vacunaciones")
 public class Vacunacion extends Servicio {
 
-    @ManyToOne
-    @JoinColumn(name = "id_vacuna")
-    private Vacuna vacuna;
+    private String nombreVacuna;
+    private String laboratorio;
 
-    // Constructor vacío obligatorio para JPA
+
     public Vacunacion() {
-        super();
     }
+
+
+    public Vacunacion(String nombre, double precio, int duracion,
+                      String nombreVacuna, String laboratorio) {
+
+        super(nombre, precio, duracion);
+        this.nombreVacuna = nombreVacuna;
+        this.laboratorio = laboratorio;
+    }
+
+
+    public String getNombreVacuna() {
+        return nombreVacuna;
+    }
+
+
+    public void setNombreVacuna(String nombreVacuna) {
+        this.nombreVacuna = nombreVacuna;
+    }
+
+
+    public String getLaboratorio() {
+        return laboratorio;
+    }
+
+
+    public void setLaboratorio(String laboratorio) {
+        this.laboratorio = laboratorio;
+    }
+
 
     @Override
     public boolean validarRequisitos(Mascota mascota) {
-        return verificarPeriodicidad(mascota);
-    }
-
-    // Método de negocio solicitado
-    public boolean verificarPeriodicidad(Mascota m) {
-        // Lógica de negocio para verificar la periodicidad de la vacuna en la mascota
-        // (Por ejemplo, consultando el historial de aplicaciones de la mascota)
-        return true; 
-    }
-
-    // Getters y Setters
-    public Vacuna getVacuna() {
-        return vacuna;
-    }
-
-    public void setVacuna(Vacuna vacuna) {
-        this.vacuna = vacuna;
+        return mascota != null;
     }
 }

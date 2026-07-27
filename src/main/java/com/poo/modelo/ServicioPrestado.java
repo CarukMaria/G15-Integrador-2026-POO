@@ -32,12 +32,12 @@ public class ServicioPrestado {
     }
 
     // Constructor con parámetros
-    public ServicioPrestado(double precioServicioPrestado, int duracionServicioPrestado, Servicio servicio, Turno turno) {
-        this.precioServicioPrestado = precioServicioPrestado;
-        this.duracionServicioPrestado = duracionServicioPrestado;
-        this.fechaPrestacion = LocalDateTime.now();
+    public ServicioPrestado(Servicio servicio, Turno turno) {
         this.servicio = servicio;
         this.turno = turno;
+        this.precioServicioPrestado = servicio.getPrecio();
+        this.duracionServicioPrestado = servicio.getDuracion();
+        this.fechaPrestacion = LocalDateTime.now();
     }
 
     // Getters y Setters
