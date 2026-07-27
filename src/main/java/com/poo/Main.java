@@ -30,7 +30,8 @@ public class Main {
         Cliente cliente = new Cliente(
                 "45678902",
                 "Carla",
-                "Gomez"
+                "Gomez",
+                "1234567890"
         );
 
         clienteController.guardar(cliente);
