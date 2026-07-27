@@ -11,7 +11,7 @@ public class Guarderia extends Servicio {
 
     @Override
     public boolean validarRequisitos(Mascota mascota) {
-        return true;
+        return mascota != null;
     }
     
     // 1. Constructor vacío obligatorio por JPA

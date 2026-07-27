@@ -10,6 +10,10 @@ public class Peluqueria extends Servicio {
         super();
     }
 
+    public Peluqueria(String nombre, double precio, int duracion) {
+        super(nombre, precio, duracion);
+    }
+
     @Override
     public boolean validarRequisitos(Mascota mascota) {
         return mascota != null;
