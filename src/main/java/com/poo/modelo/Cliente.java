@@ -1,4 +1,4 @@
-package com.poo.modelo; // Asegurate de que el paquete coincida con el tuyo
+package com.poo.modelo;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
@@ -13,45 +13,42 @@ public class Cliente {
     private Long idCliente;
 
     @Column(unique = true, nullable = false)
-    private String dni; // Es buena práctica que el DNI sea único y no nulo
+    private String dni;
 
     @Column(nullable = false)
-    private String apellido; // Nota: En Java los atributos van con minúscula inicial
+    private String apellido;
 
     @Column(nullable = false)
     private String nombre;
 
-    /*
-     * RELACIÓN UNO A MUCHOS:
-     * mappedBy = "cliente": Indica que la clase Mascota es dueña de la relación (debe tener un atributo 'cliente').
-     * cascade = CascadeType.ALL: Si borras al cliente, se borran sus mascotas.
-     * orphanRemoval = true: Si sacas una mascota de esta lista, se borra de la base de datos.
-     */
+    @Column
+    private String telefono; // NUEVO: Atributo teléfono
+
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Mascota> mascotas = new ArrayList<>(); // Inicializamos la lista vacía
+    private List<Mascota> mascotas = new ArrayList<>();
 
     // 1. Constructor vacío (OBLIGATORIO para JPA)
     public Cliente() {
     }
 
-    // 2. Constructor con parámetros
-    // No incluimos el idCliente (se genera solo) ni la lista de mascotas (arranca vacía)
-    public Cliente(String dni, String apellido, String nombre) {
+    // 2. Constructor con parámetros (incluyendo teléfono)
+    public Cliente(String dni, String apellido, String nombre, String telefono) {
         this.dni = dni;
         this.apellido = apellido;
         this.nombre = nombre;
+        this.telefono = telefono;
     }
 
-    // --- MÉTODOS DE NEGOCIO (Los que me pasaste) ---
+    // --- MÉTODOS DE NEGOCIO ---
 
     public void agregarMascota(Mascota m) {
         this.mascotas.add(m);
-        m.setCliente(this); // ¡Clave! Sincronizamos la relación bidireccional
+        m.setCliente(this);
     }
 
     public void darDeBajaMascota(Mascota m) {
         this.mascotas.remove(m);
-        m.setCliente(null); // Rompemos el enlace del lado de la mascota
+        m.setCliente(null);
     }
 
     // --- GETTERS Y SETTERS ---
@@ -59,8 +56,6 @@ public class Cliente {
     public Long getIdCliente() {
         return idCliente;
     }
-
-    // No solemos poner setIdCliente porque la base de datos lo maneja automáticamente
 
     public String getDni() {
         return dni;
@@ -84,6 +79,14 @@ public class Cliente {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 
     public List<Mascota> getMascotas() {
