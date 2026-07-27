@@ -20,6 +20,14 @@ public class Consulta extends Servicio {
         this.tratamiento = tratamiento;
     }
 
+    public Consulta(String nombre, double precio, int duracion,
+                String diagnostico, String tratamiento) {
+
+        super(nombre, precio, duracion);
+        this.diagnostico = diagnostico;
+        this.tratamiento = tratamiento;
+    }
+
     @Override
     public boolean validarRequisitos(Mascota mascota) {
         return mascota != null;
