@@ -11,13 +11,12 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Carga la vista principal. 
-        // IMPORTANTE: Asegurate de que la ruta sea correcta. Si guardaste MainView.fxml 
-        // adentro de resources/vistas/, la ruta debe ser "/vistas/MainView.fxml".
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/MainView.fxml"));
         Parent root = loader.load();
 
         // Creamos la escena y le damos un tamaño inicial
-        Scene scene = new Scene(root, 900, 600);
+        Scene scene = new Scene(root, 1060, 600);
         
         primaryStage.setTitle("Sistema de Gestión Veterinaria");
         primaryStage.setScene(scene);

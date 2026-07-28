@@ -18,7 +18,8 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<BorderPane fx:controller="com.poo.controlador.TurnoController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">   <top>
+<BorderPane fx:controller="com.poo.controlador.TurnoController" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <TextField prefHeight="25.0" prefWidth="211.0" text="Ingrese fecha o nombre de mascota..." />
