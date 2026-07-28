@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:controller="com.poo.controlador.ClienteController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+   <top>
+      <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+         <children>
+            <Label prefHeight="95.0" prefWidth="117.0" text="Buscar cliente:" />
+            <TextField fx:id="txtBuscarCliente" promptText="Ingrese DNI o Apellido" />
+            <Button fx:id="btnBuscar" mnemonicParsing="false" text="Buscar" />
+            <Button fx:id="btnNuevoCliente" mnemonicParsing="false" text="+ Nuevo cliente" />
+         </children>
+      </HBox>
+   </top>
+   <center>
+      <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <VBox layoutX="83.0" layoutY="43.0" prefHeight="498.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label text="Listado de clientes" textAlignment="CENTER" />
+                        <TableView fx:id="tablaClientes" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+                          <columns>
+                            <TableColumn fx:id="colDni" prefWidth="50.0" text="DNI" />
+                            <TableColumn fx:id="colApellido" prefWidth="78.0" text="APELLIDO" />
+                              <TableColumn fx:id="colNombre" prefWidth="75.0" text="NOMBRE" />
+                              <TableColumn fx:id="colTelefono" prefWidth="60.0" text="TELEFONO" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <VBox layoutX="119.0" layoutY="-8.0" prefHeight="498.0" prefWidth="627.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
+                     <children>
+                        <GridPane>
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label text="DNI" />
+                              <Label text="Nombre" GridPane.rowIndex="1" />
+                              <Label text="Apellido" GridPane.rowIndex="2" />
+                              <TextField fx:id="txtDni" GridPane.columnIndex="1" />
+                              <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <TextField fx:id="txtApellido" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="Telefono" GridPane.rowIndex="3" />
+                              <TextField fx:id="txtTelefono" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="btnGuardarCliente" mnemonicParsing="false" onAction="#guardarClienteAccion" text="Guardar cliente" />
+                              <Button fx:id="btnBajaCliente" mnemonicParsing="false" onAction="#darDeBajaClienteAccion" text="Dar de baja" />
+                              <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#limpiarFormulario" text="Cancelar" />
+                           </children>
+                        </HBox>
+                        <Label text="Mascotas registradas de este cliente" />
+                        <TableView fx:id="tablaMascotas" prefHeight="150.0" prefWidth="200.0">
+                          <columns>
+                            <TableColumn fx:id="colMascotaNumFicha" prefWidth="131.0" text="Numero de ficha" />
+                            <TableColumn fx:id="colMascotaNombre" prefWidth="69.0" text="Nombre" />
+                              <TableColumn fx:id="colMascotaRaza" prefWidth="60.0" text="Raza" />
+                              <TableColumn fx:id="colMascotaFechaNac" prefWidth="138.0" text="Fecha de nacimiento" />
+                              <TableColumn fx:id="colMascotaEspecie" prefWidth="197.0" text="Especie" />
+                          </columns>
+                        </TableView>
+                        <HBox prefHeight="100.0" prefWidth="200.0">
+                           <children>
+                              <Button fx:id="btnAgregarMascota" mnemonicParsing="false" text="+ Agregar mascota" />
+                              <Button fx:id="btnEditarMascota" mnemonicParsing="false" text="Editar mascota" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
+</BorderPane>

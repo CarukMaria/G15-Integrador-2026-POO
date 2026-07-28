@@ -1,183 +1,41 @@
 package com.poo;
 
-import com.poo.controlador.*;
-import com.poo.modelo.*;
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+public class Main extends Application {
 
-public class Main {
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        // Carga la vista principal. 
+        // IMPORTANTE: Asegurate de que la ruta sea correcta. Si guardaste MainView.fxml 
+        // adentro de resources/vistas/, la ruta debe ser "/vistas/MainView.fxml".
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/MainView.fxml"));
+        Parent root = loader.load();
+
+        // Creamos la escena y le damos un tamaño inicial
+        Scene scene = new Scene(root, 900, 600);
+        
+        primaryStage.setTitle("Sistema de Gestión Veterinaria");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    @Override
+    public void stop() throws Exception {
+        // Este método se ejecuta automáticamente cuando el usuario cierra la ventana.
+        // Es el lugar perfecto para cerrar la conexión de la base de datos de forma segura.
+        System.out.println("Cerrando la interfaz visual y desconectando la base de datos...");
+        com.poo.util.JPAUtil.close();
+        super.stop();
+    }
 
     public static void main(String[] args) {
-
-        System.out.println("Iniciando sistema...");
-
-
-        // Controllers
-        ClienteController clienteController = new ClienteController();
-        MascotaController mascotaController = new MascotaController();
-        VeterinarioController veterinarioController = new VeterinarioController();
-        TurnoController turnoController = new TurnoController();
-        ServicioController servicioController = new ServicioController();
-        ServicioPrestadoController servicioPrestadoController = new ServicioPrestadoController();
-
-
-
-        // =========================
-        // CLIENTE
-        // =========================
-
-        Cliente cliente = new Cliente(
-                "45678902",
-                "Carla",
-                "Gomez",
-                "1234567890"
-        );
-
-        clienteController.guardar(cliente);
-
-        System.out.println("Cliente guardado");
-
-
-
-        // =========================
-        // MASCOTA
-        // =========================
-
-        Mascota mascota = new Mascota(
-                "F001",
-                "Firulais",
-                "Labrador",
-                LocalDate.of(2020, 5, 10),
-                Especie.PERRO
-        );
-
-        mascota.setCliente(cliente);
-
-        mascotaController.guardar(mascota);
-
-        System.out.println("Mascota guardada");
-
-
-
-        // =========================
-        // VETERINARIO
-        // =========================
-
-        Veterinario veterinario = new Veterinario(
-                "MAT123",
-                "Laura",
-                "Gomez"
-        );
-
-        veterinario.agregarEspecialidad(
-                Especialidad.CLINICA_GENERAL
-        );
-
-        veterinarioController.guardar(veterinario);
-
-        System.out.println("Veterinario guardado");
-
-
-
-        // =========================
-        // TURNO
-        // =========================
-
-        Turno turno = new Turno(
-                LocalDateTime.of(2026, 7, 27, 17, 0),
-                mascota,
-                veterinario
-        );
-
-        turnoController.guardar(turno);
-
-        System.out.println("Turno guardado");
-
-
-
-        // =========================
-        // SERVICIO (VACUNACION)
-        // =========================
-
-        Vacunacion vacunacion = new Vacunacion(
-                "Vacunación",
-                5000,
-                20,
-                "Antirrábica",
-                "Zoetis"
-        );
-
-        servicioController.guardar(vacunacion);
-
-        System.out.println("Vacunación guardada");
-
-
-
-        // =========================
-        // SERVICIO PRESTADO
-        // =========================
-
-        ServicioPrestado servicioPrestado = new ServicioPrestado(
-                vacunacion,
-                turno
-        );
-
-        turno.agregarServicioPrestado(servicioPrestado);
-
-        servicioPrestadoController.guardar(servicioPrestado);
-
-        System.out.println("Servicio prestado guardado");
-
-
-
-        // =========================
-        // LISTADO FINAL
-        // =========================
-
-        System.out.println("\nLista de turnos:");
-
-        turnoController.listar()
-                .forEach(t ->
-                        System.out.println(
-                                t.getIdTurno()
-                                + " - "
-                                + t.getFechaHora()
-                                + " - "
-                                + t.getMascota().getNombre()
-                                + " - "
-                                + t.getVeterinario().getNombre()
-                                + " - "
-                                + t.getEstado()
-                        )
-                );
-
-
-
-        System.out.println("\nLista servicios:");
-
-        servicioController.listar()
-                .forEach(System.out::println);
-
-
-
-        System.out.println("\nLista servicios prestados:");
-
-        servicioPrestadoController.listar()
-                .forEach(sp ->
-                        System.out.println(
-                                sp.getIdServicioPrestado()
-                                + " - "
-                                + sp.getServicio().getNombre()
-                                + " - $"
-                                + sp.getPrecioServicioPrestado()
-                        )
-                );
-
-
-
-        System.out.println("\nFin del sistema.");
-
-        com.poo.util.JPAUtil.close();
+        System.out.println("Iniciando sistema visual...");
+        // launch arranca todo el motor gráfico de JavaFX y llama al método start()
+        launch(args); 
     }
 }
