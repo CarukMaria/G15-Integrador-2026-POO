@@ -11,16 +11,25 @@ public class ServicioRepository {
 
 
     public void guardar(Servicio servicio) {
-
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
             em.getTransaction().begin();
 
-            em.persist(servicio);
+            if (servicio.getIdServicio() == null) {
+                em.persist(servicio);
+            } else {
+                em.merge(servicio);
+            }
 
             em.getTransaction().commit();
 
+        } catch (Exception e) {
+            // Si algo sale mal, deshacemos los cambios en la BD por seguridad
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e; // Le pasamos el error al controlador para que muestre el cartelito
         } finally {
             em.close();
         }

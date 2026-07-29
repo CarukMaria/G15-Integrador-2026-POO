@@ -41,6 +41,11 @@ public class MainController {
         cargarVista("VeterinariosView.fxml");
     }
 
+    @FXML
+    public void abrirServicios(ActionEvent event) {
+        cargarVista("ServiciosView.fxml");
+    }
+
     /**
      * Método auxiliar que se encarga de leer el archivo FXML y colocarlo en el centro de la pantalla.
      */
