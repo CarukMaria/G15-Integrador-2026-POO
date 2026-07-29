@@ -9,10 +9,16 @@ import java.util.List;
 public class ClienteRepository {
 
     public void guardar(Cliente cliente) {
-        EntityManager em = JPAUtil.getEntityManager();
+       EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            em.persist(cliente);
+
+            if (cliente.getIdCliente() == null) {
+                em.persist(cliente); // alta
+            } else {
+                em.merge(cliente); // modificación
+            }
+
             em.getTransaction().commit();
         } finally {
             em.close();

@@ -11,7 +11,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Carga la vista principal. 
-
+        System.out.println(getClass().getResource("/vistas/MainView.fxml"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/MainView.fxml"));
         Parent root = loader.load();
 

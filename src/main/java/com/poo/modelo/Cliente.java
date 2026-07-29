@@ -24,7 +24,7 @@ public class Cliente {
     @Column
     private String telefono; // NUEVO: Atributo teléfono
 
-    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Mascota> mascotas = new ArrayList<>();
 
     // 1. Constructor vacío (OBLIGATORIO para JPA)
