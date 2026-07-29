@@ -17,7 +17,11 @@ public class MascotaRepository {
         try {
             em.getTransaction().begin();
 
-            em.persist(mascota);
+            if (mascota.getIdMascota() == null) {
+                em.persist(mascota);
+            } else {
+                em.merge(mascota);
+            }
 
             em.getTransaction().commit();
 

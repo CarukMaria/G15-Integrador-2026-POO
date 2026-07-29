@@ -1,210 +1,567 @@
 package com.poo.controlador;
 
 import com.poo.modelo.Cliente;
+import com.poo.modelo.Especie;
 import com.poo.modelo.Mascota;
 import com.poo.servicio.ClienteService;
+import com.poo.servicio.MascotaService;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+
 import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 public class ClienteController {
 
+
     private ClienteService servicio;
+    private MascotaService mascotaService;
+
+
     private Cliente clienteSeleccionado;
+    private Mascota mascotaSeleccionada;
+
+
     private ObservableList<Cliente> listaObservableClientes;
 
-    // --- ELEMENTOS FXML: BUSCADOR ---
+
+
+    // BUSCADOR
+
     @FXML private TextField txtBuscarCliente;
     @FXML private Button btnBuscar;
     @FXML private Button btnNuevoCliente;
 
-    // --- ELEMENTOS FXML: TABLA CLIENTES ---
-    @FXML private TableView<Cliente> tablaClientes;
-    @FXML private TableColumn<Cliente, String> colDni;
-    @FXML private TableColumn<Cliente, String> colApellido;
-    @FXML private TableColumn<Cliente, String> colNombre;
-    @FXML private TableColumn<Cliente, String> colTelefono;
 
-    // --- ELEMENTOS FXML: FORMULARIO CLIENTE ---
+
+    // TABLA CLIENTES
+
+    @FXML private TableView<Cliente> tablaClientes;
+
+    @FXML private TableColumn<Cliente,String> colDni;
+    @FXML private TableColumn<Cliente,String> colApellido;
+    @FXML private TableColumn<Cliente,String> colNombre;
+    @FXML private TableColumn<Cliente,String> colTelefono;
+
+
+
+    // CLIENTE
+
     @FXML private TextField txtDni;
     @FXML private TextField txtNombre;
     @FXML private TextField txtApellido;
     @FXML private TextField txtTelefono;
+
+
     @FXML private Button btnGuardarCliente;
     @FXML private Button btnBajaCliente;
     @FXML private Button btnCancelar;
 
-    // --- ELEMENTOS FXML: TABLA MASCOTAS (Preparada para la fase 2) ---
+
+
+    // MASCOTAS
+
     @FXML private TableView<Mascota> tablaMascotas;
-    @FXML private TableColumn<Mascota, String> colMascotaNumFicha;
-    @FXML private TableColumn<Mascota, String> colMascotaNombre;
-    @FXML private TableColumn<Mascota, String> colMascotaRaza;
-    @FXML private TableColumn<Mascota, LocalDate> colMascotaFechaNac;
-    @FXML private TableColumn<Mascota, String> colMascotaEspecie;
-    
+
+    @FXML private TableColumn<Mascota,String> colMascotaNumFicha;
+    @FXML private TableColumn<Mascota,String> colMascotaNombre;
+    @FXML private TableColumn<Mascota,String> colMascotaRaza;
+    @FXML private TableColumn<Mascota,LocalDate> colMascotaFechaNac;
+    @FXML private TableColumn<Mascota,String> colMascotaEspecie;
+
+
+
     @FXML private Button btnAgregarMascota;
     @FXML private Button btnEditarMascota;
 
-    public ClienteController() {
+
+
+    // FORMULARIO MASCOTA
+
+    @FXML private TextField txtMascotaNombre;
+    @FXML private TextField txtMascotaRaza;
+    @FXML private DatePicker dpMascotaFecha;
+    @FXML private ComboBox<Especie> cbMascotaEspecie;
+
+
+    @FXML private Button btnGuardarMascota;
+    @FXML private Button btnCancelarMascota;
+
+
+
+    public ClienteController(){
+
         servicio = new ClienteService();
+        mascotaService = new MascotaService();
+
     }
 
+
+
     @FXML
-    public void initialize() {
-        // 1. Configurar columnas de la tabla Clientes
+    public void initialize(){
+
+
+        // CLIENTES
+
         colDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
         colApellido.setCellValueFactory(new PropertyValueFactory<>("apellido"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
 
-        // 2. Configurar columnas de la tabla Mascotas (listas para cuando agregues mascotas)
-        // Nota: Los nombres entre comillas deben coincidir exactamente con los atributos de tu clase Mascota
-        colMascotaNumFicha.setCellValueFactory(new PropertyValueFactory<>("numeroFicha"));
-        colMascotaNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
-        colMascotaRaza.setCellValueFactory(new PropertyValueFactory<>("raza"));
-        colMascotaFechaNac.setCellValueFactory(new PropertyValueFactory<>("fechaNacimiento"));
-        colMascotaEspecie.setCellValueFactory(new PropertyValueFactory<>("especie"));
 
-        // 3. Cargar la tabla de clientes al iniciar
+
+        // MASCOTAS
+
+        colMascotaNumFicha.setCellValueFactory(
+                new PropertyValueFactory<>("numeroFicha")
+        );
+
+        colMascotaNombre.setCellValueFactory(
+                new PropertyValueFactory<>("nombre")
+        );
+
+        colMascotaRaza.setCellValueFactory(
+                new PropertyValueFactory<>("raza")
+        );
+
+        colMascotaFechaNac.setCellValueFactory(
+                new PropertyValueFactory<>("fechaNacimiento")
+        );
+
+        colMascotaEspecie.setCellValueFactory(
+                new PropertyValueFactory<>("especie")
+        );
+
+
+
+        cbMascotaEspecie.setItems(
+                FXCollections.observableArrayList(
+                        Especie.values()
+                )
+        );
+
+
+
         cargarTablaClientes();
 
-        // 4. Escuchar clics en la tabla de clientes para cargar el formulario
-        tablaClientes.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                mostrarClienteEnFormulario(newSelection);
-            }
-        });
 
-        // 5. Asignar eventos a los botones superiores (que no tienen onAction en el FXML)
-        btnBuscar.setOnAction(e -> buscarCliente());
-        btnNuevoCliente.setOnAction(e -> limpiarFormulario());
-        
-        // Botones de mascotas desactivados por ahora (Fase 2)
+
+        tablaClientes.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs, viejo, nuevo)->{
+
+                    if(nuevo != null){
+
+                        mostrarClienteEnFormulario(nuevo);
+
+                    }
+
+                });
+
+
+
+        tablaMascotas.getSelectionModel()
+                .selectedItemProperty()
+                .addListener((obs,viejo,nuevo)->{
+
+                    mascotaSeleccionada = nuevo;
+
+                });
+
+
+
+        btnBuscar.setOnAction(e->buscarCliente());
+
+        btnNuevoCliente.setOnAction(e->limpiarFormulario());
+
+
+
         btnAgregarMascota.setDisable(true);
         btnEditarMascota.setDisable(true);
+
+        btnGuardarMascota.setDisable(true);
+        btnCancelarMascota.setDisable(true);
+
+
     }
 
-    // --- MÉTODOS DE LA LÓGICA DE CLIENTES ---
 
-    private void cargarTablaClientes() {
+
+
+    private void cargarTablaClientes(){
+
         List<Cliente> clientes = servicio.listar();
-        listaObservableClientes = FXCollections.observableArrayList(clientes);
+
+        listaObservableClientes =
+                FXCollections.observableArrayList(clientes);
+
         tablaClientes.setItems(listaObservableClientes);
+
     }
 
-    private void mostrarClienteEnFormulario(Cliente cliente) {
-        this.clienteSeleccionado = cliente;
+
+
+
+
+    private void mostrarClienteEnFormulario(Cliente cliente){
+
+
+        clienteSeleccionado = cliente;
+
+
         txtDni.setText(cliente.getDni());
         txtNombre.setText(cliente.getNombre());
         txtApellido.setText(cliente.getApellido());
-        txtTelefono.setText(cliente.getTelefono() != null ? cliente.getTelefono() : "");
-        
-        // Cargar las mascotas de este cliente en la tabla inferior
-        if (cliente.getMascotas() != null) {
-            tablaMascotas.setItems(FXCollections.observableArrayList(cliente.getMascotas()));
-        } else {
-            tablaMascotas.getItems().clear();
-        }
+        txtTelefono.setText(cliente.getTelefono());
 
-        // Cuando habilites la fase 2, acá podés activar los botones de mascotas:
-        // btnAgregarMascota.setDisable(false);
+
+
+        // evita problema LazyInitialization
+
+        Cliente actualizado =
+                servicio.buscarPorId(cliente.getIdCliente());
+
+
+        tablaMascotas.setItems(
+                FXCollections.observableArrayList(
+                        actualizado.getMascotas()
+                )
+        );
+
+
+        btnAgregarMascota.setDisable(false);
+        btnEditarMascota.setDisable(false);
+
+
     }
 
-    // Método conectado directamente desde el FXML (onAction="#guardarClienteAccion")
+
+
+
+
+    // ======================
+    // MASCOTAS
+    // ======================
+
+
     @FXML
-    public void guardarClienteAccion(ActionEvent event) {
-        if (txtDni.getText().isEmpty() || txtNombre.getText().isEmpty() || txtApellido.getText().isEmpty()) {
-            mostrarAlerta("Campos incompletos", "El DNI, Nombre y Apellido son obligatorios.", Alert.AlertType.WARNING);
+    private void agregarMascotaAccion(ActionEvent e){
+
+        limpiarFormularioMascota();
+
+        mascotaSeleccionada = new Mascota();
+
+        btnGuardarMascota.setDisable(false);
+        btnCancelarMascota.setDisable(false);
+
+    }
+
+
+
+
+
+    @FXML
+    private void editarMascotaAccion(ActionEvent e){
+
+
+        if(mascotaSeleccionada == null){
+
+            mostrarAlerta(
+                    "Atención",
+                    "Seleccione una mascota.",
+                    Alert.AlertType.WARNING
+            );
+
             return;
         }
 
-        if (clienteSeleccionado == null) {
-            clienteSeleccionado = new Cliente();
+
+        txtMascotaNombre.setText(
+                mascotaSeleccionada.getNombre()
+        );
+
+        txtMascotaRaza.setText(
+                mascotaSeleccionada.getRaza()
+        );
+
+        dpMascotaFecha.setValue(
+                mascotaSeleccionada.getFechaNacimiento()
+        );
+
+        cbMascotaEspecie.setValue(
+                mascotaSeleccionada.getEspecie()
+        );
+
+
+        btnGuardarMascota.setDisable(false);
+        btnCancelarMascota.setDisable(false);
+
+    }
+
+
+
+
+
+    @FXML
+    private void guardarMascotaAccion(ActionEvent e){
+
+
+        if(mascotaSeleccionada == null){
+
+            mascotaSeleccionada = new Mascota();
+
         }
+
+
+
+        mascotaSeleccionada.setNombre(
+                txtMascotaNombre.getText()
+        );
+
+
+        mascotaSeleccionada.setRaza(
+                txtMascotaRaza.getText()
+        );
+
+
+        mascotaSeleccionada.setFechaNacimiento(
+                dpMascotaFecha.getValue()
+        );
+
+
+        mascotaSeleccionada.setEspecie(
+                cbMascotaEspecie.getValue()
+        );
+
+
+
+        if(mascotaSeleccionada.getNumeroFicha()==null){
+
+            mascotaSeleccionada.setNumeroFicha(
+                    "F-" + System.currentTimeMillis()%10000
+            );
+
+        }
+
+
+
+        mascotaSeleccionada.setCliente(
+                clienteSeleccionado
+        );
+
+
+        clienteSeleccionado.agregarMascota(
+                mascotaSeleccionada
+        );
+
+
+
+        mascotaService.guardar(
+                mascotaSeleccionada
+        );
+
+
+
+        mostrarClienteEnFormulario(
+                clienteSeleccionado
+        );
+
+
+        limpiarFormularioMascota();
+
+
+        mostrarAlerta(
+                "Éxito",
+                "Mascota guardada correctamente.",
+                Alert.AlertType.INFORMATION
+        );
+
+
+    }
+
+
+
+
+
+
+    @FXML
+    private void cancelarMascotaAccion(ActionEvent e){
+
+        limpiarFormularioMascota();
+
+    }
+
+
+
+
+
+    private void limpiarFormularioMascota(){
+
+        txtMascotaNombre.clear();
+        txtMascotaRaza.clear();
+        dpMascotaFecha.setValue(null);
+        cbMascotaEspecie.setValue(null);
+
+
+        mascotaSeleccionada=null;
+
+
+        btnGuardarMascota.setDisable(true);
+        btnCancelarMascota.setDisable(true);
+
+    }
+
+
+
+
+
+    // ======================
+    // CLIENTES
+    // ======================
+
+
+    @FXML
+    public void guardarClienteAccion(ActionEvent e){
+
+
+        if(clienteSeleccionado==null){
+
+            clienteSeleccionado = new Cliente();
+
+        }
+
 
         clienteSeleccionado.setDni(txtDni.getText());
         clienteSeleccionado.setNombre(txtNombre.getText());
         clienteSeleccionado.setApellido(txtApellido.getText());
         clienteSeleccionado.setTelefono(txtTelefono.getText());
 
-        try {
-            servicio.guardar(clienteSeleccionado);
+
+        servicio.guardar(clienteSeleccionado);
+
+
+        cargarTablaClientes();
+
+
+    }
+
+
+
+
+
+    @FXML
+    public void darDeBajaClienteAccion(ActionEvent e){
+
+        if(clienteSeleccionado!=null){
+
+            servicio.eliminar(clienteSeleccionado);
+
             cargarTablaClientes();
+
             limpiarFormulario();
-            mostrarAlerta("Éxito", "Cliente guardado correctamente.", Alert.AlertType.INFORMATION);
-        } catch (Exception e) {
-            mostrarAlerta("Error", "No se pudo guardar el cliente. Verifique que el DNI no esté duplicado.", Alert.AlertType.ERROR);
+
         }
+
     }
 
-    // Método conectado directamente desde el FXML (onAction="#darDeBajaClienteAccion")
-    @FXML
-    public void darDeBajaClienteAccion(ActionEvent event) {
-        if (clienteSeleccionado != null) {
-            try {
-                servicio.eliminar(clienteSeleccionado);
-                cargarTablaClientes();
-                limpiarFormulario();
-                mostrarAlerta("Éxito", "Cliente eliminado correctamente.", Alert.AlertType.INFORMATION);
-            } catch (Exception e) {
-                mostrarAlerta("Error", "No se puede eliminar el cliente. Es posible que tenga mascotas o turnos asociados.", Alert.AlertType.ERROR);
-            }
-        } else {
-            mostrarAlerta("Atención", "Debe seleccionar un cliente de la tabla primero.", Alert.AlertType.WARNING);
-        }
-    }
 
-    // Método conectado directamente desde el FXML (onAction="#limpiarFormulario")
+
+
+
     @FXML
-    public void limpiarFormulario(ActionEvent event) {
+    public void limpiarFormulario(ActionEvent e){
+
         limpiarFormulario();
+
     }
 
-    // Sobrecarga para usarlo internamente sin el ActionEvent
-    private void limpiarFormulario() {
-        clienteSeleccionado = null;
+
+
+
+
+    private void limpiarFormulario(){
+
+
+        clienteSeleccionado=null;
+
+
         txtDni.clear();
         txtNombre.clear();
         txtApellido.clear();
         txtTelefono.clear();
-        tablaClientes.getSelectionModel().clearSelection();
+
+
         tablaMascotas.getItems().clear();
-        
-        // Bloquear botones de mascota si no hay cliente seleccionado
+
+
         btnAgregarMascota.setDisable(true);
         btnEditarMascota.setDisable(true);
+
     }
 
-    private void buscarCliente() {
-        String textoBusqueda = txtBuscarCliente.getText().toLowerCase();
-        if (textoBusqueda.isEmpty()) {
-            tablaClientes.setItems(listaObservableClientes);
-        } else {
-            List<Cliente> filtrados = listaObservableClientes.stream()
-                    .filter(c -> c.getDni().toLowerCase().contains(textoBusqueda) || 
-                                 c.getApellido().toLowerCase().contains(textoBusqueda))
-                    .collect(Collectors.toList());
-            tablaClientes.setItems(FXCollections.observableArrayList(filtrados));
-        }
+
+
+
+
+    private void buscarCliente(){
+
+
+        String texto =
+                txtBuscarCliente.getText()
+                        .toLowerCase();
+
+
+
+        List<Cliente> filtrados =
+                listaObservableClientes.stream()
+                .filter(c ->
+                        c.getDni().toLowerCase().contains(texto)
+                        ||
+                        c.getApellido().toLowerCase().contains(texto)
+                )
+                .collect(Collectors.toList());
+
+
+
+        tablaClientes.setItems(
+                FXCollections.observableArrayList(filtrados)
+        );
+
     }
 
-    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
+
+
+
+    private void mostrarAlerta(
+            String titulo,
+            String mensaje,
+            Alert.AlertType tipo
+    ){
+
+        Alert a = new Alert(tipo);
+
+        a.setTitle(titulo);
+        a.setHeaderText(null);
+        a.setContentText(mensaje);
+
+        a.showAndWait();
+
     }
+
 }
