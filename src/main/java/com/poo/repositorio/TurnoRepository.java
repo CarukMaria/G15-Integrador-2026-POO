@@ -11,16 +11,24 @@ public class TurnoRepository {
 
 
     public void guardar(Turno turno) {
-
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
             em.getTransaction().begin();
 
-            em.persist(turno);
+            if (turno.getIdTurno() == null) {
+                em.persist(turno);
+            } else {
+                em.merge(turno);
+            }
 
             em.getTransaction().commit();
 
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
         } finally {
             em.close();
         }

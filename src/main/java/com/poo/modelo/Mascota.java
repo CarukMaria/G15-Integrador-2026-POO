@@ -3,6 +3,7 @@ package com.poo.modelo;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,7 +45,7 @@ public class Mascota {
     private List<HistorialMedico> historiales = new ArrayList<>();
     */
 
-    @OneToMany(mappedBy = "mascota")
+    @OneToMany(mappedBy = "mascota", fetch = FetchType.EAGER)
     private List<Turno> turnos = new ArrayList<>();
     
 

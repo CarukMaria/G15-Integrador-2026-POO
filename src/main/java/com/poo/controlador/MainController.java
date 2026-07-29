@@ -46,6 +46,11 @@ public class MainController {
         cargarVista("ServiciosView.fxml");
     }
 
+    @FXML
+    public void abrirHistorial(ActionEvent event) {
+        cargarVista("HistorialView.fxml");
+    }
+
     /**
      * Método auxiliar que se encarga de leer el archivo FXML y colocarlo en el centro de la pantalla.
      */

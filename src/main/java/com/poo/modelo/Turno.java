@@ -38,7 +38,8 @@ public class Turno {
     @OneToMany(
         mappedBy = "turno",
         cascade = CascadeType.ALL,
-        orphanRemoval = true
+        orphanRemoval = true,
+        fetch = FetchType.EAGER // <- ¡Esta es la línea mágica que faltaba!
     )
     private List<ServicioPrestado> serviciosPrestados = new ArrayList<>();
 
