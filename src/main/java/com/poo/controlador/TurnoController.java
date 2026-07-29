@@ -208,6 +208,13 @@ public class TurnoController {
             return;
         }
 
+        // --- NUEVA REGLA DE NEGOCIO: Turno con al menos un servicio ---
+        if (listaServiciosDelTurno.isEmpty()) {
+            mostrarAlerta("Atención", "El turno debe tener al menos un servicio asociado.", Alert.AlertType.WARNING);
+            return; // Cortamos la ejecución para que no guarde
+        }
+        // ---------------------------------------------------------------
+
         // Armar el LocalDateTime
         LocalDateTime fechaHoraTurno = LocalDateTime.of(fecha, LocalTime.of(Integer.parseInt(hora), Integer.parseInt(minutos)));
 

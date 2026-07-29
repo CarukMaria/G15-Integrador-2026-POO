@@ -118,8 +118,11 @@ public class Turno {
         return estado;
     }
 
-    public void setEstado(EstadoTurno estado) {
-        this.estado = estado;
+    public void setEstado(EstadoTurno nuevoEstado) {
+        if (this.estado == EstadoTurno.ATENDIDO && nuevoEstado == EstadoTurno.CANCELADO) {
+            throw new IllegalStateException("Regla de negocio violada: No se puede cancelar un turno ya atendido.");
+        }
+        this.estado = nuevoEstado;
     }
 
     public Mascota getMascota() {
