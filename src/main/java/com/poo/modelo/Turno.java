@@ -54,9 +54,9 @@ public class Turno {
 
 
     public Turno(
-            LocalDateTime fechaHora,
-            Mascota mascota,
-            Veterinario veterinario) {
+        LocalDateTime fechaHora,
+        Mascota mascota,
+        Veterinario veterinario) {
 
         this.fechaHora = fechaHora;
         this.mascota = mascota;
@@ -88,10 +88,7 @@ public class Turno {
 
             case CANCELADO -> cancelar();
 
-            case PENDIENTE ->
-                throw new IllegalArgumentException(
-                    "No se puede volver a pendiente"
-                );
+            case PENDIENTE -> estado = EstadoTurno.PENDIENTE;
         }
     }
 
@@ -219,7 +216,18 @@ public class Turno {
     }
 
 
+    public boolean seSuperponeCon(Turno otro) {
 
+        LocalDateTime inicio1 = this.fechaHora;
+        LocalDateTime fin1 = this.calcularFechaHoraFin();
+
+        LocalDateTime inicio2 = otro.fechaHora;
+        LocalDateTime fin2 = otro.calcularFechaHoraFin();
+
+        return inicio1.isBefore(fin2)
+                &&
+               inicio2.isBefore(fin1);
+    }
 
     public boolean tieneVacuna(String nombreVacuna) {
 
