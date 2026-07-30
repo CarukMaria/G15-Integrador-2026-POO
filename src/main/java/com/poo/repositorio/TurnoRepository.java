@@ -19,7 +19,7 @@ public class TurnoRepository {
             if (turno.getIdTurno() == null) {
                 em.persist(turno);
             } else {
-                em.merge(turno);
+                turno = em.merge(turno);
             }
 
             em.getTransaction().commit();
