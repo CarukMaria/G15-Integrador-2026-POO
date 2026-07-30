@@ -173,55 +173,44 @@ public class Mascota {
 
 
 
-    // Regla de negocio:
-    // Una mascota no puede recibir nuevamente una vacuna
-    // mientras la aplicación anterior siga vigente.
-    public boolean puedeRecibirVacuna(Vacuna vacuna) {
+// 1. Método original que usa el Controlador (antes de crear el turno, sin ID)
+    public boolean puedeRecibirVacuna(Vacuna vacuna, LocalDate fechaNuevoTurno) {
+        return puedeRecibirVacuna(vacuna, fechaNuevoTurno, null);
+    }
 
+    // 2. Nuevo método sobrecargado que usa el Service (ignora el turno actual)
+    public boolean puedeRecibirVacuna(Vacuna vacuna, LocalDate fechaNuevoTurno, Long idTurnoActual) {
 
         for (Turno turno : turnos) {
-
+            
+            // EL FIX: Ignorar el turno actual para que no se bloquee a sí mismo
+            if (idTurnoActual != null && idTurnoActual.equals(turno.getIdTurno())) {
+                continue;
+            }
 
             // Solo se consideran vacunas de turnos realizados
             if (turno.getEstado() != EstadoTurno.ATENDIDO) {
                 continue;
             }
 
-
-
-            for (ServicioPrestado servicioPrestado :
-                    turno.getServiciosPrestados()) {
-
-
-
-                if (servicioPrestado.getServicio()
-                        instanceof Vacunacion) {
-
-
-
-                    Vacunacion vacunacion =
-                            (Vacunacion) servicioPrestado.getServicio();
-
-
-
-                    if (vacunacion.getNombreVacuna()
-                            .equals(vacuna.getNombre())) {
-
-
-
+            for (ServicioPrestado servicioPrestado : turno.getServiciosPrestados()) {
+                
+                if (servicioPrestado.getServicio() instanceof Vacunacion) {
+                    
+                    Vacunacion vacunacion = (Vacunacion) servicioPrestado.getServicio();
+                    
+                    if (vacunacion.getNombreVacuna().equals(vacuna.getNombre())) {
+                        
                         if (vacuna.estaVigente(
-                                servicioPrestado
-                                .getFechaPrestacion()
-                                .toLocalDate())) {
-
-
+                                servicioPrestado.getFechaPrestacion().toLocalDate(), 
+                                fechaNuevoTurno)) {
+                            
                             return false;
                         }
                     }
                 }
             }
         }
-
 
         return true;
     }

@@ -6,6 +6,7 @@ import com.poo.modelo.Turno;
 import com.poo.modelo.Vacunacion;
 import com.poo.repositorio.TurnoRepository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class TurnoService {
@@ -119,32 +120,23 @@ public class TurnoService {
 
 
 
-    /*
-     * Regla: una mascota no puede recibir la misma vacuna
-     * si ya la recibió dentro del último mes.
-     */
 private void validarVacunas(Turno turno) {
+        
+        LocalDate fechaDelTurno = turno.getFechaHora().toLocalDate();
 
-    for (ServicioPrestado servicio :
-            turno.getServiciosPrestados()) {
+        for (ServicioPrestado servicio : turno.getServiciosPrestados()) {
 
+            if (servicio.getServicio() instanceof Vacunacion vacunacion) {
 
-        if (servicio.getServicio() instanceof Vacunacion vacunacion) {
+                if (!turno.getMascota().puedeRecibirVacuna(vacunacion.getVacuna(), fechaDelTurno, turno.getIdTurno())) {
 
-
-            if (!turno.getMascota()
-                    .puedeRecibirVacuna(
-                        vacunacion.getVacuna()
-                    )) {
-
-
-                throw new IllegalArgumentException(
-                    "La mascota todavía tiene vigente esta vacuna."
-                );
+                    throw new IllegalArgumentException(
+                        "La mascota todavía tiene vigente esta vacuna para la fecha seleccionada."
+                    );
+                }
             }
         }
     }
-}
 
 
 

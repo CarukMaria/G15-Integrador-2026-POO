@@ -37,18 +37,17 @@ public class Vacuna {
         return nombre;
     }
     // --- MÉTODO DE NEGOCIO ---
-    
-    // Verifica si la vacuna sigue haciendo efecto hoy, basado en cuándo se aplicó
-    public boolean estaVigente(LocalDate fechaUltimaAplicacion) {
-        if (fechaUltimaAplicacion == null) {
-            return false; // Si nunca se aplicó, no está vigente
+    public boolean estaVigente(LocalDate fechaUltimaAplicacion, LocalDate fechaTurno) {
+        
+        if (fechaUltimaAplicacion == null || fechaTurno == null) {
+            return false; // Si nunca se aplicó o falta la fecha, no está vigente
         }
         
         // Sumamos los meses de periodicidad a la fecha en que se la aplicó
         LocalDate fechaVencimiento = fechaUltimaAplicacion.plusMonths(periodicidad);
         
-        // Comprobamos si la fecha de hoy es ANTES de la fecha de vencimiento
-        return LocalDate.now().isBefore(fechaVencimiento);
+        // Comprobamos si la fecha del NUEVO turno es ANTES de la fecha de vencimiento
+        return fechaTurno.isBefore(fechaVencimiento);
     }
 
     // --- GETTERS Y SETTERS ---

@@ -42,7 +42,7 @@ public class TurnoController {
     private MascotaService mascotaService;
     private VeterinarioService veterinarioService;
     private VacunaService vacunaService;
-    private ServicioService servicioService; // Asumo que creaste este servicio para listar los servicios base
+    private ServicioService servicioService; 
 
     private Turno turnoSeleccionado;
     private ObservableList<Turno> listaObservableTurnos;
@@ -92,7 +92,7 @@ public class TurnoController {
         mascotaService = new MascotaService();
         veterinarioService = new VeterinarioService();
         vacunaService = new VacunaService();
-        servicioService = new ServicioService(); // Necesario para listar los servicios en el ComboBox
+        servicioService = new ServicioService(); 
     }
 
     @FXML
@@ -107,7 +107,6 @@ public class TurnoController {
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
         // 2. Configurar columnas de la tabla de Servicios Prestados
-        // Como el nombre está dentro del objeto Servicio, usamos SimpleStringProperty
         colNombreServicio.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getServicio().getNombre()));
         colPrecioServicio.setCellValueFactory(new PropertyValueFactory<>("precioServicioPrestado"));
         colDuracionServicio.setCellValueFactory(new PropertyValueFactory<>("duracionServicioPrestado"));
@@ -190,13 +189,24 @@ public class TurnoController {
                 );
                 return;
             }
+            
+            LocalDate fechaSeleccionada = dpFecha.getValue();
+            
+            if (fechaSeleccionada == null) {
+                mostrarAlerta(
+                   "Error",
+                    "Seleccione una fecha para el turno en el calendario antes de agregar la vacuna.",
+                    Alert.AlertType.WARNING
+                );
+                return;
+            }
 
-
-            if (!mascota.puedeRecibirVacuna(vacunaSeleccionada)) {
+            // ACÁ ESTÁ EL CAMBIO CLAVE: Le pasamos la fechaSeleccionada a la mascota
+            if (!mascota.puedeRecibirVacuna(vacunaSeleccionada, fechaSeleccionada)) {
 
                 mostrarAlerta(
                     "Vacuna no permitida",
-                    "La mascota todavía tiene vigente esta vacuna.",
+                    "La mascota todavía tiene vigente esta vacuna para esa fecha.",
                     Alert.AlertType.WARNING
                 );
 
@@ -205,9 +215,7 @@ public class TurnoController {
         }
 
         if (servicioSeleccionado instanceof Vacunacion vacunacion) {
-
             Vacuna vacunaSeleccionada = cbVacunas.getValue();
-
             vacunacion.setVacuna(vacunaSeleccionada);
         }
         
@@ -299,9 +307,7 @@ public class TurnoController {
 
 
         for (ServicioPrestado sp : listaServiciosDelTurno) {
-
             turnoSeleccionado.agregarServicioPrestado(sp);
-
         }
 
 
