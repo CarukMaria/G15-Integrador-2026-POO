@@ -153,67 +153,70 @@ public class TurnoController {
     // --- ACCIONES DE SERVICIOS ---
 
     private void agregarServicioAccion() {
+
         Servicio servicioSeleccionado = cbServicios.getValue();
-        
+
         if (servicioSeleccionado == null) {
-            mostrarAlerta("Atención", "Debe seleccionar un servicio.", Alert.AlertType.WARNING);
+            mostrarAlerta(
+                "Atención",
+                "Debe seleccionar un servicio.",
+                Alert.AlertType.WARNING
+            );
             return;
         }
 
-        // Si es una vacunación, validar que haya elegido una vacuna
-        if (cbVacunas.isVisible()) {
+
+        if (servicioSeleccionado instanceof Vacunacion) {
+
             Vacuna vacunaSeleccionada = cbVacunas.getValue();
+
             if (vacunaSeleccionada == null) {
-                mostrarAlerta("Atención", "Debe seleccionar una vacuna del listado.", Alert.AlertType.WARNING);
+                mostrarAlerta(
+                    "Atención",
+                    "Debe seleccionar una vacuna.",
+                    Alert.AlertType.WARNING
+                );
                 return;
             }
-            
-            if (servicioSeleccionado instanceof Vacunacion) {
-
-                Mascota mascota = cbMascota.getValue();
 
 
-                if (mascota == null) {
-                    mostrarAlerta(
-                        "Error",
-                        "Debe seleccionar una mascota antes de agregar una vacuna.",
-                        Alert.AlertType.WARNING
-                    );
-                    return;
-                }
+            Mascota mascota = cbMascota.getValue();
+
+            if (mascota == null) {
+                mostrarAlerta(
+                   "Error",
+                    "Seleccione una mascota antes.",
+                    Alert.AlertType.WARNING
+                );
+                return;
+            }
 
 
-                if (!mascota.puedeRecibirVacuna(vacunaSeleccionada)) {
+            if (!mascota.puedeRecibirVacuna(vacunaSeleccionada)) {
 
-                    mostrarAlerta(
-                        "Vacuna no permitida",
-                        "La mascota todavía tiene vigente esta vacuna.",
-                        Alert.AlertType.WARNING
-                    );
+                mostrarAlerta(
+                    "Vacuna no permitida",
+                    "La mascota todavía tiene vigente esta vacuna.",
+                    Alert.AlertType.WARNING
+                );
 
-                    return;
-                }
-
-
-                ServicioPrestado nuevoServicioPrestado =
-                new ServicioPrestado(servicioSeleccionado, null);
-
-
-                if (servicioSeleccionado instanceof Vacunacion) {
-
-                    nuevoServicioPrestado.setFechaPrestacion(null);
-
-                }
-
-
-                listaServiciosDelTurno.add(nuevoServicioPrestado);
+                return;
             }
         }
 
-        // Crear el ServicioPrestado temporal (se conectará al turno definitivo al guardar)
-        ServicioPrestado nuevoServicioPrestado = new ServicioPrestado(servicioSeleccionado, null);
-        listaServiciosDelTurno.add(nuevoServicioPrestado);
+        if (servicioSeleccionado instanceof Vacunacion vacunacion) {
+
+            Vacuna vacunaSeleccionada = cbVacunas.getValue();
+
+            vacunacion.setVacuna(vacunaSeleccionada);
+        }
         
+        ServicioPrestado nuevo =
+                new ServicioPrestado(servicioSeleccionado, null);
+
+
+        listaServiciosDelTurno.add(nuevo);
+
         actualizarTotales();
     }
 
@@ -306,20 +309,16 @@ public class TurnoController {
         try {
 
 
-            if (cbEstado.getValue() != null) {
+                if (turnoSeleccionado.getIdTurno() != null 
+                    && cbEstado.getValue() != null) {
 
-                turnoService.cambiarEstado(
-                        turnoSeleccionado,
-                        cbEstado.getValue()
-                );
+                    turnoService.cambiarEstado(
+                    turnoSeleccionado,
+                    cbEstado.getValue()
+                    );
+                }
 
-            }
-
-
-
-            turnoService.guardar(
-                    turnoSeleccionado
-            );
+                turnoService.guardar(turnoSeleccionado);
 
 
 

@@ -6,7 +6,6 @@ import com.poo.modelo.Turno;
 import com.poo.modelo.Vacunacion;
 import com.poo.repositorio.TurnoRepository;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 public class TurnoService {
@@ -14,10 +13,9 @@ public class TurnoService {
 
     private final TurnoRepository turnoRepository;
 
-
     public TurnoService() {
 
-        turnoRepository = new TurnoRepository();
+    turnoRepository = new TurnoRepository();
     }
 
 
@@ -27,15 +25,9 @@ public class TurnoService {
      */
     public void guardar(Turno turno) {
 
-
         validarDatosBasicos(turno);
-
-
         validarSolapamiento(turno);
-
-
         validarVacunas(turno);
-
 
         turnoRepository.guardar(turno);
     }
@@ -83,92 +75,26 @@ public class TurnoService {
      */
     private void validarSolapamiento(Turno nuevoTurno) {
 
-
-        LocalDateTime inicioNuevo =
-                nuevoTurno.getFechaHora();
-
-
-        int duracionNueva =
-                nuevoTurno.calcularDuracionTotal();
-
-
-
-        if (duracionNueva == 0) {
-
-            duracionNueva = 30;
-        }
-
-
-
-        LocalDateTime finNuevo =
-                inicioNuevo.plusMinutes(duracionNueva);
-
-
-
-
         for (Turno existente : listar()) {
 
-
-            // Ignorar el mismo turno al editar
-            if (nuevoTurno.getIdTurno() != null
-                    &&
-                nuevoTurno.getIdTurno()
-                .equals(existente.getIdTurno())) {
-
+            if (nuevoTurno.getIdTurno() != null &&
+                nuevoTurno.getIdTurno().equals(existente.getIdTurno())) {
                 continue;
             }
 
 
-
-            if (existente.getEstado()
-                    == EstadoTurno.CANCELADO) {
-
+            if (existente.getEstado() == EstadoTurno.CANCELADO) {
                 continue;
             }
 
 
-
-            LocalDateTime inicioExistente =
-                    existente.getFechaHora();
-
-
-
-            int duracionExistente =
-                    existente.calcularDuracionTotal();
-
-
-
-            if (duracionExistente == 0) {
-
-                duracionExistente = 30;
-            }
-
-
-
-            LocalDateTime finExistente =
-                    inicioExistente.plusMinutes(
-                            duracionExistente
-                    );
-
-
-
-            boolean seSolapan =
-                    inicioNuevo.isBefore(finExistente)
-                    &&
-                    finNuevo.isAfter(inicioExistente);
-
-
-
-            if (!seSolapan) {
-
+            if (!nuevoTurno.seSuperponeCon(existente)) {
                 continue;
             }
 
 
-
-            if (existente.getMascota()
-                    .equals(nuevoTurno.getMascota())) {
-
+            if (existente.getMascota().getIdMascota()
+                    .equals(nuevoTurno.getMascota().getIdMascota())) {
 
                 throw new IllegalArgumentException(
                     "La mascota ya tiene un turno en ese horario."
@@ -176,14 +102,13 @@ public class TurnoService {
             }
 
 
-
-            if (existente.getVeterinario()
-                    .equals(nuevoTurno.getVeterinario())) {
-
+            if (existente.getVeterinario().getIdVeterinario()
+                    .equals(nuevoTurno.getVeterinario().getIdVeterinario())) {
 
                 throw new IllegalArgumentException(
                     "El veterinario ya tiene un turno en ese horario."
                 );
+
             }
         }
     }
@@ -198,93 +123,28 @@ public class TurnoService {
      * Regla: una mascota no puede recibir la misma vacuna
      * si ya la recibió dentro del último mes.
      */
-    private void validarVacunas(Turno turno) {
+private void validarVacunas(Turno turno) {
+
+    for (ServicioPrestado servicio :
+            turno.getServiciosPrestados()) {
 
 
-        for (ServicioPrestado servicio :
-                turno.getServiciosPrestados()) {
+        if (servicio.getServicio() instanceof Vacunacion vacunacion) {
 
 
-
-            if (!(servicio.getServicio()
-                    instanceof Vacunacion vacuna)) {
-
-                continue;
-            }
+            if (!turno.getMascota()
+                    .puedeRecibirVacuna(
+                        vacunacion.getVacuna()
+                    )) {
 
 
-
-
-            LocalDateTime fechaLimite =
-                    turno.getFechaHora()
-                    .minusMonths(1);
-
-
-
-
-
-            for (Turno existente : listar()) {
-
-
-
-                // No comparar consigo mismo
-                if (turno.getIdTurno() != null
-                        &&
-                    turno.getIdTurno()
-                    .equals(existente.getIdTurno())) {
-
-                    continue;
-                }
-
-
-
-
-                if (!existente.getMascota()
-                        .equals(turno.getMascota())) {
-
-                    continue;
-                }
-
-
-
-
-                if (existente.getFechaHora()
-                        .isBefore(fechaLimite)) {
-
-                    continue;
-                }
-
-
-
-
-
-                for (ServicioPrestado realizado :
-                        existente.getServiciosPrestados()) {
-
-
-
-                    if (realizado.getServicio()
-                            instanceof Vacunacion vacunaRealizada) {
-
-
-
-                        if (vacunaRealizada
-                                .getNombreVacuna()
-                                .equalsIgnoreCase(
-                                    vacuna.getNombreVacuna()
-                                )) {
-
-
-
-                            throw new IllegalArgumentException(
-                                "La mascota ya recibió esta vacuna dentro del último mes."
-                            );
-                        }
-                    }
-                }
+                throw new IllegalArgumentException(
+                    "La mascota todavía tiene vigente esta vacuna."
+                );
             }
         }
     }
+}
 
 
 
@@ -293,11 +153,24 @@ public class TurnoService {
 
 
     public void cambiarEstado(
-            Turno turno,
-            EstadoTurno nuevoEstado) {
+        Turno turno,
+        EstadoTurno nuevoEstado) {
 
 
         turno.cambiarEstado(nuevoEstado);
+
+
+        if (nuevoEstado == EstadoTurno.ATENDIDO) {
+
+            for (ServicioPrestado servicio :
+                    turno.getServiciosPrestados()) {
+
+                if (servicio.getFechaPrestacion() == null) {
+                    servicio.registrarPrestacion();
+                }
+            }
+        }
+
 
         turnoRepository.guardar(turno);
     }
