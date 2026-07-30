@@ -70,79 +70,79 @@ public class Turno {
      * REGLAS DE NEGOCIO DEL ESTADO
      */
 
-
     public void cambiarEstado(EstadoTurno nuevoEstado) {
 
         if (nuevoEstado == null) {
-            throw new IllegalArgumentException(
-                "El estado no puede ser nulo"
+            throw new IllegalArgumentException("El estado no puede ser nulo");
+        }
+
+        // Si el estado es el mismo que ya tiene, no hacemos nada
+        if (this.estado == nuevoEstado) {
+            return;
+        }
+
+        // --- REGLAS ESTRICTAS DE ESTADOS TERMINALES ---
+        if (this.estado == EstadoTurno.ATENDIDO) {
+            throw new IllegalStateException(
+                "Un turno ATENDIDO no puede volver a ningún otro estado."
             );
         }
 
+        if (this.estado == EstadoTurno.CANCELADO) {
+            throw new IllegalStateException(
+                "Un turno CANCELADO no puede reactivarse."
+            );
+        }
+        // ----------------------------------------------
 
         switch (nuevoEstado) {
-
             case CONFIRMADO -> confirmar();
-
             case ATENDIDO -> atender();
-
             case CANCELADO -> cancelar();
-
-            case PENDIENTE -> estado = EstadoTurno.PENDIENTE;
+            case PENDIENTE -> {
+                throw new IllegalStateException(
+                    "No se puede volver al estado PENDIENTE de forma manual."
+                );
+            }
         }
     }
 
 
-
     private void confirmar() {
 
+        // (Esta validación extra ya está cubierta por el bloque superior, 
+        // pero la dejamos por doble seguridad semántica)
         if (estado == EstadoTurno.CANCELADO) {
-
             throw new IllegalStateException(
                 "Un turno cancelado no puede confirmarse"
             );
         }
 
-
         estado = EstadoTurno.CONFIRMADO;
     }
 
 
-
     private void atender() {
 
+        // REGLA: No puede pasar de PENDIENTE a ATENDIDO sin ser CONFIRMADO
         if (estado != EstadoTurno.CONFIRMADO) {
-
             throw new IllegalStateException(
                 "Debe confirmarse antes de atenderse"
             );
         }
 
-
         estado = EstadoTurno.ATENDIDO;
     }
 
 
-
     private void cancelar() {
 
-        if (estado == EstadoTurno.ATENDIDO) {
-
+        // REGLA: Control de las 24 horas
+        if (LocalDateTime.now().isAfter(fechaHora.minusHours(24))) {
             throw new IllegalStateException(
-                "No se puede cancelar un turno atendido"
+                "No se puede cancelar con menos de 24 horas de anticipación."
             );
         }
-
-
-        if (LocalDateTime.now()
-                .isAfter(fechaHora.minusHours(24))) {
-
-
-            throw new IllegalStateException(
-                "No se puede cancelar con menos de 24 horas"
-            );
-        }
-
 
         estado = EstadoTurno.CANCELADO;
     }
