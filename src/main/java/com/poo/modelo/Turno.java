@@ -1,6 +1,7 @@
 package com.poo.modelo;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,139 +14,287 @@ public class Turno {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idTurno;
 
+
     @Column(nullable = false)
     private LocalDateTime fechaHora;
 
-    // Guardamos el Enum como texto en la base de datos
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private EstadoTurno estado;
 
-    /* --- RELACIONES CON OTRAS CLASES --- */
 
-    // Muchos turnos pueden ser para una misma mascota
+
     @ManyToOne
     @JoinColumn(name = "mascota_id", nullable = false)
     private Mascota mascota;
 
-    // Muchos turnos pueden ser atendidos por el mismo veterinario
+
+
     @ManyToOne
     @JoinColumn(name = "veterinario_id", nullable = false)
     private Veterinario veterinario;
 
-    // Un turno puede tener varios servicios (ej: Vacuna + Baño) 
-    // y un servicio puede estar en muchos turnos. Se crea una tabla intermedia.
+
+
     @OneToMany(
         mappedBy = "turno",
         cascade = CascadeType.ALL,
         orphanRemoval = true,
-        fetch = FetchType.EAGER // <- ¡Esta es la línea mágica que faltaba!
+        fetch = FetchType.EAGER
     )
-    private List<ServicioPrestado> serviciosPrestados = new ArrayList<>();
+    private List<ServicioPrestado> serviciosPrestados =
+            new ArrayList<>();
 
-    // 1. Constructor vacío requerido por JPA
+
+
     public Turno() {
     }
 
-    // 2. Constructor con parámetros
-    public Turno(LocalDateTime fechaHora, Mascota mascota, Veterinario veterinario) {
+
+
+    public Turno(
+            LocalDateTime fechaHora,
+            Mascota mascota,
+            Veterinario veterinario) {
+
         this.fechaHora = fechaHora;
         this.mascota = mascota;
         this.veterinario = veterinario;
-        this.estado = EstadoTurno.PENDIENTE; // Todo turno nace como pendiente por defecto
+        this.estado = EstadoTurno.PENDIENTE;
     }
 
-    /* --- MÉTODOS DE NEGOCIO --- */
 
-    public void confirmar() {
-        this.estado = EstadoTurno.CONFIRMADO;
-    }
 
-    public void atender() {
-        this.estado = EstadoTurno.ATENDIDO;
-    }
+    /*
+     * REGLAS DE NEGOCIO DEL ESTADO
+     */
 
-    public void cancelar() {
-        this.estado = EstadoTurno.CANCELADO;
-    }
 
-    // Calcula el total sumando el precio de cada servicio de la lista
-    public double calcularPrecioFinal() {
-        double total = 0.0;
-        for (ServicioPrestado servicio : serviciosPrestados) {
-            // Asumo que tu clase Servicio tiene un método getPrecio()
-            total += servicio.getPrecioServicioPrestado(); 
+    public void cambiarEstado(EstadoTurno nuevoEstado) {
+
+        if (nuevoEstado == null) {
+            throw new IllegalArgumentException(
+                "El estado no puede ser nulo"
+            );
         }
+
+
+        switch (nuevoEstado) {
+
+            case CONFIRMADO -> confirmar();
+
+            case ATENDIDO -> atender();
+
+            case CANCELADO -> cancelar();
+
+            case PENDIENTE ->
+                throw new IllegalArgumentException(
+                    "No se puede volver a pendiente"
+                );
+        }
+    }
+
+
+
+    private void confirmar() {
+
+        if (estado == EstadoTurno.CANCELADO) {
+
+            throw new IllegalStateException(
+                "Un turno cancelado no puede confirmarse"
+            );
+        }
+
+
+        estado = EstadoTurno.CONFIRMADO;
+    }
+
+
+
+    private void atender() {
+
+        if (estado != EstadoTurno.CONFIRMADO) {
+
+            throw new IllegalStateException(
+                "Debe confirmarse antes de atenderse"
+            );
+        }
+
+
+        estado = EstadoTurno.ATENDIDO;
+    }
+
+
+
+    private void cancelar() {
+
+        if (estado == EstadoTurno.ATENDIDO) {
+
+            throw new IllegalStateException(
+                "No se puede cancelar un turno atendido"
+            );
+        }
+
+
+        if (LocalDateTime.now()
+                .isAfter(fechaHora.minusHours(24))) {
+
+
+            throw new IllegalStateException(
+                "No se puede cancelar con menos de 24 horas"
+            );
+        }
+
+
+        estado = EstadoTurno.CANCELADO;
+    }
+
+
+
+
+    /*
+     * LÓGICA PROPIA DEL TURNO
+     */
+
+
+    public int calcularDuracionTotal() {
+
+        int total = 0;
+
+
+        for (ServicioPrestado servicio :
+                serviciosPrestados) {
+
+            total += servicio.getDuracionServicioPrestado();
+        }
+
+
         return total;
     }
 
-    // Calcula la duración sumando el tiempo de cada servicio
-    public int calcularDuracionTotal() {
-        int totalMinutos = 0;
-        for (ServicioPrestado servicio : serviciosPrestados) {
-            // Asumo que tu clase Servicio tiene un atributo de duración y su getDuracion()
-            totalMinutos += servicio.getDuracionServicioPrestado(); 
+
+
+    public double calcularPrecioFinal() {
+
+        double total = 0;
+
+
+        for (ServicioPrestado servicio :
+                serviciosPrestados) {
+
+            total += servicio.getPrecioServicioPrestado();
         }
-        return totalMinutos;
+
+
+        return total;
     }
 
-    // Calcula la fecha y hora exacta de finalización sumando los minutos de los servicios
+
+
     public LocalDateTime calcularFechaHoraFin() {
-        return this.fechaHora.plusMinutes(calcularDuracionTotal());
+
+        return fechaHora.plusMinutes(
+                calcularDuracionTotal()
+        );
     }
 
-    // Método extra útil para agregar servicios al turno
-    public void agregarServicioPrestado(ServicioPrestado servicio) {
+
+
+    public void agregarServicioPrestado(
+            ServicioPrestado servicio) {
+
+
+        if (servicio == null) {
+
+            throw new IllegalArgumentException(
+                "El servicio no puede ser nulo"
+            );
+        }
+
+
         serviciosPrestados.add(servicio);
+
         servicio.setTurno(this);
     }
 
-    /* --- GETTERS Y SETTERS --- */
+
+
+
+    public boolean tieneVacuna(String nombreVacuna) {
+
+
+        for (ServicioPrestado servicio :
+                serviciosPrestados) {
+
+
+            if (servicio.getServicio()
+                    instanceof Vacunacion vacuna) {
+
+
+                if (vacuna.getNombreVacuna()
+                        .equalsIgnoreCase(nombreVacuna)) {
+
+                    return true;
+                }
+            }
+        }
+
+
+        return false;
+    }
+
+
+
 
     public Long getIdTurno() {
         return idTurno;
     }
 
+
     public LocalDateTime getFechaHora() {
         return fechaHora;
     }
+
 
     public void setFechaHora(LocalDateTime fechaHora) {
         this.fechaHora = fechaHora;
     }
 
+
     public EstadoTurno getEstado() {
         return estado;
     }
 
-    public void setEstado(EstadoTurno nuevoEstado) {
-        if (this.estado == EstadoTurno.ATENDIDO && nuevoEstado == EstadoTurno.CANCELADO) {
-            throw new IllegalStateException("Regla de negocio violada: No se puede cancelar un turno ya atendido.");
-        }
-        this.estado = nuevoEstado;
-    }
 
     public Mascota getMascota() {
         return mascota;
     }
 
+
     public void setMascota(Mascota mascota) {
         this.mascota = mascota;
     }
+
 
     public Veterinario getVeterinario() {
         return veterinario;
     }
 
+
     public void setVeterinario(Veterinario veterinario) {
         this.veterinario = veterinario;
     }
+
 
     public List<ServicioPrestado> getServiciosPrestados() {
         return serviciosPrestados;
     }
 
-    public void setServiciosPrestados(List<ServicioPrestado> serviciosPrestados) {
+
+    public void setServiciosPrestados(
+            List<ServicioPrestado> serviciosPrestados) {
+
         this.serviciosPrestados = serviciosPrestados;
     }
 }

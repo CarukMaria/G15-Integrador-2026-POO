@@ -168,10 +168,45 @@ public class TurnoController {
                 return;
             }
             
-            // Si tu objeto servicio es instancia de Vacunacion, le inyectamos los datos de la vacuna elegida
             if (servicioSeleccionado instanceof Vacunacion) {
-                ((Vacunacion) servicioSeleccionado).setNombreVacuna(vacunaSeleccionada.getNombre());
-                // Podés hacer lo mismo con el laboratorio si está en la clase Vacuna
+
+                Mascota mascota = cbMascota.getValue();
+
+
+                if (mascota == null) {
+                    mostrarAlerta(
+                        "Error",
+                        "Debe seleccionar una mascota antes de agregar una vacuna.",
+                        Alert.AlertType.WARNING
+                    );
+                    return;
+                }
+
+
+                if (!mascota.puedeRecibirVacuna(vacunaSeleccionada)) {
+
+                    mostrarAlerta(
+                        "Vacuna no permitida",
+                        "La mascota todavía tiene vigente esta vacuna.",
+                        Alert.AlertType.WARNING
+                    );
+
+                    return;
+                }
+
+
+                ServicioPrestado nuevoServicioPrestado =
+                new ServicioPrestado(servicioSeleccionado, null);
+
+
+                if (servicioSeleccionado instanceof Vacunacion) {
+
+                    nuevoServicioPrestado.setFechaPrestacion(null);
+
+                }
+
+
+                listaServiciosDelTurno.add(nuevoServicioPrestado);
             }
         }
 
@@ -196,61 +231,121 @@ public class TurnoController {
 
     @FXML
     public void guardarTurnoAccion(ActionEvent event) {
+
         LocalDate fecha = dpFecha.getValue();
         String hora = cbHora.getValue();
         String minutos = cbMinutos.getValue();
         Mascota mascota = cbMascota.getValue();
         Veterinario veterinario = cbVeterinario.getValue();
 
-        // Validaciones
-        if (fecha == null || hora == null || minutos == null || mascota == null || veterinario == null) {
-            mostrarAlerta("Error", "Faltan datos básicos del turno (Fecha, hora, mascota o veterinario).", Alert.AlertType.WARNING);
+
+        if (fecha == null || hora == null || minutos == null 
+                || mascota == null || veterinario == null) {
+
+            mostrarAlerta(
+                "Error",
+                "Faltan datos básicos del turno.",
+                Alert.AlertType.WARNING
+            );
+
             return;
         }
 
-        // --- NUEVA REGLA DE NEGOCIO: Turno con al menos un servicio ---
+
         if (listaServiciosDelTurno.isEmpty()) {
-            mostrarAlerta("Atención", "El turno debe tener al menos un servicio asociado.", Alert.AlertType.WARNING);
-            return; // Cortamos la ejecución para que no guarde
-        }
-        // ---------------------------------------------------------------
 
-        // Armar el LocalDateTime
-        LocalDateTime fechaHoraTurno = LocalDateTime.of(fecha, LocalTime.of(Integer.parseInt(hora), Integer.parseInt(minutos)));
+            mostrarAlerta(
+                "Error",
+                "El turno debe tener al menos un servicio.",
+                Alert.AlertType.WARNING
+            );
 
-        // Verificar si la mascota tiene un turno solapado (Lógica de tu modelo)
-        if (turnoSeleccionado == null && mascota.tieneTurnoSolapado(fechaHoraTurno, calcularDuracionActual())) {
-            mostrarAlerta("Conflicto", "La mascota ya tiene otro turno que se solapa en ese horario.", Alert.AlertType.ERROR);
             return;
         }
+
+
+        LocalDateTime fechaHoraTurno =
+                LocalDateTime.of(
+                        fecha,
+                        LocalTime.of(
+                            Integer.parseInt(hora),
+                            Integer.parseInt(minutos)
+                        )
+                );
+
 
         if (turnoSeleccionado == null) {
-            turnoSeleccionado = new Turno(fechaHoraTurno, mascota, veterinario);
+
+           turnoSeleccionado =
+                   new Turno(
+                        fechaHoraTurno,
+                        mascota,
+                        veterinario
+                    );
+
         } else {
+
             turnoSeleccionado.setFechaHora(fechaHoraTurno);
             turnoSeleccionado.setMascota(mascota);
             turnoSeleccionado.setVeterinario(veterinario);
         }
-        
-        if (cbEstado.getValue() != null) {
-            turnoSeleccionado.setEstado(cbEstado.getValue());
+
+
+
+        turnoSeleccionado.getServiciosPrestados().clear();
+
+
+        for (ServicioPrestado sp : listaServiciosDelTurno) {
+
+            turnoSeleccionado.agregarServicioPrestado(sp);
+
         }
 
-        // Limpiar servicios viejos y asignar los actuales
-        turnoSeleccionado.getServiciosPrestados().clear();
-        for (ServicioPrestado sp : listaServiciosDelTurno) {
-            turnoSeleccionado.agregarServicioPrestado(sp);
-        }
+
 
         try {
-            turnoService.guardar(turnoSeleccionado);
+
+
+            if (cbEstado.getValue() != null) {
+
+                turnoService.cambiarEstado(
+                        turnoSeleccionado,
+                        cbEstado.getValue()
+                );
+
+            }
+
+
+
+            turnoService.guardar(
+                    turnoSeleccionado
+            );
+
+
+
             cargarTablaTurnos();
             limpiarFormulario();
-            mostrarAlerta("Éxito", "Turno guardado correctamente.", Alert.AlertType.INFORMATION);
-        } catch (Exception e) {
-            mostrarAlerta("Error", "Ocurrió un error al intentar guardar el turno.", Alert.AlertType.ERROR);
+
+
+            mostrarAlerta(
+                "Éxito",
+                "Turno guardado correctamente.",
+                Alert.AlertType.INFORMATION
+            );
+
+
+
+        } catch(Exception e) {
+
+
+            mostrarAlerta(
+                "Error",
+                e.getMessage(),
+                Alert.AlertType.ERROR
+            );
         }
     }
+
 
     @FXML
     public void eliminarTurnoAccion(ActionEvent event) {
@@ -320,14 +415,6 @@ public class TurnoController {
         }
         lblTotal.setText("Total: $" + total);
         lblDuracion.setText("Duración estimada: " + duracion + " min");
-    }
-
-    private int calcularDuracionActual() {
-        int duracion = 0;
-        for (ServicioPrestado sp : listaServiciosDelTurno) {
-            duracion += sp.getDuracionServicioPrestado();
-        }
-        return duracion;
     }
 
     private void buscarTurno() {

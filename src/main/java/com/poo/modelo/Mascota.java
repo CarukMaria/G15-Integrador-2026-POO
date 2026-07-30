@@ -26,35 +26,32 @@ public class Mascota {
     private Long idMascota;
 
     @ManyToOne
-    @JoinColumn(name = "cliente_id") // Esta columna guardará el id del dueño en la tabla de mascotas
+    @JoinColumn(name = "cliente_id")
     private Cliente cliente;
 
     private String numeroFicha;
     private String nombre;
     private String raza;
     private LocalDate fechaNacimiento;
-    
 
-    // Guarda el Enum como un String en la base de datos (más seguro que un número)
+
     @Enumerated(EnumType.STRING)
     private Especie especie;
 
-    // --- Relaciones estructurales deducidas de tus métodos ---
-    
-    /*@OneToMany(mappedBy = "mascota")
-    private List<HistorialMedico> historiales = new ArrayList<>();
-    */
 
     @OneToMany(mappedBy = "mascota", fetch = FetchType.EAGER)
     private List<Turno> turnos = new ArrayList<>();
-    
 
-    // 1. Constructor vacío OBLIGATORIO por especificación de JPA
+
+    // Constructor vacío obligatorio por JPA
     public Mascota() {
     }
 
-    // 2. Constructor con parámetros
-    public Mascota(String numeroFicha, String nombre, String raza, LocalDate fechaNacimiento, Especie especie) {
+
+    // Constructor con parámetros
+    public Mascota(String numeroFicha, String nombre, String raza,
+                   LocalDate fechaNacimiento, Especie especie) {
+
         this.numeroFicha = numeroFicha;
         this.nombre = nombre;
         this.raza = raza;
@@ -62,88 +59,174 @@ public class Mascota {
         this.especie = especie;
     }
 
-    // 3. Getters y Setters
+
+    // Getters y Setters
+
     public Long getIdMascota() {
         return idMascota;
     }
+
 
     public void setIdMascota(Long idMascota) {
         this.idMascota = idMascota;
     }
 
+
     public String getNumeroFicha() {
         return numeroFicha;
     }
+
 
     public void setNumeroFicha(String numeroFicha) {
         this.numeroFicha = numeroFicha;
     }
 
+
     public String getNombre() {
         return nombre;
     }
+
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
 
+
     public String getRaza() {
         return raza;
     }
+
 
     public void setRaza(String raza) {
         this.raza = raza;
     }
 
+
     public LocalDate getFechaNacimiento() {
         return fechaNacimiento;
     }
+
 
     public void setFechaNacimiento(LocalDate fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
     }
 
+
     public Especie getEspecie() {
         return especie;
     }
+
 
     public void setEspecie(Especie especie) {
         this.especie = especie;
     }
 
+
     public Cliente getCliente() {
         return cliente;
     }
+
 
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
 
-    // 4. Métodos de Comportamiento (Modelo Rico)
+
+
+    // ---------------- MÉTODOS DE NEGOCIO ----------------
+
 
     // Método que devolverá la lista de historiales médicos
     public List<?> obtenerHistorialMedico() {
-        // return historiales; (Descomentar cuando exista la clase)
-        return new ArrayList<>(); 
-    } //Revisar si es necesario 
+        return new ArrayList<>();
+    }
+
+
 
     // Valida si un nuevo turno se choca con los que ya tiene la mascota
-    public boolean tieneTurnoSolapado(LocalDateTime fechaHoraNuevo, int duracionMinutosNuevo) {
-        LocalDateTime finNuevo = fechaHoraNuevo.plusMinutes(duracionMinutosNuevo);
+    public boolean tieneTurnoSolapado(LocalDateTime fechaHoraNuevo,
+                                      int duracionMinutosNuevo) {
+
+        LocalDateTime finNuevo =
+                fechaHoraNuevo.plusMinutes(duracionMinutosNuevo);
+
 
         for (Turno turnoExistente : turnos) {
-            LocalDateTime inicioExistente = turnoExistente.getFechaHora();
-            
-            // ¡Magia de la POO! Le pedimos al turno existente que calcule su propio fin
-            LocalDateTime finExistente = turnoExistente.calcularFechaHoraFin();
 
-            if (fechaHoraNuevo.isBefore(finExistente) && finNuevo.isAfter(inicioExistente)) {
-                return true; 
+            LocalDateTime inicioExistente =
+                    turnoExistente.getFechaHora();
+
+
+            LocalDateTime finExistente =
+                    turnoExistente.calcularFechaHoraFin();
+
+
+            if (fechaHoraNuevo.isBefore(finExistente)
+                    && finNuevo.isAfter(inicioExistente)) {
+
+                return true;
             }
         }
-        
-        return false; 
+
+        return false;
     }
+
+
+
+    // Regla de negocio:
+    // Una mascota no puede recibir nuevamente una vacuna
+    // mientras la aplicación anterior siga vigente.
+    public boolean puedeRecibirVacuna(Vacuna vacuna) {
+
+
+        for (Turno turno : turnos) {
+
+
+            // Solo se consideran vacunas de turnos realizados
+            if (turno.getEstado() != EstadoTurno.ATENDIDO) {
+                continue;
+            }
+
+
+
+            for (ServicioPrestado servicioPrestado :
+                    turno.getServiciosPrestados()) {
+
+
+
+                if (servicioPrestado.getServicio()
+                        instanceof Vacunacion) {
+
+
+
+                    Vacunacion vacunacion =
+                            (Vacunacion) servicioPrestado.getServicio();
+
+
+
+                    if (vacunacion.getNombreVacuna()
+                            .equals(vacuna.getNombre())) {
+
+
+
+                        if (vacuna.estaVigente(
+                                servicioPrestado
+                                .getFechaPrestacion()
+                                .toLocalDate())) {
+
+
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        return true;
+    }
+
+
 
     @Override
     public String toString() {
