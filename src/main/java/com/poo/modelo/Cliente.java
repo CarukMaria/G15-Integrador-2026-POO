@@ -22,12 +22,12 @@ public class Cliente {
     private String nombre;
 
     @Column
-    private String telefono; // NUEVO: Atributo teléfono
+    private String telefono; 
 
     @OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<Mascota> mascotas = new ArrayList<>();
 
-    // 1. Constructor vacío (OBLIGATORIO para JPA)
+    
     public Cliente() {
     }
 

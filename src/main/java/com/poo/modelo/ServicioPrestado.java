@@ -8,21 +8,15 @@ import java.time.LocalDateTime;
 @Table(name = "servicios_prestados")
 public class ServicioPrestado {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idServicioPrestado;
 
-
-
     @Column(nullable = false)
     private double precioServicioPrestado;
 
-
-
     @Column(nullable = false)
     private int duracionServicioPrestado;
-
 
 
     /*
@@ -32,26 +26,17 @@ public class ServicioPrestado {
     private LocalDateTime fechaPrestacion;
 
 
-
-
     @ManyToOne
     @JoinColumn(name = "id_servicio")
     private Servicio servicio;
-
-
 
     @ManyToOne
     @JoinColumn(name = "id_turno")
     private Turno turno;
 
 
-
-
     public ServicioPrestado() {
     }
-
-
-
 
     public ServicioPrestado(
             Servicio servicio,
@@ -85,8 +70,6 @@ public class ServicioPrestado {
     }
 
 
-
-
     public void registrarPrestacion() {
 
 
@@ -97,20 +80,13 @@ public class ServicioPrestado {
             );
         }
 
-
         fechaPrestacion = LocalDateTime.now();
     }
 
-
-
-
+    // ----- GETTERS Y SETTERS ----
     public Long getIdServicioPrestado() {
-
         return idServicioPrestado;
     }
-
-
-
 
     public void setIdServicioPrestado(
             Long idServicioPrestado) {
@@ -118,16 +94,10 @@ public class ServicioPrestado {
         this.idServicioPrestado = idServicioPrestado;
     }
 
-
-
-
     public double getPrecioServicioPrestado() {
 
         return precioServicioPrestado;
     }
-
-
-
 
     public void setPrecioServicioPrestado(
             double precioServicioPrestado) {
@@ -135,16 +105,10 @@ public class ServicioPrestado {
         this.precioServicioPrestado = precioServicioPrestado;
     }
 
-
-
-
     public int getDuracionServicioPrestado() {
 
         return duracionServicioPrestado;
     }
-
-
-
 
     public void setDuracionServicioPrestado(
             int duracionServicioPrestado) {
@@ -153,16 +117,10 @@ public class ServicioPrestado {
                 duracionServicioPrestado;
     }
 
-
-
-
     public LocalDateTime getFechaPrestacion() {
 
         return fechaPrestacion;
     }
-
-
-
 
     public void setFechaPrestacion(
             LocalDateTime fechaPrestacion) {
@@ -170,16 +128,10 @@ public class ServicioPrestado {
         this.fechaPrestacion = fechaPrestacion;
     }
 
-
-
-
     public Servicio getServicio() {
 
         return servicio;
     }
-
-
-
 
     public void setServicio(Servicio servicio) {
 
@@ -187,15 +139,10 @@ public class ServicioPrestado {
     }
 
 
-
-
     public Turno getTurno() {
 
         return turno;
     }
-
-
-
 
     public void setTurno(Turno turno) {
 

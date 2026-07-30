@@ -19,7 +19,6 @@ public class TurnoService {
     }
 
 
-
     /*
      * Guarda un turno aplicando reglas que necesitan consultar BD
      */
@@ -31,9 +30,6 @@ public class TurnoService {
 
         turnoRepository.guardar(turno);
     }
-
-
-
 
 
     private void validarDatosBasicos(Turno turno) {
@@ -64,8 +60,6 @@ public class TurnoService {
             );
         }
     }
-
-
 
 
 
@@ -114,11 +108,6 @@ public class TurnoService {
     }
 
 
-
-
-
-
-
     /*
      * Regla: una mascota no puede recibir la misma vacuna
      * si ya la recibió dentro del último mes.
@@ -147,11 +136,6 @@ private void validarVacunas(Turno turno) {
 }
 
 
-
-
-
-
-
     public void cambiarEstado(
         Turno turno,
         EstadoTurno nuevoEstado) {
@@ -176,19 +160,10 @@ private void validarVacunas(Turno turno) {
     }
 
 
-
-
-
-
-
     public List<Turno> listar() {
 
         return turnoRepository.listarTodos();
     }
-
-
-
-
 
 
     public Turno buscarPorId(Long id) {
@@ -204,10 +179,6 @@ private void validarVacunas(Turno turno) {
 
         return turnoRepository.buscarPorId(id);
     }
-
-
-
-
 
 
     public void eliminar(Turno turno) {
