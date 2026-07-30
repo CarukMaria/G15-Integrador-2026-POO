@@ -57,25 +57,25 @@ public class VeterinarioController {
 
     @FXML
     public void initialize() {
-        // 1. Configurar columnas de la tabla Veterinarios
+        //  Configurar columnas de la tabla Veterinarios
         colMatricula.setCellValueFactory(new PropertyValueFactory<>("matricula"));
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colApellido.setCellValueFactory(new PropertyValueFactory<>("apellido"));
 
-        // 2. Cargar el ComboBox con los valores del Enum Especialidad
+        // Cargar el ComboBox con los valores del Enum Especialidad
         cbEspecialidades.setItems(FXCollections.observableArrayList(Especialidad.values()));
 
-        // 3. Cargar la tabla de veterinarios al iniciar
+        // Cargar la tabla de veterinarios al iniciar
         cargarTablaVeterinarios();
 
-        // 4. Escuchar clics en la tabla para cargar el formulario
+        // Escuchar clics en la tabla para cargar el formulario
         tablaVeterinarios.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 mostrarVeterinarioEnFormulario(newSelection);
             }
         });
 
-        // 5. Asignar eventos a los botones que no tienen onAction en el FXML
+        // Asignar eventos a los botones que no tienen onAction en el FXML
         btnBuscar.setOnAction(e -> buscarVeterinario());
         btnNuevoVeterinario.setOnAction(e -> limpiarFormulario());
         btnCancelar.setOnAction(e -> limpiarFormulario());

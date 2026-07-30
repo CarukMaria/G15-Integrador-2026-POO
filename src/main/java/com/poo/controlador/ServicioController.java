@@ -42,22 +42,22 @@ public class ServicioController {
 
     @FXML
     public void initialize() {
-        // 1. Configurar las columnas para que lean los atributos de la clase Servicio
+        // Configurar las columnas para que lean los atributos de la clase Servicio
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colPrecio.setCellValueFactory(new PropertyValueFactory<>("precio"));
         colDuracion.setCellValueFactory(new PropertyValueFactory<>("duracion"));
 
-        // 2. Cargar los datos en la tabla
+        // Cargar los datos en la tabla
         cargarTablaServicios();
 
-        // 3. Escuchar los clics en la tabla para pasar los datos al formulario
+        // Escuchar los clics en la tabla para pasar los datos al formulario
         tablaServicios.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 mostrarServicioEnFormulario(newSelection);
             }
         });
 
-        // 4. Asignar el evento de limpiar al botón cancelar
+        // Asignar el evento de limpiar al botón cancelar
         btnCancelar.setOnAction(e -> limpiarFormulario());
     }
 

@@ -112,9 +112,9 @@ public class TurnoService {
      * Regla: una mascota no puede recibir la misma vacuna
      * si ya la recibió dentro del último mes.
      */
-private void validarVacunas(Turno turno) {
+    private void validarVacunas(Turno turno) {
 
-    for (ServicioPrestado servicio :
+        for (ServicioPrestado servicio :
             turno.getServiciosPrestados()) {
 
 
