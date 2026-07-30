@@ -92,7 +92,7 @@ public class TurnoController {
         mascotaService = new MascotaService();
         veterinarioService = new VeterinarioService();
         vacunaService = new VacunaService();
-        servicioService = new ServicioService(); // Necesario para listar los servicios en el ComboBox
+        servicioService = new ServicioService(); 
     }
 
     @FXML
@@ -100,13 +100,13 @@ public class TurnoController {
         listaServiciosDelTurno = FXCollections.observableArrayList();
         cbVacunas.setVisible(false);
 
-        // 1. Configurar columnas de la tabla de Turnos (Principal)
+        // Configurar columnas de la tabla de Turnos (Principal)
         colFecha.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getFechaHora().toLocalDate()));
         colHora.setCellValueFactory(cellData -> new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getFechaHora().toLocalTime()));
         colMascota.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getMascota().getNombre()));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
-        // 2. Configurar columnas de la tabla de Servicios Prestados
+        // Configurar columnas de la tabla de Servicios Prestados
         // Como el nombre está dentro del objeto Servicio, usamos SimpleStringProperty
         colNombreServicio.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getServicio().getNombre()));
         colPrecioServicio.setCellValueFactory(new PropertyValueFactory<>("precioServicioPrestado"));
@@ -114,11 +114,11 @@ public class TurnoController {
         
         tablaServiciosTurno.setItems(listaServiciosDelTurno);
 
-        // 3. Cargar opciones en los ComboBox de horarios
+        // Cargar opciones en los ComboBox de horarios
         cbHora.setItems(FXCollections.observableArrayList("08", "09", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"));
         cbMinutos.setItems(FXCollections.observableArrayList("00", "15", "30", "45"));
 
-        // 4. Cargar datos desde la base de datos
+        // Cargar datos desde la base de datos
         cbMascota.setItems(FXCollections.observableArrayList(mascotaService.listar()));
         cbVeterinario.setItems(FXCollections.observableArrayList(veterinarioService.listar()));
         cbEstado.setItems(FXCollections.observableArrayList(EstadoTurno.values()));
@@ -127,12 +127,12 @@ public class TurnoController {
 
         cargarTablaTurnos();
 
-        // 5. Escuchar clics en la tabla principal
+        // Escuchar clics en la tabla principal
         tablaTurnos.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) mostrarTurnoEnFormulario(newVal);
         });
 
-        // 6. Lógica para mostrar/ocultar el ComboBox de vacunas
+        // Lógica para mostrar/ocultar el ComboBox de vacunas
         cbServicios.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && (newVal instanceof Vacunacion || newVal.getNombre().toLowerCase().contains("vacun"))) {
                 cbVacunas.setVisible(true);
@@ -142,7 +142,7 @@ public class TurnoController {
             }
         });
 
-        // 7. Eventos de botones que no estaban enlazados desde el FXML
+        // Eventos de botones que no estaban enlazados desde el FXML
         btnNuevoTurno.setOnAction(e -> limpiarFormulario());
         btnCancelar.setOnAction(e -> limpiarFormulario());
         btnBuscarTurno.setOnAction(e -> buscarTurno());

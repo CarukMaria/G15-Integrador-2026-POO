@@ -20,20 +20,32 @@ public abstract class Servicio {
 
     private String nombre;
     private double precio;
-    private int duracion; // Duración expresada en minutos (según diagrama)
+    private int duracion; 
 
-    // 1. Constructor vacío OBLIGATORIO por especificación de JPA
     public Servicio() {
     }
 
-    // 2. Constructor con parámetros para inicializar el objeto
     public Servicio(String nombre, double precio, int duracion) {
         this.nombre = nombre;
         this.precio = precio;
         this.duracion = duracion;
     }
+    // ---- Reglas de negocio ----
+    public abstract boolean validarRequisitos(Mascota mascota);
 
-    // 3. Getters y Setters
+    // Método opcional para actualizar precio respetando encapsulamiento
+    public void actualizarPrecio(double nuevoPrecio) {
+        if (nuevoPrecio > 0) {
+            this.precio = nuevoPrecio;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return nombre + " (" + duracion + " mins) - $" + precio;
+    }
+
+    // ---- Getters y Setters -------
     public Long getIdServicio() {
         return idServicio;
     }
@@ -66,18 +78,4 @@ public abstract class Servicio {
         this.duracion = duracion;
     }
 
-    // 4. Comportamiento de dominio exigido por la regla de oro (Modelo Rico)
-    public abstract boolean validarRequisitos(Mascota mascota);
-
-    // Método opcional para actualizar precio respetando encapsulamiento
-    public void actualizarPrecio(double nuevoPrecio) {
-        if (nuevoPrecio > 0) {
-            this.precio = nuevoPrecio;
-        }
-    }
-
-    @Override
-    public String toString() {
-        return nombre + " (" + duracion + " mins) - $" + precio;
-    }
 }

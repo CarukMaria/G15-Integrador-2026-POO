@@ -33,6 +33,7 @@ public class Vacunacion extends Servicio {
         this.laboratorio = laboratorio;
     }
 
+    //----- Getters y settters -----
     public Vacuna getVacuna() {
         return vacuna;
     }

@@ -48,26 +48,26 @@ public class VacunaController {
 
     @FXML
     public void initialize() {
-        // 1. Configurar las columnas de la tabla para que lean los atributos de la clase Vacuna
+        // Configurar las columnas de la tabla para que lean los atributos de la clase Vacuna
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colEnfermedad.setCellValueFactory(new PropertyValueFactory<>("enfermedad"));
         colPeriodicidad.setCellValueFactory(new PropertyValueFactory<>("periodicidad"));
 
-        // 2. Configurar el Spinner de periodicidad (valores de 1 a 120 meses, valor inicial 12)
+        // Configurar el Spinner de periodicidad (valores de 1 a 120 meses, valor inicial 12)
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 120, 12);
         spPeriodicidad.setValueFactory(valueFactory);
 
-        // 3. Cargar los datos iniciales en la tabla
+        // Cargar los datos iniciales en la tabla
         cargarTabla();
 
-        // 4. Escuchar cuando se hace clic en una fila de la tabla para editarla
+        // Escuchar cuando se hace clic en una fila de la tabla para editarla
         tablaVacunas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 mostrarVacunaEnFormulario(newSelection);
             }
         });
 
-        // 5. Asignar acciones a los botones
+        // Asignar acciones a los botones
         btnGuardarVacuna.setOnAction(e -> guardarVacuna());
         btnEliminar.setOnAction(e -> eliminarVacuna());
         btnCancelar.setOnAction(e -> limpiarFormulario());

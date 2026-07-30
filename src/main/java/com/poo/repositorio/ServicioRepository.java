@@ -29,7 +29,7 @@ public class ServicioRepository {
             if (em.getTransaction().isActive()) {
                 em.getTransaction().rollback();
             }
-            throw e; // Le pasamos el error al controlador para que muestre el cartelito
+            throw e;
         } finally {
             em.close();
         }
