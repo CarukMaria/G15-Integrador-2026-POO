@@ -80,7 +80,7 @@ public class HistorialController {
 
         // Servicios Realizados: junta los nombres de todos los servicios prestados del turno
         colServicios.setCellValueFactory(cellData -> {
-            // 1. Usamos el getter correcto que vimos en tu clase Turno
+            // 1. Usamos el getter correcto que vimos en la clase Turno
             List<com.poo.modelo.ServicioPrestado> serviciosPrestados = cellData.getValue().getServiciosPrestados();
             
             if (serviciosPrestados != null && !serviciosPrestados.isEmpty()) {

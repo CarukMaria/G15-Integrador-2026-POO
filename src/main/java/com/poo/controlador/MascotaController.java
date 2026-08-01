@@ -64,13 +64,13 @@ public class MascotaController {
 
     @FXML
     public void guardarMascotaAccion(ActionEvent event) {
-        // 1. Validaciones básicas
+   
         if (txtNombre.getText().isEmpty() || cbEspecie.getValue() == null || dpFecha.getValue() == null) {
             mostrarAlerta("Campos obligatorios", "El nombre, la fecha de nacimiento y la especie son obligatorios.", Alert.AlertType.WARNING);
             return;
         }
 
-        // 2. Si es una mascota nueva, la instanciamos
+        // Si es una mascota nueva, la instanciamos
         if (mascotaSeleccionada == null) {
             mascotaSeleccionada = new Mascota();
             
@@ -84,13 +84,12 @@ public class MascotaController {
             }
         }
 
-        // 3. Actualizamos los datos
         mascotaSeleccionada.setNombre(txtNombre.getText());
         mascotaSeleccionada.setRaza(txtRaza.getText());
         mascotaSeleccionada.setFechaNacimiento(dpFecha.getValue());
         mascotaSeleccionada.setEspecie(cbEspecie.getValue());
 
-        // 4. Guardar en base de datos
+        // Guardar en base de datos
         try {
             servicio.guardar(mascotaSeleccionada);
             mostrarAlerta("Éxito", "La mascota se guardó correctamente.", Alert.AlertType.INFORMATION);

@@ -37,12 +37,10 @@ public class Veterinario {
     private List<Especialidad> especialidades;
 
 
-    // 1. Constructor vacío OBLIGATORIO por especificación de JPA
     public Veterinario() {
         this.especialidades = new ArrayList<>();
     }
 
-    // 2. Constructor con parámetros para inicializar el objeto
     public Veterinario(String matricula, String nombre, String apellido) {
         this.matricula = matricula;
         this.nombre = nombre;
@@ -50,7 +48,15 @@ public class Veterinario {
         this.especialidades = new ArrayList<>();
     }
 
-    // 3. Getters y Setters
+
+
+     // ------ Reglas de negocio -----
+    public void agregarEspecialidad(Especialidad especialidad) {
+        if (especialidad != null) {
+            especialidades.add(especialidad);
+        }
+    }
+    // ----- Getters y Setters -----
     public Long getIdVeterinario() {
         return idVeterinario;
     }
@@ -91,12 +97,8 @@ public class Veterinario {
         this.especialidades = especialidades;
     }
 
-    // 4. Métodos de dominio (Modelo Rico) para manejar el enum de forma segura
-    public void agregarEspecialidad(Especialidad especialidad) {
-        if (especialidad != null) {
-            especialidades.add(especialidad);
-        }
-    }
+
+
 
     @Override
     public String toString() {

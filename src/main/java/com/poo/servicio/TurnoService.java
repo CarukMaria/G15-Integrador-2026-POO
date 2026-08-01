@@ -20,7 +20,6 @@ public class TurnoService {
     }
 
 
-
     /*
      * Guarda un turno aplicando reglas que necesitan consultar BD
      */
@@ -32,9 +31,6 @@ public class TurnoService {
 
         turnoRepository.guardar(turno);
     }
-
-
-
 
 
     private void validarDatosBasicos(Turno turno) {
@@ -65,8 +61,6 @@ public class TurnoService {
             );
         }
     }
-
-
 
 
 
@@ -139,11 +133,6 @@ private void validarVacunas(Turno turno) {
     }
 
 
-
-
-
-
-
     public void cambiarEstado(
         Turno turno,
         EstadoTurno nuevoEstado) {
@@ -168,19 +157,10 @@ private void validarVacunas(Turno turno) {
     }
 
 
-
-
-
-
-
     public List<Turno> listar() {
 
         return turnoRepository.listarTodos();
     }
-
-
-
-
 
 
     public Turno buscarPorId(Long id) {
@@ -196,10 +176,6 @@ private void validarVacunas(Turno turno) {
 
         return turnoRepository.buscarPorId(id);
     }
-
-
-
-
 
 
     public void eliminar(Turno turno) {

@@ -59,81 +59,7 @@ public class Mascota {
         this.especie = especie;
     }
 
-
-    // Getters y Setters
-
-    public Long getIdMascota() {
-        return idMascota;
-    }
-
-
-    public void setIdMascota(Long idMascota) {
-        this.idMascota = idMascota;
-    }
-
-
-    public String getNumeroFicha() {
-        return numeroFicha;
-    }
-
-
-    public void setNumeroFicha(String numeroFicha) {
-        this.numeroFicha = numeroFicha;
-    }
-
-
-    public String getNombre() {
-        return nombre;
-    }
-
-
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-
-    public String getRaza() {
-        return raza;
-    }
-
-
-    public void setRaza(String raza) {
-        this.raza = raza;
-    }
-
-
-    public LocalDate getFechaNacimiento() {
-        return fechaNacimiento;
-    }
-
-
-    public void setFechaNacimiento(LocalDate fechaNacimiento) {
-        this.fechaNacimiento = fechaNacimiento;
-    }
-
-
-    public Especie getEspecie() {
-        return especie;
-    }
-
-
-    public void setEspecie(Especie especie) {
-        this.especie = especie;
-    }
-
-
-    public Cliente getCliente() {
-        return cliente;
-    }
-
-
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-
-
-    // ---------------- MÉTODOS DE NEGOCIO ----------------
+ // ------- MÉTODOS DE NEGOCIO ---------
 
 
     // Método que devolverá la lista de historiales médicos
@@ -221,4 +147,77 @@ public class Mascota {
     public String toString() {
         return nombre + " (" + especie + " - " + raza + ")";
     }
+
+
+    // --- Getters y Setters ---
+
+    public Long getIdMascota() {
+        return idMascota;
+    }
+
+
+    public void setIdMascota(Long idMascota) {
+        this.idMascota = idMascota;
+    }
+
+
+    public String getNumeroFicha() {
+        return numeroFicha;
+    }
+
+
+    public void setNumeroFicha(String numeroFicha) {
+        this.numeroFicha = numeroFicha;
+    }
+
+
+    public String getNombre() {
+        return nombre;
+    }
+
+
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
+    }
+
+
+    public String getRaza() {
+        return raza;
+    }
+
+
+    public void setRaza(String raza) {
+        this.raza = raza;
+    }
+
+
+    public LocalDate getFechaNacimiento() {
+        return fechaNacimiento;
+    }
+
+
+    public void setFechaNacimiento(LocalDate fechaNacimiento) {
+        this.fechaNacimiento = fechaNacimiento;
+    }
+
+
+    public Especie getEspecie() {
+        return especie;
+    }
+
+
+    public void setEspecie(Especie especie) {
+        this.especie = especie;
+    }
+
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
 }

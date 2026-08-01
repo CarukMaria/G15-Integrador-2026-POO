@@ -24,18 +24,13 @@ public class Turno {
     private EstadoTurno estado;
 
 
-
     @ManyToOne
     @JoinColumn(name = "mascota_id", nullable = false)
     private Mascota mascota;
 
-
-
     @ManyToOne
     @JoinColumn(name = "veterinario_id", nullable = false)
     private Veterinario veterinario;
-
-
 
     @OneToMany(
         mappedBy = "turno",
@@ -47,11 +42,8 @@ public class Turno {
             new ArrayList<>();
 
 
-
     public Turno() {
     }
-
-
 
     public Turno(
         LocalDateTime fechaHora,
@@ -63,7 +55,6 @@ public class Turno {
         this.veterinario = veterinario;
         this.estado = EstadoTurno.PENDIENTE;
     }
-
 
 
     /*
@@ -253,7 +244,7 @@ public class Turno {
     }
 
 
-
+// --------- GETTERS Y SETTERS --------
 
     public Long getIdTurno() {
         return idTurno;

@@ -21,11 +21,9 @@ public class Vacuna {
     @Column(nullable = false)
     private int periodicidad;
 
-    // 1. Constructor vacío requerido por JPA
     public Vacuna() {
     }
 
-    // 2. Constructor con parámetros
     public Vacuna(String nombre, String enfermedad, int periodicidad) {
         this.nombre = nombre;
         this.enfermedad = enfermedad;

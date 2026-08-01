@@ -4,17 +4,17 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "consultas") // Se creará una tabla conectada a la tabla "servicios"
+@Table(name = "consultas") 
 public class Consulta extends Servicio {
 
     private String diagnostico;
     private String tratamiento;
 
-    // 1. Constructor vacío OBLIGATORIO por JPA
+    
     public Consulta() {
     }
 
-    // 2. Método de negocio que me pediste
+    // --- MÉTODOS DE NEGOCIO ---
     public void registrarConsulta(String diagnostico, String tratamiento) {
         this.diagnostico = diagnostico;
         this.tratamiento = tratamiento;
@@ -33,7 +33,7 @@ public class Consulta extends Servicio {
         return mascota != null;
     }
 
-    // 3. Getters y Setters
+    // --- Getters y Setters ----
     public String getDiagnostico() {
         return diagnostico;
     }
