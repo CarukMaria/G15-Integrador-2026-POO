@@ -18,7 +18,7 @@ import javafx.stage.Stage;
 
 //import java.time.LocalDate;
 
-public class MascotaController {
+public class MascotaControlador {
 
     private MascotaService servicio;
     
@@ -35,7 +35,7 @@ public class MascotaController {
     @FXML private Button btnGuardar;
     @FXML private Button btnCancelar;
 
-    public MascotaController() {
+    public MascotaControlador() {
         servicio = new MascotaService();
     }
 

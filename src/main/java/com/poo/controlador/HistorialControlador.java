@@ -18,7 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class HistorialController {
+public class HistorialControlador {
 
     private final TurnoService turnoService;
     private ObservableList<Turno> listaObservableTurnos;
@@ -36,7 +36,7 @@ public class HistorialController {
     @FXML private TableColumn<Turno, String> colEstado;
     @FXML private TableColumn<Turno, String> colServicios;
 
-    public HistorialController() {
+    public HistorialControlador() {
         this.turnoService = new TurnoService();
     }
 

@@ -18,7 +18,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VacunaController {
+public class VacunaControlador {
 
     private VacunaService servicio;
     private Vacuna vacunaSeleccionada; // Para saber si estamos editando o creando una nueva
@@ -42,7 +42,7 @@ public class VacunaController {
     @FXML private Button btnEliminar;
     @FXML private Button btnCancelar;
 
-    public VacunaController() {
+    public VacunaControlador() {
         servicio = new VacunaService();
     }
 

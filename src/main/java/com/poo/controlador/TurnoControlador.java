@@ -35,7 +35,7 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TurnoController {
+public class TurnoControlador {
 
     // --- SERVICIOS DE BD ---
     private TurnoService turnoService;
@@ -87,7 +87,7 @@ public class TurnoController {
     @FXML private Label lblDuracion;
     @FXML private Label lblTotal;
 
-    public TurnoController() {
+    public TurnoControlador() {
         turnoService = new TurnoService();
         mascotaService = new MascotaService();
         veterinarioService = new VeterinarioService();

@@ -16,7 +16,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.util.List;
 
-public class ServicioController {
+public class ServicioControlador{
 
     private ServicioService servicioService;
     private ObservableList<Servicio> listaObservableServicios;
@@ -36,7 +36,7 @@ public class ServicioController {
     @FXML private Button btnGuardar;
     @FXML private Button btnCancelar;
 
-    public ServicioController() {
+    public ServicioControlador() {
         servicioService = new ServicioService();
     }
 

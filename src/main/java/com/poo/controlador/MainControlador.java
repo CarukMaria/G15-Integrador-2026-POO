@@ -9,7 +9,7 @@ import javafx.scene.layout.StackPane;
 
 import java.io.IOException;
 
-public class MainController {
+public class MainControlador {
 
     @FXML
     private StackPane panelCentral;

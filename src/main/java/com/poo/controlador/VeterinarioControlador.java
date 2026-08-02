@@ -20,7 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class VeterinarioController {
+public class VeterinarioControlador {
 
     private VeterinarioService servicio;
     private Veterinario veterinarioSeleccionado;
@@ -51,7 +51,7 @@ public class VeterinarioController {
     @FXML private Button btnAgregarEspecialidad;
     @FXML private Button btnQuitarEspecialidad;
 
-    public VeterinarioController() {
+    public VeterinarioControlador() {
         servicio = new VeterinarioService();
     }
 

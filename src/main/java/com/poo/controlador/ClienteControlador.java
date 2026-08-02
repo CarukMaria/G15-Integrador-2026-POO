@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class ClienteController {
+public class ClienteControlador {
 
 
     private ClienteService servicio;
@@ -104,7 +104,7 @@ public class ClienteController {
 
 
 
-    public ClienteController(){
+    public ClienteControlador(){
 
         servicio = new ClienteService();
         mascotaService = new MascotaService();

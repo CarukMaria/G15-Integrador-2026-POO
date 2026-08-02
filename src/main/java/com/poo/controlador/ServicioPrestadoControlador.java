@@ -5,12 +5,12 @@ import com.poo.servicio.ServicioPrestadoService;
 
 import java.util.List;
 
-public class ServicioPrestadoController {
+public class ServicioPrestadoControlador {
 
     private ServicioPrestadoService servicioPrestadoService;
 
 
-    public ServicioPrestadoController() {
+    public ServicioPrestadoControlador() {
         servicioPrestadoService = new ServicioPrestadoService();
     }
 
