@@ -4,19 +4,19 @@ import com.poo.modelo.EstadoTurno;
 import com.poo.modelo.ServicioPrestado;
 import com.poo.modelo.Turno;
 import com.poo.modelo.Vacunacion;
-import com.poo.repositorio.TurnoRepository;
+import com.poo.repositorio.TurnoRepositorio;
 
 import java.time.LocalDate;
 import java.util.List;
 
-public class TurnoService {
+public class TurnoServicio {
 
 
-    private final TurnoRepository turnoRepository;
+    private final TurnoRepositorio turnoRepositorio;
 
-    public TurnoService() {
+    public TurnoServicio() {
 
-    turnoRepository = new TurnoRepository();
+    turnoRepositorio = new TurnoRepositorio();
     }
 
 
@@ -29,7 +29,7 @@ public class TurnoService {
         validarSolapamiento(turno);
         validarVacunas(turno);
 
-        turnoRepository.guardar(turno);
+        turnoRepositorio.guardar(turno);
     }
 
 
@@ -153,13 +153,13 @@ private void validarVacunas(Turno turno) {
         }
 
 
-        turnoRepository.guardar(turno);
+        turnoRepositorio.guardar(turno);
     }
 
 
     public List<Turno> listar() {
 
-        return turnoRepository.listarTodos();
+        return turnoRepositorio.listarTodos();
     }
 
 
@@ -174,13 +174,13 @@ private void validarVacunas(Turno turno) {
         }
 
 
-        return turnoRepository.buscarPorId(id);
+        return turnoRepositorio.buscarPorId(id);
     }
 
 
     public void eliminar(Turno turno) {
 
-        turnoRepository.eliminar(turno);
+        turnoRepositorio.eliminar(turno);
     }
 
 }

@@ -1,16 +1,16 @@
 package com.poo.servicio;
 
 import com.poo.modelo.Cliente;
-import com.poo.repositorio.ClienteRepository;
+import com.poo.repositorio.ClienteRepositorio;
 
 import java.util.List;
 
-public class ClienteService {
+public class ClienteServicio {
 
-    private final ClienteRepository clienteRepository;
+    private final ClienteRepositorio clienteRepositorio;
 
-    public ClienteService() {
-        this.clienteRepository = new ClienteRepository();
+    public ClienteServicio() {
+        this.clienteRepositorio = new ClienteRepositorio();
     }
 
     public void guardar(Cliente cliente) {
@@ -22,18 +22,18 @@ public class ClienteService {
             throw new IllegalArgumentException("El teléfono no puede estar vacío");
         }
 
-        clienteRepository.guardar(cliente);
+        clienteRepositorio.guardar(cliente);
     }
 
     public List<Cliente> listar() {
-        return clienteRepository.listarTodos();
+        return clienteRepositorio.listarTodos();
     }
 
     public Cliente buscarPorId(Long id) {
-        return clienteRepository.buscarPorId(id);
+        return clienteRepositorio.buscarPorId(id);
     }
 
     public void eliminar(Cliente cliente) {
-        clienteRepository.eliminar(cliente);
+        clienteRepositorio.eliminar(cliente);
     }
 }

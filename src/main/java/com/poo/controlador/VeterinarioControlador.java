@@ -2,7 +2,7 @@ package com.poo.controlador;
 
 import com.poo.modelo.Especialidad;
 import com.poo.modelo.Veterinario;
-import com.poo.servicio.VeterinarioService;
+import com.poo.servicio.VeterinarioServicio;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 
 public class VeterinarioControlador {
 
-    private VeterinarioService servicio;
+    private VeterinarioServicio servicio;
     private Veterinario veterinarioSeleccionado;
     private ObservableList<Veterinario> listaObservableVeterinarios;
 
@@ -52,7 +52,7 @@ public class VeterinarioControlador {
     @FXML private Button btnQuitarEspecialidad;
 
     public VeterinarioControlador() {
-        servicio = new VeterinarioService();
+        servicio = new VeterinarioServicio();
     }
 
     @FXML
@@ -100,26 +100,33 @@ public class VeterinarioControlador {
     }
 
     // Conectado desde el FXML: onAction="#guardarVeterinarioAccion"
+    // Conectado desde el FXML: onAction="#guardarVeterinarioAccion"
     @FXML
     public void guardarVeterinarioAccion(ActionEvent event) {
-        if (txtMatricula.getText().isEmpty() || txtNombre.getText().isEmpty() || txtApellido.getText().isEmpty()) {
-            mostrarAlerta("Campos incompletos", "La Matrícula, Nombre y Apellido son obligatorios.", Alert.AlertType.WARNING);
-            return;
-        }
-
-        if (veterinarioSeleccionado == null) {
-            veterinarioSeleccionado = new Veterinario();
-        }
-
-        veterinarioSeleccionado.setMatricula(txtMatricula.getText());
-        veterinarioSeleccionado.setNombre(txtNombre.getText());
-        veterinarioSeleccionado.setApellido(txtApellido.getText());
-
         try {
+            if (veterinarioSeleccionado == null) {
+                // Usamos el constructor del modelo rico
+                veterinarioSeleccionado = new Veterinario(
+                    txtMatricula.getText(),
+                    txtNombre.getText(),
+                    txtApellido.getText()
+                );
+            } else {
+                // Si es edición, usamos los setters que también están blindados
+                veterinarioSeleccionado.setMatricula(txtMatricula.getText());
+                veterinarioSeleccionado.setNombre(txtNombre.getText());
+                veterinarioSeleccionado.setApellido(txtApellido.getText());
+            }
+
             servicio.guardar(veterinarioSeleccionado);
             cargarTablaVeterinarios();
             limpiarFormulario();
             mostrarAlerta("Éxito", "Veterinario guardado correctamente.", Alert.AlertType.INFORMATION);
+
+        } catch (IllegalArgumentException ex) {
+            // Atrapa nombres vacíos, nulos, etc.
+            mostrarAlerta("Campos inválidos", ex.getMessage(), Alert.AlertType.WARNING);
+            
         } catch (Exception e) {
             mostrarAlerta("Error", "No se pudo guardar el veterinario. Verifique que la matrícula no esté duplicada.", Alert.AlertType.ERROR);
         }
@@ -145,38 +152,37 @@ public class VeterinarioControlador {
     // --- MÉTODOS DE ESPECIALIDADES ---
 
     // Conectado desde el FXML: onAction="#agregarEspecialidadAccion"
+    // Conectado desde el FXML: onAction="#agregarEspecialidadAccion"
     @FXML
     public void agregarEspecialidadAccion(ActionEvent event) {
         Especialidad seleccionada = cbEspecialidades.getValue();
         
-        if (seleccionada != null) {
-            // Si es un veterinario nuevo que aún no guardamos, lo instanciamos temporalmente
+        if (seleccionada == null) {
+            mostrarAlerta("Atención", "Seleccione una especialidad de la lista desplegable.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        try {
+            // Si es un veterinario nuevo, lo instanciamos con los datos de los campos de texto
             if (veterinarioSeleccionado == null) {
-                veterinarioSeleccionado = new Veterinario();
+                veterinarioSeleccionado = new Veterinario(
+                    txtMatricula.getText(),
+                    txtNombre.getText(),
+                    txtApellido.getText()
+                );
             }
             
-            // Verificamos que no tenga ya esa especialidad agregada
-            if (!veterinarioSeleccionado.getEspecialidades().contains(seleccionada)) {
+            // Verificamos si ya la tiene usando el método inteligente que creamos
+            if (!veterinarioSeleccionado.tieneEspecialidad(seleccionada)) {
                 veterinarioSeleccionado.agregarEspecialidad(seleccionada);
                 actualizarListaEspecialidades();
             } else {
                 mostrarAlerta("Atención", "El veterinario ya posee esta especialidad.", Alert.AlertType.WARNING);
             }
-        } else {
-            mostrarAlerta("Atención", "Seleccione una especialidad de la lista desplegable.", Alert.AlertType.WARNING);
-        }
-    }
 
-    // Conectado desde el FXML: onAction="#quitarEspecialidadAccion"
-    @FXML
-    public void quitarEspecialidadAccion(ActionEvent event) {
-        Especialidad seleccionada = listaEspecialidades.getSelectionModel().getSelectedItem();
-        
-        if (seleccionada != null && veterinarioSeleccionado != null) {
-            veterinarioSeleccionado.getEspecialidades().remove(seleccionada);
-            actualizarListaEspecialidades();
-        } else {
-            mostrarAlerta("Atención", "Seleccione una especialidad de la lista para quitarla.", Alert.AlertType.WARNING);
+        } catch (IllegalArgumentException ex) {
+            // Si los textos estaban vacíos, el constructor del Veterinario lanza el error
+            mostrarAlerta("Faltan datos", "Complete la Matrícula, Nombre y Apellido antes de agregar especialidades.", Alert.AlertType.WARNING);
         }
     }
 

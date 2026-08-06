@@ -1,46 +1,42 @@
 package com.poo.repositorio;
 
-import com.poo.modelo.Turno;
+import com.poo.modelo.Mascota;
 import com.poo.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
-public class TurnoRepository {
+public class MascotaRepositorio {
 
 
-    public void guardar(Turno turno) {
+    public void guardar(Mascota mascota) {
+
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
             em.getTransaction().begin();
 
-            if (turno.getIdTurno() == null) {
-                em.persist(turno);
+            if (mascota.getIdMascota() == null) {
+                em.persist(mascota);
             } else {
-                turno = em.merge(turno);
+                em.merge(mascota);
             }
 
             em.getTransaction().commit();
 
-        } catch (Exception e) {
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            throw e;
         } finally {
             em.close();
         }
     }
 
 
-    public Turno buscarPorId(Long id) {
+    public Mascota buscarPorId(Long id) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
-            return em.find(Turno.class, id);
+            return em.find(Mascota.class, id);
 
         } finally {
             em.close();
@@ -48,16 +44,16 @@ public class TurnoRepository {
     }
 
 
-    public List<Turno> listarTodos() {
+    public List<Mascota> listarTodos() {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
 
-            TypedQuery<Turno> query =
+            TypedQuery<Mascota> query =
                     em.createQuery(
-                            "SELECT t FROM Turno t",
-                            Turno.class
+                            "SELECT m FROM Mascota m",
+                            Mascota.class
                     );
 
             return query.getResultList();
@@ -68,7 +64,7 @@ public class TurnoRepository {
     }
 
 
-    public void eliminar(Turno turno) {
+    public void eliminar(Mascota mascota) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
@@ -76,8 +72,8 @@ public class TurnoRepository {
 
             em.getTransaction().begin();
 
-            Turno eliminado = em.merge(turno);
-            em.remove(eliminado);
+            Mascota eliminada = em.merge(mascota);
+            em.remove(eliminada);
 
             em.getTransaction().commit();
 

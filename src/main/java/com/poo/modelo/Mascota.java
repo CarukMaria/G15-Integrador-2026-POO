@@ -75,7 +75,7 @@ public class Mascota {
     public List<?> obtenerHistorialMedico() {
         return new ArrayList<>();
     }
-z
+
     // Valida si un nuevo turno se choca con los que ya tiene la mascota
     public boolean tieneTurnoSolapado(LocalDateTime fechaHoraNuevo,
                                       int duracionMinutosNuevo) {
@@ -103,6 +103,7 @@ z
     }
 
     // 2. Nuevo método sobrecargado que usa el Service (ignora el turno actual)
+// 2. Nuevo método sobrecargado que usa el Service (ignora el turno actual)
     public boolean puedeRecibirVacuna(Vacuna vacuna, LocalDate fechaNuevoTurno, Long idTurnoActual) {
 
         for (Turno turno : turnos) {
@@ -119,7 +120,8 @@ z
                 if (servicioPrestado.getServicio() instanceof Vacunacion) {
                     Vacunacion vacunacion = (Vacunacion) servicioPrestado.getServicio();
                     
-                    if (vacunacion.getNombreVacuna().equals(vacuna.getNombre())) {
+                    // ACÁ ESTÁ EL FIX: Navegamos a través del objeto Vacuna
+                    if (vacunacion.getVacuna().getNombre().equals(vacuna.getNombre())) {
                         if (vacuna.estaVigente(
                                 servicioPrestado.getFechaPrestacion().toLocalDate(), 
                                 fechaNuevoTurno)) {

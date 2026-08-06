@@ -1,78 +1,60 @@
 package com.poo.repositorio;
 
-import com.poo.modelo.ServicioPrestado;
+import com.poo.modelo.Cliente;
 import com.poo.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
-
 import java.util.List;
 
-public class ServicioPrestadoRepository {
+public class ClienteRepositorio {
 
-
-    public void guardar(ServicioPrestado servicioPrestado) {
-
-        EntityManager em = JPAUtil.getEntityManager();
-
+    public void guardar(Cliente cliente) {
+       EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
 
-            em.persist(servicioPrestado);
+            if (cliente.getIdCliente() == null) {
+                em.persist(cliente); // alta
+            } else {
+                em.merge(cliente); // modificación
+            }
 
             em.getTransaction().commit();
-
         } finally {
             em.close();
         }
     }
 
-
-    public ServicioPrestado buscarPorId(Long id) {
-
+    public Cliente buscarPorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
-
         try {
-            return em.find(ServicioPrestado.class, id);
-
+            return em.find(Cliente.class, id);
         } finally {
             em.close();
         }
     }
 
-
-    public List<ServicioPrestado> listarTodos() {
-
+    public List<Cliente> listarTodos() {
         EntityManager em = JPAUtil.getEntityManager();
-
         try {
-
-            TypedQuery<ServicioPrestado> query =
+            TypedQuery<Cliente> query =
                     em.createQuery(
-                            "SELECT sp FROM ServicioPrestado sp",
-                            ServicioPrestado.class
+                            "SELECT c FROM Cliente c",
+                            Cliente.class
                     );
-
             return query.getResultList();
-
         } finally {
             em.close();
         }
     }
 
-
-    public void eliminar(ServicioPrestado servicioPrestado) {
-
+    public void eliminar(Cliente cliente) {
         EntityManager em = JPAUtil.getEntityManager();
-
         try {
-
             em.getTransaction().begin();
-
-            ServicioPrestado eliminado = em.merge(servicioPrestado);
+            Cliente eliminado = em.merge(cliente);
             em.remove(eliminado);
-
             em.getTransaction().commit();
-
         } finally {
             em.close();
         }

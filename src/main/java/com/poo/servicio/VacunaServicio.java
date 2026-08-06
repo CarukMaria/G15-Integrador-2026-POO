@@ -1,17 +1,17 @@
 package com.poo.servicio;
 
 import com.poo.modelo.Vacuna;
-import com.poo.repositorio.VacunaRepository;
+import com.poo.repositorio.VacunaRepositorio;
 
 import java.util.List;
 
-public class VacunaService {
+public class VacunaServicio {
 
-    private final VacunaRepository vacunaRepository;
+    private final VacunaRepositorio vacunaRepositorio;
 
 
-    public VacunaService() {
-        this.vacunaRepository = new VacunaRepository();
+    public VacunaServicio() {
+        this.vacunaRepositorio = new VacunaRepositorio();
     }
 
 
@@ -23,21 +23,21 @@ public class VacunaService {
             );
         }
 
-        vacunaRepository.guardar(vacuna);
+        vacunaRepositorio.guardar(vacuna);
     }
 
 
     public List<Vacuna> listar() {
-        return vacunaRepository.listarTodos();
+        return vacunaRepositorio.listarTodos();
     }
 
 
     public Vacuna buscarPorId(Long id) {
-        return vacunaRepository.buscarPorId(id);
+        return vacunaRepositorio.buscarPorId(id);
     }
 
 
     public void eliminar(Vacuna vacuna) {
-        vacunaRepository.eliminar(vacuna);
+        vacunaRepositorio.eliminar(vacuna);
     }
 }

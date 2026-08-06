@@ -1,47 +1,38 @@
 package com.poo.repositorio;
 
-import com.poo.modelo.Servicio;
+import com.poo.modelo.Vacuna;
 import com.poo.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
-public class ServicioRepository {
+public class VacunaRepositorio {
 
 
-    public void guardar(Servicio servicio) {
+    public void guardar(Vacuna vacuna) {
+
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
             em.getTransaction().begin();
 
-            if (servicio.getIdServicio() == null) {
-                em.persist(servicio);
-            } else {
-                em.merge(servicio);
-            }
+            em.persist(vacuna);
 
             em.getTransaction().commit();
 
-        } catch (Exception e) {
-            // Si algo sale mal, deshacemos los cambios en la BD por seguridad
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-            throw e;
         } finally {
             em.close();
         }
     }
 
 
-    public Servicio buscarPorId(Long id) {
+    public Vacuna buscarPorId(Long id) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
-            return em.find(Servicio.class, id);
+            return em.find(Vacuna.class, id);
 
         } finally {
             em.close();
@@ -49,16 +40,16 @@ public class ServicioRepository {
     }
 
 
-    public List<Servicio> listarTodos() {
+    public List<Vacuna> listarTodos() {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
 
-            TypedQuery<Servicio> query =
+            TypedQuery<Vacuna> query =
                     em.createQuery(
-                            "SELECT s FROM Servicio s",
-                            Servicio.class
+                            "SELECT v FROM Vacuna v",
+                            Vacuna.class
                     );
 
             return query.getResultList();
@@ -69,7 +60,7 @@ public class ServicioRepository {
     }
 
 
-    public void eliminar(Servicio servicio) {
+    public void eliminar(Vacuna vacuna) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
@@ -77,8 +68,8 @@ public class ServicioRepository {
 
             em.getTransaction().begin();
 
-            Servicio eliminado = em.merge(servicio);
-            em.remove(eliminado);
+            Vacuna eliminada = em.merge(vacuna);
+            em.remove(eliminada);
 
             em.getTransaction().commit();
 

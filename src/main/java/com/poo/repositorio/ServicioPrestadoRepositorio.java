@@ -1,23 +1,23 @@
 package com.poo.repositorio;
 
-import com.poo.modelo.Veterinario;
+import com.poo.modelo.ServicioPrestado;
 import com.poo.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
-public class VeterinarioRepository {
+public class ServicioPrestadoRepositorio {
 
 
-    public void guardar(Veterinario veterinario) {
+    public void guardar(ServicioPrestado servicioPrestado) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
             em.getTransaction().begin();
 
-            em.persist(veterinario);
+            em.persist(servicioPrestado);
 
             em.getTransaction().commit();
 
@@ -27,12 +27,12 @@ public class VeterinarioRepository {
     }
 
 
-    public Veterinario buscarPorId(Long id) {
+    public ServicioPrestado buscarPorId(Long id) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
-            return em.find(Veterinario.class, id);
+            return em.find(ServicioPrestado.class, id);
 
         } finally {
             em.close();
@@ -40,16 +40,16 @@ public class VeterinarioRepository {
     }
 
 
-    public List<Veterinario> listarTodos() {
+    public List<ServicioPrestado> listarTodos() {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
 
-            TypedQuery<Veterinario> query =
+            TypedQuery<ServicioPrestado> query =
                     em.createQuery(
-                            "SELECT v FROM Veterinario v",
-                            Veterinario.class
+                            "SELECT sp FROM ServicioPrestado sp",
+                            ServicioPrestado.class
                     );
 
             return query.getResultList();
@@ -60,7 +60,7 @@ public class VeterinarioRepository {
     }
 
 
-    public void eliminar(Veterinario veterinario) {
+    public void eliminar(ServicioPrestado servicioPrestado) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
@@ -68,7 +68,7 @@ public class VeterinarioRepository {
 
             em.getTransaction().begin();
 
-            Veterinario eliminado = em.merge(veterinario);
+            ServicioPrestado eliminado = em.merge(servicioPrestado);
             em.remove(eliminado);
 
             em.getTransaction().commit();

@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,8 +23,13 @@ public class Veterinario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idVeterinario;
 
+    @Column(nullable = false, unique = true)
     private String matricula;
+    
+    @Column(nullable = false)
     private String nombre;
+    
+    @Column(nullable = false)
     private String apellido;
 
     // Mapeo para una lista de elementos simples/enums utilizando JPA (@ElementCollection)
@@ -34,43 +40,72 @@ public class Veterinario {
         joinColumns = @JoinColumn(name = "idVeterinario")
     )
     @Column(name = "especialidad")
-    private List<Especialidad> especialidades;
+    private List<Especialidad> especialidades = new ArrayList<>();
 
 
-    public Veterinario() {
-        this.especialidades = new ArrayList<>();
+    // 1. Constructor vacío protegido (requerido por JPA)
+    protected Veterinario() {
     }
 
+    // 2. Constructor con parámetros (pasa por validaciones)
     public Veterinario(String matricula, String nombre, String apellido) {
-        this.matricula = matricula;
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.especialidades = new ArrayList<>();
+        setMatricula(matricula);
+        setNombre(nombre);
+        setApellido(apellido);
     }
 
 
-
-     // ------ Reglas de negocio -----
+    // ------ MÉTODOS DE NEGOCIO -----
+    
     public void agregarEspecialidad(Especialidad especialidad) {
-        if (especialidad != null) {
-            especialidades.add(especialidad);
+        if (especialidad == null) {
+            throw new IllegalArgumentException("No se puede agregar una especialidad nula al veterinario.");
+        }
+        // Evitamos duplicados
+        if (!this.especialidades.contains(especialidad)) {
+            this.especialidades.add(especialidad);
         }
     }
-    // ----- Getters y Setters -----
+
+    public void removerEspecialidad(Especialidad especialidad) {
+        if (especialidad != null) {
+            this.especialidades.remove(especialidad);
+        }
+    }
+
+    // Comportamiento inteligente: El veterinario responde si tiene los conocimientos necesarios
+    public boolean tieneEspecialidad(Especialidad especialidad) {
+        if (especialidad == null) {
+            return false;
+        }
+        return this.especialidades.contains(especialidad);
+    }
+
+
+    // --- VALIDACIONES INTERNAS PRIVADAS ---
+
+    private String validarCadenaNoVacia(String valor, String nombreCampo) {
+        if (valor == null || valor.trim().isEmpty()) {
+            throw new IllegalArgumentException("El campo " + nombreCampo + " del veterinario no puede estar vacío.");
+        }
+        return valor.trim();
+    }
+
+
+    // ----- GETTERS Y SETTERS PROTEGIDOS -----
+    
     public Long getIdVeterinario() {
         return idVeterinario;
     }
-
-    public void setIdVeterinario(Long idVeterinario) {
-        this.idVeterinario = idVeterinario;
-    }
+    
+    // Eliminamos setIdVeterinario para proteger la Primary Key
 
     public String getMatricula() {
         return matricula;
     }
 
     public void setMatricula(String matricula) {
-        this.matricula = matricula;
+        this.matricula = validarCadenaNoVacia(matricula, "Matrícula");
     }
 
     public String getNombre() {
@@ -78,7 +113,7 @@ public class Veterinario {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre = validarCadenaNoVacia(nombre, "Nombre");
     }
 
     public String getApellido() {
@@ -86,19 +121,15 @@ public class Veterinario {
     }
 
     public void setApellido(String apellido) {
-        this.apellido = apellido;
+        this.apellido = validarCadenaNoVacia(apellido, "Apellido");
     }
 
     public List<Especialidad> getEspecialidades() {
-        return especialidades;
+        // Obliga a que cualquier cambio pase por agregarEspecialidad() o removerEspecialidad()
+        return Collections.unmodifiableList(especialidades);
     }
-
-    public void setEspecialidades(List<Especialidad> especialidades) {
-        this.especialidades = especialidades;
-    }
-
-
-
+    
+    // Eliminamos setEspecialidades(List) para que no pisen la lista gestionada por JPA
 
     @Override
     public String toString() {

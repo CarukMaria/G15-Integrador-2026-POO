@@ -1,27 +1,23 @@
 package com.poo.repositorio;
 
-import com.poo.modelo.Mascota;
+import com.poo.modelo.Veterinario;
 import com.poo.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
-public class MascotaRepository {
+public class VeterinarioRepositorio {
 
 
-    public void guardar(Mascota mascota) {
+    public void guardar(Veterinario veterinario) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
             em.getTransaction().begin();
 
-            if (mascota.getIdMascota() == null) {
-                em.persist(mascota);
-            } else {
-                em.merge(mascota);
-            }
+            em.persist(veterinario);
 
             em.getTransaction().commit();
 
@@ -31,12 +27,12 @@ public class MascotaRepository {
     }
 
 
-    public Mascota buscarPorId(Long id) {
+    public Veterinario buscarPorId(Long id) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
-            return em.find(Mascota.class, id);
+            return em.find(Veterinario.class, id);
 
         } finally {
             em.close();
@@ -44,16 +40,16 @@ public class MascotaRepository {
     }
 
 
-    public List<Mascota> listarTodos() {
+    public List<Veterinario> listarTodos() {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
 
-            TypedQuery<Mascota> query =
+            TypedQuery<Veterinario> query =
                     em.createQuery(
-                            "SELECT m FROM Mascota m",
-                            Mascota.class
+                            "SELECT v FROM Veterinario v",
+                            Veterinario.class
                     );
 
             return query.getResultList();
@@ -64,7 +60,7 @@ public class MascotaRepository {
     }
 
 
-    public void eliminar(Mascota mascota) {
+    public void eliminar(Veterinario veterinario) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
@@ -72,8 +68,8 @@ public class MascotaRepository {
 
             em.getTransaction().begin();
 
-            Mascota eliminada = em.merge(mascota);
-            em.remove(eliminada);
+            Veterinario eliminado = em.merge(veterinario);
+            em.remove(eliminado);
 
             em.getTransaction().commit();
 

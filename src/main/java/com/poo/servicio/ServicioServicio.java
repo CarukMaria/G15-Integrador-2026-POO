@@ -1,17 +1,17 @@
 package com.poo.servicio;
 
 import com.poo.modelo.Servicio;
-import com.poo.repositorio.ServicioRepository;
+import com.poo.repositorio.ServicioRepositorio;
 
 import java.util.List;
 
-public class ServicioService {
+public class ServicioServicio {
 
-    private final ServicioRepository servicioRepository;
+    private final ServicioRepositorio servicioRepository;
 
 
-    public ServicioService() {
-        this.servicioRepository = new ServicioRepository();
+    public ServicioServicio() {
+        this.servicioRepository = new ServicioRepositorio();
     }
 
 

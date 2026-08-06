@@ -1,17 +1,17 @@
 package com.poo.servicio;
 
 import com.poo.modelo.ServicioPrestado;
-import com.poo.repositorio.ServicioPrestadoRepository;
+import com.poo.repositorio.ServicioPrestadoRepositorio;
 
 import java.util.List;
 
-public class ServicioPrestadoService {
+public class ServicioPrestadoServicio {
 
-    private final ServicioPrestadoRepository servicioPrestadoRepository;
+    private final ServicioPrestadoRepositorio servicioPrestadoRepositorio;
 
 
-    public ServicioPrestadoService() {
-        this.servicioPrestadoRepository = new ServicioPrestadoRepository();
+    public ServicioPrestadoServicio() {
+        this.servicioPrestadoRepositorio = new ServicioPrestadoRepositorio();
     }
 
 
@@ -23,21 +23,21 @@ public class ServicioPrestadoService {
             );
         }
 
-        servicioPrestadoRepository.guardar(servicioPrestado);
+        servicioPrestadoRepositorio.guardar(servicioPrestado);
     }
 
 
     public List<ServicioPrestado> listar() {
-        return servicioPrestadoRepository.listarTodos();
+        return servicioPrestadoRepositorio.listarTodos();
     }
 
 
     public ServicioPrestado buscarPorId(Long id) {
-        return servicioPrestadoRepository.buscarPorId(id);
+        return servicioPrestadoRepositorio.buscarPorId(id);
     }
 
 
     public void eliminar(ServicioPrestado servicioPrestado) {
-        servicioPrestadoRepository.eliminar(servicioPrestado);
+        servicioPrestadoRepositorio.eliminar(servicioPrestado);
     }
 }

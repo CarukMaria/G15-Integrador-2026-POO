@@ -1,38 +1,46 @@
 package com.poo.repositorio;
 
-import com.poo.modelo.Vacuna;
+import com.poo.modelo.Turno;
 import com.poo.util.JPAUtil;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 import java.util.List;
 
-public class VacunaRepository {
+public class TurnoRepositorio {
 
 
-    public void guardar(Vacuna vacuna) {
-
+    public void guardar(Turno turno) {
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
             em.getTransaction().begin();
 
-            em.persist(vacuna);
+            if (turno.getIdTurno() == null) {
+                em.persist(turno);
+            } else {
+                turno = em.merge(turno);
+            }
 
             em.getTransaction().commit();
 
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
         } finally {
             em.close();
         }
     }
 
 
-    public Vacuna buscarPorId(Long id) {
+    public Turno buscarPorId(Long id) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
-            return em.find(Vacuna.class, id);
+            return em.find(Turno.class, id);
 
         } finally {
             em.close();
@@ -40,16 +48,16 @@ public class VacunaRepository {
     }
 
 
-    public List<Vacuna> listarTodos() {
+    public List<Turno> listarTodos() {
 
         EntityManager em = JPAUtil.getEntityManager();
 
         try {
 
-            TypedQuery<Vacuna> query =
+            TypedQuery<Turno> query =
                     em.createQuery(
-                            "SELECT v FROM Vacuna v",
-                            Vacuna.class
+                            "SELECT t FROM Turno t",
+                            Turno.class
                     );
 
             return query.getResultList();
@@ -60,7 +68,7 @@ public class VacunaRepository {
     }
 
 
-    public void eliminar(Vacuna vacuna) {
+    public void eliminar(Turno turno) {
 
         EntityManager em = JPAUtil.getEntityManager();
 
@@ -68,8 +76,8 @@ public class VacunaRepository {
 
             em.getTransaction().begin();
 
-            Vacuna eliminada = em.merge(vacuna);
-            em.remove(eliminada);
+            Turno eliminado = em.merge(turno);
+            em.remove(eliminado);
 
             em.getTransaction().commit();
 

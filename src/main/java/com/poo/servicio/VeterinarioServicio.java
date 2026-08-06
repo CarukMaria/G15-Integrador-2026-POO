@@ -1,17 +1,17 @@
 package com.poo.servicio;
 
 import com.poo.modelo.Veterinario;
-import com.poo.repositorio.VeterinarioRepository;
+import com.poo.repositorio.VeterinarioRepositorio;
 
 import java.util.List;
 
-public class VeterinarioService {
+public class VeterinarioServicio {
 
-    private final VeterinarioRepository veterinarioRepository;
+    private final VeterinarioRepositorio veterinarioRepositorio;
 
 
-    public VeterinarioService() {
-        this.veterinarioRepository = new VeterinarioRepository();
+    public VeterinarioServicio() {
+        this.veterinarioRepositorio = new VeterinarioRepositorio();
     }
 
 
@@ -23,21 +23,21 @@ public class VeterinarioService {
             );
         }
 
-        veterinarioRepository.guardar(veterinario);
+        veterinarioRepositorio.guardar(veterinario);
     }
 
 
     public List<Veterinario> listar() {
-        return veterinarioRepository.listarTodos();
+        return veterinarioRepositorio.listarTodos();
     }
 
 
     public Veterinario buscarPorId(Long id) {
-        return veterinarioRepository.buscarPorId(id);
+        return veterinarioRepositorio.buscarPorId(id);
     }
 
 
     public void eliminar(Veterinario veterinario) {
-        veterinarioRepository.eliminar(veterinario);
+        veterinarioRepositorio.eliminar(veterinario);
     }
 }

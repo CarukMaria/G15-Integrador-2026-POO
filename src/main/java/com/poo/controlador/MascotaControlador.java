@@ -3,7 +3,8 @@ package com.poo.controlador;
 import com.poo.modelo.Cliente;
 import com.poo.modelo.Especie;
 import com.poo.modelo.Mascota;
-import com.poo.servicio.MascotaService;
+import com.poo.servicio.MascotaServicio;
+import com.poo.servicio.MascotaServicio;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -20,7 +21,7 @@ import javafx.stage.Stage;
 
 public class MascotaControlador {
 
-    private MascotaService servicio;
+    private MascotaServicio servicio;
     
     // Variables para conectar la mascota con su dueño y saber si estamos editando
     private Cliente clienteDuenio;
@@ -36,7 +37,7 @@ public class MascotaControlador {
     @FXML private Button btnCancelar;
 
     public MascotaControlador() {
-        servicio = new MascotaService();
+        servicio = new MascotaServicio();
     }
 
     @FXML
@@ -65,35 +66,50 @@ public class MascotaControlador {
     @FXML
     public void guardarMascotaAccion(ActionEvent event) {
    
+        // Esta validación previa de la interfaz está perfecta, la dejamos.
         if (txtNombre.getText().isEmpty() || cbEspecie.getValue() == null || dpFecha.getValue() == null) {
             mostrarAlerta("Campos obligatorios", "El nombre, la fecha de nacimiento y la especie son obligatorios.", Alert.AlertType.WARNING);
             return;
         }
 
-        // Si es una mascota nueva, la instanciamos
-        if (mascotaSeleccionada == null) {
-            mascotaSeleccionada = new Mascota();
-            
-            // Generar un número de ficha automático para mascotas nuevas
-            String numeroFichaGenerado = "F-" + (System.currentTimeMillis() % 10000);
-            mascotaSeleccionada.setNumeroFicha(numeroFichaGenerado);
-            
-            // Asociar la mascota al cliente usando el método de negocio de la clase Cliente
-            if (clienteDuenio != null) {
-                clienteDuenio.agregarMascota(mascotaSeleccionada);
-            }
-        }
-
-        mascotaSeleccionada.setNombre(txtNombre.getText());
-        mascotaSeleccionada.setRaza(txtRaza.getText());
-        mascotaSeleccionada.setFechaNacimiento(dpFecha.getValue());
-        mascotaSeleccionada.setEspecie(cbEspecie.getValue());
-
-        // Guardar en base de datos
         try {
+            // Si es una mascota nueva, la instanciamos con el Modelo Rico
+            if (mascotaSeleccionada == null) {
+                
+                // Generar un número de ficha automático para mascotas nuevas
+                String numeroFichaGenerado = "F-" + (System.currentTimeMillis() % 10000);
+                
+                // Usamos el constructor completo que pasa por nuestras validaciones
+                mascotaSeleccionada = new Mascota(
+                        numeroFichaGenerado,
+                        txtNombre.getText(),
+                        txtRaza.getText(),
+                        dpFecha.getValue(),
+                        cbEspecie.getValue()
+                );
+                
+                // Asociar la mascota al cliente usando el método seguro
+                if (clienteDuenio != null) {
+                    clienteDuenio.agregarMascota(mascotaSeleccionada);
+                }
+                
+            } else {
+                // Si ya existía (es una edición), actualizamos usando los setters blindados
+                mascotaSeleccionada.setNombre(txtNombre.getText());
+                mascotaSeleccionada.setRaza(txtRaza.getText());
+                mascotaSeleccionada.setFechaNacimiento(dpFecha.getValue());
+                mascotaSeleccionada.setEspecie(cbEspecie.getValue());
+            }
+
+            // Guardar en base de datos
             servicio.guardar(mascotaSeleccionada);
             mostrarAlerta("Éxito", "La mascota se guardó correctamente.", Alert.AlertType.INFORMATION);
             cerrarVentana(event);
+
+        } catch (IllegalArgumentException ex) {
+            // ¡Acá atrapamos las reglas de negocio! (ej: fecha de nacimiento en el futuro)
+            mostrarAlerta("Error de validación", ex.getMessage(), Alert.AlertType.WARNING);
+            
         } catch (Exception e) {
             mostrarAlerta("Error", "Ocurrió un error al intentar guardar la mascota.", Alert.AlertType.ERROR);
         }

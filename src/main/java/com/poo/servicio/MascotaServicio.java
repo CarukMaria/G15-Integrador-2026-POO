@@ -1,17 +1,17 @@
 package com.poo.servicio;
 
 import com.poo.modelo.Mascota;
-import com.poo.repositorio.MascotaRepository;
+import com.poo.repositorio.MascotaRepositorio;
 
 import java.util.List;
 
-public class MascotaService {
+public class MascotaServicio {
 
-    private final MascotaRepository mascotaRepository;
+    private final MascotaRepositorio mascotaRepositorio;
 
 
-    public MascotaService() {
-        this.mascotaRepository = new MascotaRepository();
+    public MascotaServicio() {
+        this.mascotaRepositorio = new MascotaRepositorio();
     }
 
 
@@ -23,21 +23,21 @@ public class MascotaService {
             );
         }
 
-        mascotaRepository.guardar(mascota);
+        mascotaRepositorio.guardar(mascota);
     }
 
 
     public List<Mascota> listar() {
-        return mascotaRepository.listarTodos();
+        return mascotaRepositorio.listarTodos();
     }
 
 
     public Mascota buscarPorId(Long id) {
-        return mascotaRepository.buscarPorId(id);
+        return mascotaRepositorio.buscarPorId(id);
     }
 
 
     public void eliminar(Mascota mascota) {
-        mascotaRepository.eliminar(mascota);
+        mascotaRepositorio.eliminar(mascota);
     }
 }

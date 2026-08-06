@@ -220,26 +220,17 @@ public class Turno {
                inicio2.isBefore(fin1);
     }
 
-    public boolean tieneVacuna(String nombreVacuna) {
-
-
-        for (ServicioPrestado servicio :
-                serviciosPrestados) {
-
-
-            if (servicio.getServicio()
-                    instanceof Vacunacion vacuna) {
-
-
-                if (vacuna.getNombreVacuna()
-                        .equalsIgnoreCase(nombreVacuna)) {
-
+    public boolean tieneVacuna(Vacuna vacuna) {
+        for (ServicioPrestado servicioPrestado : serviciosPrestados) {
+            if (servicioPrestado.getServicio() instanceof Vacunacion) {
+                Vacunacion vacunacion = (Vacunacion) servicioPrestado.getServicio();
+                
+                // ACÁ ESTÁ EL CAMBIO: Usamos getVacuna().getNombre()
+                if (vacunacion.getVacuna().getNombre().equals(vacuna.getNombre())) {
                     return true;
                 }
             }
         }
-
-
         return false;
     }
 

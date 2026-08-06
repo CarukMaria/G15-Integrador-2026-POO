@@ -1,36 +1,36 @@
 package com.poo.controlador;
 
 import com.poo.modelo.ServicioPrestado;
-import com.poo.servicio.ServicioPrestadoService;
+import com.poo.servicio.ServicioPrestadoServicio;
 
 import java.util.List;
 
 public class ServicioPrestadoControlador {
 
-    private ServicioPrestadoService servicioPrestadoService;
+    private ServicioPrestadoServicio servicioPrestadoServicio;
 
 
     public ServicioPrestadoControlador() {
-        servicioPrestadoService = new ServicioPrestadoService();
+        servicioPrestadoServicio = new ServicioPrestadoServicio();
     }
 
 
     public void guardar(ServicioPrestado servicioPrestado) {
-        servicioPrestadoService.guardar(servicioPrestado);
+        servicioPrestadoServicio.guardar(servicioPrestado);
     }
 
 
     public List<ServicioPrestado> listar() {
-        return servicioPrestadoService.listar();
+        return servicioPrestadoServicio.listar();
     }
 
 
     public ServicioPrestado buscarPorId(Long id) {
-        return servicioPrestadoService.buscarPorId(id);
+        return servicioPrestadoServicio.buscarPorId(id);
     }
 
 
     public void eliminar(ServicioPrestado servicioPrestado) {
-        servicioPrestadoService.eliminar(servicioPrestado);
+        servicioPrestadoServicio.eliminar(servicioPrestado);
     }
 }

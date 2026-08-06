@@ -8,11 +8,11 @@ import com.poo.modelo.Turno;
 import com.poo.modelo.Vacuna;
 import com.poo.modelo.Vacunacion;
 import com.poo.modelo.Veterinario;
-import com.poo.servicio.MascotaService;
-import com.poo.servicio.ServicioService;
-import com.poo.servicio.TurnoService;
-import com.poo.servicio.VacunaService;
-import com.poo.servicio.VeterinarioService;
+import com.poo.servicio.MascotaServicio;
+import com.poo.servicio.ServicioServicio;
+import com.poo.servicio.TurnoServicio;
+import com.poo.servicio.VacunaServicio;
+import com.poo.servicio.VeterinarioServicio;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -38,11 +38,11 @@ import java.util.stream.Collectors;
 public class TurnoControlador {
 
     // --- SERVICIOS DE BD ---
-    private TurnoService turnoService;
-    private MascotaService mascotaService;
-    private VeterinarioService veterinarioService;
-    private VacunaService vacunaService;
-    private ServicioService servicioService; 
+    private TurnoServicio turnoService;
+    private MascotaServicio mascotaService;
+    private VeterinarioServicio veterinarioService;
+    private VacunaServicio vacunaService;
+    private ServicioServicio servicioServicio; 
 
     private Turno turnoSeleccionado;
     private ObservableList<Turno> listaObservableTurnos;
@@ -88,11 +88,11 @@ public class TurnoControlador {
     @FXML private Label lblTotal;
 
     public TurnoControlador() {
-        turnoService = new TurnoService();
-        mascotaService = new MascotaService();
-        veterinarioService = new VeterinarioService();
-        vacunaService = new VacunaService();
-        servicioService = new ServicioService(); 
+        turnoService = new TurnoServicio();
+        mascotaService = new MascotaServicio();
+        veterinarioService = new VeterinarioServicio();
+        vacunaService = new VacunaServicio();
+        servicioServicio = new ServicioServicio(); 
     }
 
     @FXML
@@ -122,7 +122,7 @@ public class TurnoControlador {
         cbVeterinario.setItems(FXCollections.observableArrayList(veterinarioService.listar()));
         cbEstado.setItems(FXCollections.observableArrayList(EstadoTurno.values()));
         cbVacunas.setItems(FXCollections.observableArrayList(vacunaService.listar()));
-        cbServicios.setItems(FXCollections.observableArrayList(servicioService.listar()));
+        cbServicios.setItems(FXCollections.observableArrayList(servicioServicio.listar()));
 
         cargarTablaTurnos();
 

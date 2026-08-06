@@ -3,8 +3,8 @@ package com.poo.controlador;
 import com.poo.modelo.Cliente;
 import com.poo.modelo.Especie;
 import com.poo.modelo.Mascota;
-import com.poo.servicio.ClienteService;
-import com.poo.servicio.MascotaService;
+import com.poo.servicio.ClienteServicio;
+import com.poo.servicio.MascotaServicio;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,8 +29,8 @@ import java.util.stream.Collectors;
 public class ClienteControlador {
 
 
-    private ClienteService servicio;
-    private MascotaService mascotaService;
+    private ClienteServicio servicio;
+    private MascotaServicio mascotaService;
 
 
     private Cliente clienteSeleccionado;
@@ -106,8 +106,8 @@ public class ClienteControlador {
 
     public ClienteControlador(){
 
-        servicio = new ClienteService();
-        mascotaService = new MascotaService();
+        servicio = new ClienteServicio();
+        mascotaService = new MascotaServicio();
 
     }
 
@@ -264,8 +264,9 @@ public class ClienteControlador {
     private void agregarMascotaAccion(ActionEvent e){
 
         limpiarFormularioMascota();
-
-        mascotaSeleccionada = new Mascota();
+        
+        // Eliminamos "mascotaSeleccionada = new Mascota();"
+        // Dejamos que sea nula hasta que el usuario le de a guardar.
 
         btnGuardarMascota.setDisable(false);
         btnCancelarMascota.setDisable(false);
@@ -318,81 +319,49 @@ public class ClienteControlador {
 
 
 
-    @FXML
+@FXML
     private void guardarMascotaAccion(ActionEvent e){
 
+        try {
+            if(mascotaSeleccionada == null){
+                // 1. Generamos el número de ficha
+                String numFicha = "F-" + System.currentTimeMillis() % 10000;
+                
+                // 2. Usamos el constructor del modelo rico (pasa por nuestras validaciones)
+                mascotaSeleccionada = new Mascota(
+                        numFicha,
+                        txtMascotaNombre.getText(),
+                        txtMascotaRaza.getText(),
+                        dpMascotaFecha.getValue(),
+                        cbMascotaEspecie.getValue()
+                );
+                
+                // 3. Relacionamos la mascota con el cliente de forma segura
+                clienteSeleccionado.agregarMascota(mascotaSeleccionada);
+                
+            } else {
+                // Si ya existía (es una edición), usamos los setters que también están blindados
+                mascotaSeleccionada.setNombre(txtMascotaNombre.getText());
+                mascotaSeleccionada.setRaza(txtMascotaRaza.getText());
+                mascotaSeleccionada.setFechaNacimiento(dpMascotaFecha.getValue());
+                mascotaSeleccionada.setEspecie(cbMascotaEspecie.getValue());
+            }
 
-        if(mascotaSeleccionada == null){
+            // Guardamos en la base de datos
+            mascotaService.guardar(mascotaSeleccionada);
+            mostrarClienteEnFormulario(clienteSeleccionado);
+            limpiarFormularioMascota();
 
-            mascotaSeleccionada = new Mascota();
-
-        }
-
-
-
-        mascotaSeleccionada.setNombre(
-                txtMascotaNombre.getText()
-        );
-
-
-        mascotaSeleccionada.setRaza(
-                txtMascotaRaza.getText()
-        );
-
-
-        mascotaSeleccionada.setFechaNacimiento(
-                dpMascotaFecha.getValue()
-        );
-
-
-        mascotaSeleccionada.setEspecie(
-                cbMascotaEspecie.getValue()
-        );
-
-
-
-        if(mascotaSeleccionada.getNumeroFicha()==null){
-
-            mascotaSeleccionada.setNumeroFicha(
-                    "F-" + System.currentTimeMillis()%10000
+            mostrarAlerta(
+                    "Éxito",
+                    "Mascota guardada correctamente.",
+                    Alert.AlertType.INFORMATION
             );
 
+        } catch (IllegalArgumentException ex) {
+            // ¡Acá atrapamos las validaciones del modelo rico! (ej: fechas futuras, nombres vacíos)
+            mostrarAlerta("Error de validación", ex.getMessage(), Alert.AlertType.ERROR);
         }
-
-
-
-        mascotaSeleccionada.setCliente(
-                clienteSeleccionado
-        );
-
-
-        clienteSeleccionado.agregarMascota(
-                mascotaSeleccionada
-        );
-
-
-
-        mascotaService.guardar(
-                mascotaSeleccionada
-        );
-
-
-
-        mostrarClienteEnFormulario(
-                clienteSeleccionado
-        );
-
-
-        limpiarFormularioMascota();
-
-
-        mostrarAlerta(
-                "Éxito",
-                "Mascota guardada correctamente.",
-                Alert.AlertType.INFORMATION
-        );
-
-
     }
 
 
@@ -439,26 +408,33 @@ public class ClienteControlador {
     @FXML
     public void guardarClienteAccion(ActionEvent e){
 
+        try {
+            if(clienteSeleccionado == null){
+                // Usamos el constructor rico para crear un cliente válido desde el inicio
+                clienteSeleccionado = new Cliente(
+                        txtDni.getText(),
+                        txtApellido.getText(),
+                        txtNombre.getText(),
+                        txtTelefono.getText()
+                );
+            } else {
+                // Si es edición, usamos los setters que ya tienen validaciones
+                clienteSeleccionado.setDni(txtDni.getText());
+                clienteSeleccionado.setNombre(txtNombre.getText());
+                clienteSeleccionado.setApellido(txtApellido.getText());
+                clienteSeleccionado.setTelefono(txtTelefono.getText());
+            }
 
-        if(clienteSeleccionado==null){
+            servicio.guardar(clienteSeleccionado);
+            cargarTablaClientes();
+            
+            // Opcional: mostrar cartel de éxito
+            mostrarAlerta("Éxito", "Cliente guardado exitosamente.", Alert.AlertType.INFORMATION);
 
-            clienteSeleccionado = new Cliente();
-
+        } catch (IllegalArgumentException ex) {
+            // Mostramos los errores de nuestras validaciones en la pantalla del usuario
+            mostrarAlerta("Error", ex.getMessage(), Alert.AlertType.ERROR);
         }
-
-
-        clienteSeleccionado.setDni(txtDni.getText());
-        clienteSeleccionado.setNombre(txtNombre.getText());
-        clienteSeleccionado.setApellido(txtApellido.getText());
-        clienteSeleccionado.setTelefono(txtTelefono.getText());
-
-
-        servicio.guardar(clienteSeleccionado);
-
-
-        cargarTablaClientes();
-
-
     }
 
 

@@ -1,7 +1,7 @@
 package com.poo.controlador;
 
 import com.poo.modelo.Vacuna;
-import com.poo.servicio.VacunaService;
+import com.poo.servicio.VacunaServicio;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class VacunaControlador {
 
-    private VacunaService servicio;
+    private VacunaServicio servicio;
     private Vacuna vacunaSeleccionada; // Para saber si estamos editando o creando una nueva
     private ObservableList<Vacuna> listaObservableVacunas;
 
@@ -43,7 +43,7 @@ public class VacunaControlador {
     @FXML private Button btnCancelar;
 
     public VacunaControlador() {
-        servicio = new VacunaService();
+        servicio = new VacunaServicio();
     }
 
     @FXML

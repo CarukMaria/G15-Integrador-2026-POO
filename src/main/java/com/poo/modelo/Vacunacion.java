@@ -9,61 +9,42 @@ import jakarta.persistence.Table;
 @Table(name = "vacunaciones")
 public class Vacunacion extends Servicio {
 
-    private String nombreVacuna;
-    private String laboratorio;
-
+    // Es el único atributo necesario para mantener la relación 1 a 1 que mencionás
     @ManyToOne
-    @JoinColumn(name = "vacuna_id")
+    @JoinColumn(name = "vacuna_id", nullable = false)
     private Vacuna vacuna;
 
-    public Vacunacion() {
+    // Constructor vacío por defecto que requiere JPA (protegido)
+    protected Vacunacion() {
+        super();
     }
 
-
-    public Vacunacion(String nombre,
-                  double precio,
-                  int duracion,
-                  Vacuna vacuna,
-                  String laboratorio) {
-
+    public Vacunacion(String nombre, double precio, int duracion, Vacuna vacuna) {
         super(nombre, precio, duracion);
-
-            this.vacuna = vacuna;
-            this.nombreVacuna = vacuna.getNombre();
-        this.laboratorio = laboratorio;
+        setVacuna(vacuna); // Pasa por la validación del setter
     }
 
-    //----- Getters y settters -----
+    // --- MÉTODOS DE NEGOCIO ---
+
+    // Este método debe quedarse sí o sí porque es abstracto en la clase Servicio
+    @Override
+    public boolean validarRequisitos(Mascota mascota) {
+        if (mascota == null) {
+            throw new IllegalArgumentException("Se requiere una mascota para registrar la vacunación.");
+        }
+        return true;
+    }
+
+    // --- GETTERS Y SETTERS PROTEGIDOS ---
+    
     public Vacuna getVacuna() {
         return vacuna;
     }
 
     public void setVacuna(Vacuna vacuna) {
+        if (vacuna == null) {
+            throw new IllegalArgumentException("La vacunación debe tener un objeto Vacuna asociado.");
+        }
         this.vacuna = vacuna;
-    }
-
-    public String getNombreVacuna() {
-        return nombreVacuna;
-    }
-
-
-    public void setNombreVacuna(String nombreVacuna) {
-        this.nombreVacuna = nombreVacuna;
-    }
-
-
-    public String getLaboratorio() {
-        return laboratorio;
-    }
-
-
-    public void setLaboratorio(String laboratorio) {
-        this.laboratorio = laboratorio;
-    }
-
-
-    @Override
-    public boolean validarRequisitos(Mascota mascota) {
-        return mascota != null;
     }
 }
