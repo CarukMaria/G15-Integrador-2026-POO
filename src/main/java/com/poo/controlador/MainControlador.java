@@ -23,32 +23,32 @@ public class MainControlador {
     @FXML
     public void abrirTurnos(ActionEvent event) {
         // Asegurate de que el nombre del archivo coincida exactamente con tu FXML
-        cargarVista("TurnosView.fxml");
+        cargarVista("TurnosVista.fxml");
     }
 
     @FXML
     public void abrirClientes(ActionEvent event) {
-        cargarVista("ClientesView.fxml");
+        cargarVista("ClientesVista.fxml");
     }
 
     @FXML
     public void abrirVacunas(ActionEvent event) {
-        cargarVista("VacunasView.fxml");
+        cargarVista("VacunasVista.fxml");
     }
 
     @FXML
     public void abrirVeterinarios(ActionEvent event) {
-        cargarVista("VeterinariosView.fxml");
+        cargarVista("VeterinariosVista.fxml");
     }
 
     @FXML
     public void abrirServicios(ActionEvent event) {
-        cargarVista("ServiciosView.fxml");
+        cargarVista("ServiciosVista.fxml");
     }
 
     @FXML
     public void abrirHistorial(ActionEvent event) {
-        cargarVista("HistorialView.fxml");
+        cargarVista("HistorialVista.fxml");
     }
 
     /**

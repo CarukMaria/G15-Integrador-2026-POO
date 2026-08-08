@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:controller="com.poo.controlador.ClienteController"
+<BorderPane fx:controller="com.poo.controlador.ClienteControlador"
             prefHeight="700.0"
             prefWidth="900.0"
             xmlns="http://javafx.com/javafx/26"

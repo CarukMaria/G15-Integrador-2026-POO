@@ -152,7 +152,6 @@ public class VeterinarioControlador {
     // --- MÉTODOS DE ESPECIALIDADES ---
 
     // Conectado desde el FXML: onAction="#agregarEspecialidadAccion"
-    // Conectado desde el FXML: onAction="#agregarEspecialidadAccion"
     @FXML
     public void agregarEspecialidadAccion(ActionEvent event) {
         Especialidad seleccionada = cbEspecialidades.getValue();
@@ -183,6 +182,20 @@ public class VeterinarioControlador {
         } catch (IllegalArgumentException ex) {
             // Si los textos estaban vacíos, el constructor del Veterinario lanza el error
             mostrarAlerta("Faltan datos", "Complete la Matrícula, Nombre y Apellido antes de agregar especialidades.", Alert.AlertType.WARNING);
+        }
+    }
+
+    // Conectado desde el FXML: onAction="#quitarEspecialidadAccion"
+    @FXML
+    public void quitarEspecialidadAccion(ActionEvent event) {
+        Especialidad seleccionada = listaEspecialidades.getSelectionModel().getSelectedItem();
+        
+        if (seleccionada != null && veterinarioSeleccionado != null) {
+            // Usamos el método de negocio de nuestra clase para no romper el encapsulamiento
+            veterinarioSeleccionado.removerEspecialidad(seleccionada);
+            actualizarListaEspecialidades();
+        } else {
+            mostrarAlerta("Atención", "Seleccione una especialidad de la lista para quitarla.", Alert.AlertType.WARNING);
         }
     }
 

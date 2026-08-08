@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="1060.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.poo.controlador.MainController">
+<BorderPane prefHeight="600.0" prefWidth="1060.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.poo.controlador.MainControlador">
    <center>
       <StackPane fx:id="panelCentral" BorderPane.alignment="CENTER" />
    </center>

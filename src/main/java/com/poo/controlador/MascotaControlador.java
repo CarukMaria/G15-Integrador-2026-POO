@@ -4,7 +4,6 @@ import com.poo.modelo.Cliente;
 import com.poo.modelo.Especie;
 import com.poo.modelo.Mascota;
 import com.poo.servicio.MascotaServicio;
-import com.poo.servicio.MascotaServicio;
 
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;

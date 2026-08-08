@@ -10,7 +10,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/MainView.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/MainVista.fxml"));
         Parent root = loader.load();
 
         Scene scene = new Scene(root, 1060, 600);
