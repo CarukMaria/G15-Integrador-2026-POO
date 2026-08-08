@@ -1,7 +1,7 @@
 package com.poo.controlador;
 
 import com.poo.modelo.Turno;
-import com.poo.servicio.TurnoService;
+import com.poo.servicio.TurnoServicio;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class HistorialControlador {
 
-    private final TurnoService turnoService;
+    private final TurnoServicio turnoServicio;
     private ObservableList<Turno> listaObservableTurnos;
 
     // --- ELEMENTOS FXML ---
@@ -37,7 +37,7 @@ public class HistorialControlador {
     @FXML private TableColumn<Turno, String> colServicios;
 
     public HistorialControlador() {
-        this.turnoService = new TurnoService();
+        this.turnoServicio = new TurnoServicio();
     }
 
     @FXML
@@ -94,7 +94,7 @@ public class HistorialControlador {
     }
 
     private void cargarHistorial(String filtroMascota) {
-        List<Turno> todosLosTurnos = turnoService.listar();
+        List<Turno> todosLosTurnos = turnoServicio.listar();
 
         // Si hay un texto en el buscador, filtramos ignorando mayúsculas/minúsculas
         if (filtroMascota != null && !filtroMascota.trim().isEmpty()) {

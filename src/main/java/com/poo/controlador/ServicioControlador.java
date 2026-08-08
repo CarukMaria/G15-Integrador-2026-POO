@@ -1,7 +1,7 @@
 package com.poo.controlador;
 
 import com.poo.modelo.Servicio;
-import com.poo.servicio.ServicioService;
+import com.poo.servicio.ServicioServicio;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ServicioControlador{
 
-    private ServicioService servicioService;
+    private ServicioServicio servicioServicio;
     private ObservableList<Servicio> listaObservableServicios;
     private Servicio servicioSeleccionado;
 
@@ -37,7 +37,7 @@ public class ServicioControlador{
     @FXML private Button btnCancelar;
 
     public ServicioControlador() {
-        servicioService = new ServicioService();
+        servicioServicio = new ServicioServicio();
     }
 
     @FXML
@@ -62,7 +62,7 @@ public class ServicioControlador{
     }
 
     private void cargarTablaServicios() {
-        List<Servicio> servicios = servicioService.listar();
+        List<Servicio> servicios = servicioServicio.listar();
         listaObservableServicios = FXCollections.observableArrayList(servicios);
         tablaServicios.setItems(listaObservableServicios);
     }
@@ -101,7 +101,7 @@ public class ServicioControlador{
             servicioSeleccionado.setDuracion(nuevaDuracion);
 
             // Guardar en la base de datos a través del Service
-            servicioService.guardar(servicioSeleccionado);
+            servicioServicio.guardar(servicioSeleccionado);
             
             // Refrescar la tabla y limpiar
             cargarTablaServicios();
