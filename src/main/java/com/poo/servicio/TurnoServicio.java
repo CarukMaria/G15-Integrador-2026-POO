@@ -11,17 +11,15 @@ import java.util.List;
 
 public class TurnoServicio {
 
-
     private final TurnoRepositorio turnoRepositorio;
 
     public TurnoServicio() {
-
-    turnoRepositorio = new TurnoRepositorio();
+        turnoRepositorio = new TurnoRepositorio();
     }
 
-
     /*
-     * Guarda un turno aplicando reglas que necesitan consultar BD
+     * Guarda un turno aplicando las reglas que requieren
+     * consultar otros turnos o información relacionada.
      */
     public void guardar(Turno turno) {
 
@@ -32,61 +30,58 @@ public class TurnoServicio {
         turnoRepositorio.guardar(turno);
     }
 
-
+    /*
+     * Valida los datos mínimos necesarios para guardar el turno.
+     */
     private void validarDatosBasicos(Turno turno) {
 
+        if (turno == null) {
+            throw new IllegalArgumentException(
+                "El turno no puede ser nulo"
+            );
+        }
 
         if (turno.getFechaHora() == null) {
-
             throw new IllegalArgumentException(
                 "La fecha del turno no puede estar vacía"
             );
         }
 
-
-
         if (turno.getMascota() == null) {
-
             throw new IllegalArgumentException(
                 "El turno debe tener una mascota"
             );
         }
 
-
-
         if (turno.getVeterinario() == null) {
-
             throw new IllegalArgumentException(
                 "El turno debe tener un veterinario"
             );
         }
     }
 
-
-
     /*
-     * Regla: un veterinario y una mascota no pueden tener
-     * dos turnos que se pisen.
+     * Regla: una mascota y un veterinario no pueden tener
+     * dos turnos que se superpongan.
      */
     private void validarSolapamiento(Turno nuevoTurno) {
 
         for (Turno existente : listar()) {
 
-            if (nuevoTurno.getIdTurno() != null &&
-                nuevoTurno.getIdTurno().equals(existente.getIdTurno())) {
+            // Si estamos modificando el turno, ignoramos el propio turno.
+            if (nuevoTurno.getIdTurno() != null
+                    && nuevoTurno.getIdTurno().equals(existente.getIdTurno())) {
                 continue;
             }
 
-
+            // Los turnos cancelados no ocupan el horario.
             if (existente.getEstado() == EstadoTurno.CANCELADO) {
                 continue;
             }
 
-
             if (!nuevoTurno.seSuperponeCon(existente)) {
                 continue;
             }
-
 
             if (existente.getMascota().getIdMascota()
                     .equals(nuevoTurno.getMascota().getIdMascota())) {
@@ -96,33 +91,32 @@ public class TurnoServicio {
                 );
             }
 
-
             if (existente.getVeterinario().getIdVeterinario()
                     .equals(nuevoTurno.getVeterinario().getIdVeterinario())) {
 
                 throw new IllegalArgumentException(
                     "El veterinario ya tiene un turno en ese horario."
                 );
-
             }
         }
     }
 
+    /*
+     * Regla: una mascota no puede recibir nuevamente una vacuna
+     * mientras la anterior siga vigente.
+     */
+    private void validarVacunas(Turno turno) {
 
-
-
-
-
-
-private void validarVacunas(Turno turno) {
-        
         LocalDate fechaDelTurno = turno.getFechaHora().toLocalDate();
 
         for (ServicioPrestado servicio : turno.getServiciosPrestados()) {
 
             if (servicio.getServicio() instanceof Vacunacion vacunacion) {
 
-                if (!turno.getMascota().puedeRecibirVacuna(vacunacion.getVacuna(), fechaDelTurno, turno.getIdTurno())) {
+                if (!turno.getMascota().puedeRecibirVacuna(
+                        vacunacion.getVacuna(),
+                        fechaDelTurno,
+                        turno.getIdTurno())) {
 
                     throw new IllegalArgumentException(
                         "La mascota todavía tiene vigente esta vacuna para la fecha seleccionada."
@@ -132,14 +126,15 @@ private void validarVacunas(Turno turno) {
         }
     }
 
-
+    /*
+     * Cambia el estado del turno y coordina las acciones
+     * asociadas al estado ATENDIDO.
+     */
     public void cambiarEstado(
-        Turno turno,
-        EstadoTurno nuevoEstado) {
-
+            Turno turno,
+            EstadoTurno nuevoEstado) {
 
         turno.cambiarEstado(nuevoEstado);
-
 
         if (nuevoEstado == EstadoTurno.ATENDIDO) {
 
@@ -152,35 +147,25 @@ private void validarVacunas(Turno turno) {
             }
         }
 
-
         turnoRepositorio.guardar(turno);
     }
 
-
     public List<Turno> listar() {
-
         return turnoRepositorio.listarTodos();
     }
 
-
     public Turno buscarPorId(Long id) {
 
-
         if (id == null) {
-
             throw new IllegalArgumentException(
                 "El id no puede ser nulo"
             );
         }
 
-
         return turnoRepositorio.buscarPorId(id);
     }
 
-
     public void eliminar(Turno turno) {
-
         turnoRepositorio.eliminar(turno);
     }
-
 }

@@ -17,39 +17,54 @@ public class Vacuna {
     @Column(nullable = false)
     private String enfermedad;
 
-    // Periodicidad en meses (cada cuántos meses se debe volver a aplicar)
+    // Periodicidad en meses: cada cuántos meses se debe volver a aplicar.
     @Column(nullable = false)
     private int periodicidad;
 
+    // Constructor requerido por JPA.
     public Vacuna() {
     }
 
     public Vacuna(String nombre, String enfermedad, int periodicidad) {
-        this.nombre = nombre;
-        this.enfermedad = enfermedad;
-        this.periodicidad = periodicidad;
+        setNombre(nombre);
+        setEnfermedad(enfermedad);
+        setPeriodicidad(periodicidad);
     }
 
-    @Override
-    public String toString() {
-        return nombre;
-    }
     // --- MÉTODO DE NEGOCIO ---
-    public boolean estaVigente(LocalDate fechaUltimaAplicacion, LocalDate fechaTurno) {
-        
+
+    public boolean estaVigente(
+            LocalDate fechaUltimaAplicacion,
+            LocalDate fechaTurno) {
+
         if (fechaUltimaAplicacion == null || fechaTurno == null) {
-            return false; // Si nunca se aplicó o falta la fecha, no está vigente
+            return false;
         }
-        
-        // Sumamos los meses de periodicidad a la fecha en que se la aplicó
-        LocalDate fechaVencimiento = fechaUltimaAplicacion.plusMonths(periodicidad);
-        
-        // Comprobamos si la fecha del NUEVO turno es ANTES de la fecha de vencimiento
+
+        LocalDate fechaVencimiento =
+                fechaUltimaAplicacion.plusMonths(periodicidad);
+
         return fechaTurno.isBefore(fechaVencimiento);
     }
 
+    // --- VALIDACIONES DEL MODELO ---
+
+    private String validarCadenaNoVacia(
+            String valor,
+            String nombreCampo) {
+
+        if (valor == null || valor.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                "El campo " + nombreCampo +
+                " no puede ser nulo o estar vacío."
+            );
+        }
+
+        return valor.trim();
+    }
+
     // --- GETTERS Y SETTERS ---
-    
+
     public Long getIdVacuna() {
         return idVacuna;
     }
@@ -63,7 +78,8 @@ public class Vacuna {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = nombre;
+        this.nombre =
+                validarCadenaNoVacia(nombre, "Nombre");
     }
 
     public String getEnfermedad() {
@@ -71,7 +87,8 @@ public class Vacuna {
     }
 
     public void setEnfermedad(String enfermedad) {
-        this.enfermedad = enfermedad;
+        this.enfermedad =
+                validarCadenaNoVacia(enfermedad, "Enfermedad");
     }
 
     public int getPeriodicidad() {
@@ -79,6 +96,13 @@ public class Vacuna {
     }
 
     public void setPeriodicidad(int periodicidad) {
+
+        if (periodicidad <= 0) {
+            throw new IllegalArgumentException(
+                "La periodicidad debe ser mayor a 0 meses."
+            );
+        }
+
         this.periodicidad = periodicidad;
     }
 }

@@ -9,33 +9,21 @@ public class VacunaServicio {
 
     private final VacunaRepositorio vacunaRepositorio;
 
-
     public VacunaServicio() {
         this.vacunaRepositorio = new VacunaRepositorio();
     }
 
-
     public void guardar(Vacuna vacuna) {
-
-        if (vacuna.getNombre() == null || vacuna.getNombre().isEmpty()) {
-            throw new IllegalArgumentException(
-                    "El nombre de la vacuna no puede estar vacío"
-            );
-        }
-
         vacunaRepositorio.guardar(vacuna);
     }
-
 
     public List<Vacuna> listar() {
         return vacunaRepositorio.listarTodos();
     }
 
-
     public Vacuna buscarPorId(Long id) {
         return vacunaRepositorio.buscarPorId(id);
     }
-
 
     public void eliminar(Vacuna vacuna) {
         vacunaRepositorio.eliminar(vacuna);

@@ -14,14 +14,6 @@ public class ClienteServicio {
     }
 
     public void guardar(Cliente cliente) {
-        if (cliente.getDni() == null || cliente.getDni().isEmpty()) {
-            throw new IllegalArgumentException("El DNI no puede estar vacío");
-        }
-        
-        if (cliente.getTelefono() == null || cliente.getTelefono().isEmpty()) {
-            throw new IllegalArgumentException("El teléfono no puede estar vacío");
-        }
-
         clienteRepositorio.guardar(cliente);
     }
 
