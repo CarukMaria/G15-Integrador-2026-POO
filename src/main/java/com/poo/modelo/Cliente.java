@@ -43,21 +43,21 @@ public class Cliente {
 
     // --- MÉTODOS DE NEGOCIO ---
 
-    public void agregarMascota(Mascota m) {
-        if (m == null) {
+    public void agregarMascota(Mascota mascota) {
+        if (mascota == null) {
             throw new IllegalArgumentException("No se puede agregar una mascota nula.");
         }
         
         // Evitamos duplicados
-        if (!this.mascotas.contains(m)) {
-            this.mascotas.add(m);
-            m.setCliente(this); // Mantenemos la relación bidireccional consistente
+        if (!this.mascotas.contains(mascota)) {
+            this.mascotas.add(mascota);
+            mascota.setCliente(this); // Mantenemos la relación bidireccional consistente
         }
     }
 
-    public void darDeBajaMascota(Mascota m) {
-        if (m != null && this.mascotas.remove(m)) {
-            m.setCliente(null); // Rompemos la relación
+    public void darDeBajaMascota(Mascota mascota) {
+        if (mascota != null && this.mascotas.remove(mascota)) {
+            mascota.setCliente(null); // Rompemos la relación
         }
     }
 

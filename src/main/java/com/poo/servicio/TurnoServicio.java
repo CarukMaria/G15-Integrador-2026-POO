@@ -127,26 +127,13 @@ public class TurnoServicio {
     }
 
     /*
-     * Cambia el estado del turno y coordina las acciones
-     * asociadas al estado ATENDIDO.
+     * Cambia el estado del turno. (Simplificado al delegar la fecha al turno)
      */
     public void cambiarEstado(
             Turno turno,
             EstadoTurno nuevoEstado) {
 
         turno.cambiarEstado(nuevoEstado);
-
-        if (nuevoEstado == EstadoTurno.ATENDIDO) {
-
-            for (ServicioPrestado servicio :
-                    turno.getServiciosPrestados()) {
-
-                if (servicio.getFechaPrestacion() == null) {
-                    servicio.registrarPrestacion();
-                }
-            }
-        }
-
         turnoRepositorio.guardar(turno);
     }
 

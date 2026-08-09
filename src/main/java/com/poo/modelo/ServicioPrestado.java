@@ -1,8 +1,6 @@
 package com.poo.modelo;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
-
 
 @Entity
 @Table(name = "servicios_prestados")
@@ -17,12 +15,6 @@ public class ServicioPrestado {
 
     @Column(nullable = false)
     private int duracionServicioPrestado;
-
-    /*
-     * Puede ser null mientras el turno está pendiente.
-     * Se completa cuando el servicio realmente se realiza.
-     */
-    private LocalDateTime fechaPrestacion;
 
     @ManyToOne
     @JoinColumn(name = "id_servicio")
@@ -48,17 +40,6 @@ public class ServicioPrestado {
          */
         setPrecioServicioPrestado(servicio.getPrecio());
         setDuracionServicioPrestado(servicio.getDuracion());
-
-        this.fechaPrestacion = null;
-    }
-
-    // --- MÉTODOS DE NEGOCIO ---
-
-    public void registrarPrestacion() {
-        if (this.fechaPrestacion != null) {
-            throw new IllegalStateException("El servicio ya fue realizado.");
-        }
-        this.fechaPrestacion = LocalDateTime.now();
     }
 
     // ----- GETTERS Y SETTERS PROTEGIDOS ----
@@ -89,17 +70,6 @@ public class ServicioPrestado {
             throw new IllegalArgumentException("La duración histórica debe ser mayor a 0.");
         }
         this.duracionServicioPrestado = duracionServicioPrestado;
-    }
-
-    public LocalDateTime getFechaPrestacion() {
-        return fechaPrestacion;
-    }
-
-    public void setFechaPrestacion(LocalDateTime fechaPrestacion) {
-        if (fechaPrestacion != null && fechaPrestacion.isAfter(LocalDateTime.now())) {
-            throw new IllegalArgumentException("La fecha de prestación no puede estar en el futuro.");
-        }
-        this.fechaPrestacion = fechaPrestacion;
     }
 
     public Servicio getServicio() {

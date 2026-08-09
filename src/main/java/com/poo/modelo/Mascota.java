@@ -36,19 +36,15 @@ public class Mascota {
     private String raza;
     private LocalDate fechaNacimiento;
 
-
     @Enumerated(EnumType.STRING)
     private Especie especie;
-
 
     @OneToMany(mappedBy = "mascota", fetch = FetchType.EAGER)
     private List<Turno> turnos = new ArrayList<>();
 
-
     // Constructor vacío obligatorio por JPA (protegido)
     protected Mascota() {
     }
-
 
     // Constructor con parámetros que pasa por las validaciones
     public Mascota(String numeroFicha, String nombre, String raza,
@@ -83,7 +79,6 @@ public class Mascota {
         LocalDateTime finNuevo =
                 fechaHoraNuevo.plusMinutes(duracionMinutosNuevo);
 
-
         for (Turno turnoExistente : turnos) {
             LocalDateTime inicioExistente = turnoExistente.getFechaHora();
             LocalDateTime finExistente = turnoExistente.calcularFechaHoraFin();
@@ -96,14 +91,12 @@ public class Mascota {
         return false;
     }
 
-
     // 1. Método original que usa el Controlador (antes de crear el turno, sin ID)
     public boolean puedeRecibirVacuna(Vacuna vacuna, LocalDate fechaNuevoTurno) {
         return puedeRecibirVacuna(vacuna, fechaNuevoTurno, null);
     }
 
     // 2. Nuevo método sobrecargado que usa el Service (ignora el turno actual)
-// 2. Nuevo método sobrecargado que usa el Service (ignora el turno actual)
     public boolean puedeRecibirVacuna(Vacuna vacuna, LocalDate fechaNuevoTurno, Long idTurnoActual) {
 
         for (Turno turno : turnos) {
@@ -120,10 +113,11 @@ public class Mascota {
                 if (servicioPrestado.getServicio() instanceof Vacunacion) {
                     Vacunacion vacunacion = (Vacunacion) servicioPrestado.getServicio();
                     
-                    // ACÁ ESTÁ EL FIX: Navegamos a través del objeto Vacuna
                     if (vacunacion.getVacuna().getNombre().equals(vacuna.getNombre())) {
+                        
+                        // FIX APLICADO: Usamos turno.getFechaHora() en lugar del servicioPrestado
                         if (vacuna.estaVigente(
-                                servicioPrestado.getFechaPrestacion().toLocalDate(), 
+                                turno.getFechaHora().toLocalDate(), 
                                 fechaNuevoTurno)) {
                             return false;
                         }
@@ -134,12 +128,10 @@ public class Mascota {
         return true;
     }
 
-
     @Override
     public String toString() {
         return nombre + " (" + especie + " - " + raza + ")";
     }
-
 
     // --- VALIDACIONES INTERNAS PRIVADAS ---
 
@@ -149,7 +141,6 @@ public class Mascota {
         }
         return valor.trim();
     }
-
 
     // --- GETTERS Y SETTERS PROTEGIDOS ---
 
