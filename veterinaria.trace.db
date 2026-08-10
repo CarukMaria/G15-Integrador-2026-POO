@@ -469,3 +469,9 @@ Caused by: org.h2.mvstore.MVStoreException: The file is locked: D:/Bauti/ARREGLA
 	at org.h2.mvstore.SingleFileStore.open(SingleFileStore.java:81)
 	at org.h2.mvstore.MVStore.<init>(MVStore.java:286)
 	... 72 more
+2026-08-09 21:21:55.169302-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: El objeto ya está cerrado
+The object is already closed [90007-224]
+2026-08-09 21:21:55.182309-03:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLNonTransientException: El objeto ya está cerrado
+The object is already closed [90007-224]

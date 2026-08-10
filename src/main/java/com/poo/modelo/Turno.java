@@ -38,7 +38,8 @@ public class Turno {
     private List<ServicioPrestado> serviciosPrestados =
             new ArrayList<>();
 
-    public Turno() {
+
+    protected Turno() {
     }
 
     public Turno(

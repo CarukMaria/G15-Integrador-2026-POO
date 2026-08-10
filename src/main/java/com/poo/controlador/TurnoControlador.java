@@ -201,7 +201,7 @@ public class TurnoControlador {
                 return;
             }
 
-            // ACÁ ESTÁ EL CAMBIO CLAVE: Le pasamos la fechaSeleccionada a la mascota
+            //Le pasamos la fechaSeleccionada a la mascota
             if (!mascota.puedeRecibirVacuna(vacunaSeleccionada, fechaSeleccionada)) {
 
                 mostrarAlerta(
@@ -220,7 +220,7 @@ public class TurnoControlador {
         }
         
         ServicioPrestado nuevo =
-                new ServicioPrestado(servicioSeleccionado, null);
+            new ServicioPrestado(servicioSeleccionado, turnoSeleccionado);
 
 
         listaServiciosDelTurno.add(nuevo);

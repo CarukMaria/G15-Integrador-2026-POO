@@ -88,9 +88,6 @@ public class ServicioPrestado {
     }
 
     public void setTurno(Turno turno) {
-        if (turno == null) {
-            throw new IllegalArgumentException("El turno asociado no puede ser nulo.");
-        }
         this.turno = turno;
     }
 }

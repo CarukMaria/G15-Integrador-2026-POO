@@ -134,6 +134,7 @@ public class TurnoServicio {
             EstadoTurno nuevoEstado) {
 
         turno.cambiarEstado(nuevoEstado);
+
         turnoRepositorio.guardar(turno);
     }
 
