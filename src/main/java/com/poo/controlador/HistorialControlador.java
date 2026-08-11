@@ -1,5 +1,6 @@
 package com.poo.controlador;
 
+import com.poo.modelo.ServicioPrestado;
 import com.poo.modelo.Turno;
 import com.poo.servicio.TurnoServicio;
 
@@ -12,7 +13,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -24,17 +24,35 @@ public class HistorialControlador {
     private ObservableList<Turno> listaObservableTurnos;
 
     // --- ELEMENTOS FXML ---
-    @FXML private TextField txtBuscarMascota;
-    @FXML private Button btnBuscar;
-    @FXML private Button btnLimpiar;
+    @FXML
+    private TextField txtBuscarFicha;
 
-    @FXML private TableView<Turno> tablaHistorial;
-    @FXML private TableColumn<Turno, String> colFecha;
-    @FXML private TableColumn<Turno, String> colHora;
-    @FXML private TableColumn<Turno, String> colMascota;
-    @FXML private TableColumn<Turno, String> colVeterinario;
-    @FXML private TableColumn<Turno, String> colEstado;
-    @FXML private TableColumn<Turno, String> colServicios;
+    @FXML
+    private Button btnBuscar;
+
+    @FXML
+    private Button btnLimpiar;
+
+    @FXML
+    private TableView<Turno> tablaHistorial;
+
+    @FXML
+    private TableColumn<Turno, String> colFecha;
+
+    @FXML
+    private TableColumn<Turno, String> colHora;
+
+    @FXML
+    private TableColumn<Turno, String> colMascota;
+
+    @FXML
+    private TableColumn<Turno, String> colVeterinario;
+
+    @FXML
+    private TableColumn<Turno, String> colEstado;
+
+    @FXML
+    private TableColumn<Turno, String> colServicios;
 
     public HistorialControlador() {
         this.turnoServicio = new TurnoServicio();
@@ -42,55 +60,102 @@ public class HistorialControlador {
 
     @FXML
     public void initialize() {
-        // 1. Mapeo de columnas con formato personalizado
-        DateTimeFormatter fechaFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        DateTimeFormatter horaFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        // Fecha y Hora formateadas desde el LocalDateTime del Turno
+        DateTimeFormatter fechaFormatter =
+                DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        DateTimeFormatter horaFormatter =
+                DateTimeFormatter.ofPattern("HH:mm");
+
+        // FECHA
         colFecha.setCellValueFactory(cellData -> {
-            if (cellData.getValue().getFechaHora() != null) {
-                return new SimpleStringProperty(cellData.getValue().getFechaHora().format(fechaFormatter));
+
+            Turno turno = cellData.getValue();
+
+            if (turno.getFechaHora() != null) {
+                return new SimpleStringProperty(
+                        turno.getFechaHora().format(fechaFormatter)
+                );
             }
+
             return new SimpleStringProperty("");
         });
 
+        // HORA
         colHora.setCellValueFactory(cellData -> {
-            if (cellData.getValue().getFechaHora() != null) {
-                return new SimpleStringProperty(cellData.getValue().getFechaHora().format(horaFormatter));
+
+            Turno turno = cellData.getValue();
+
+            if (turno.getFechaHora() != null) {
+                return new SimpleStringProperty(
+                        turno.getFechaHora().format(horaFormatter)
+                );
             }
+
             return new SimpleStringProperty("");
         });
 
-        // Mascota, Veterinario y Estado
+        // MASCOTA
         colMascota.setCellValueFactory(cellData -> {
-            if (cellData.getValue().getMascota() != null) {
-                return new SimpleStringProperty(cellData.getValue().getMascota().getNombre());
+
+            Turno turno = cellData.getValue();
+
+            if (turno.getMascota() != null) {
+                return new SimpleStringProperty(
+                        turno.getMascota().getNombre()
+                );
             }
+
             return new SimpleStringProperty("Sin Mascota");
         });
 
+        // VETERINARIO
         colVeterinario.setCellValueFactory(cellData -> {
-            if (cellData.getValue().getVeterinario() != null) {
-                return new SimpleStringProperty(cellData.getValue().getVeterinario().getNombre());
+
+            Turno turno = cellData.getValue();
+
+            if (turno.getVeterinario() != null) {
+                return new SimpleStringProperty(
+                        turno.getVeterinario().getNombre()
+                );
             }
+
             return new SimpleStringProperty("Sin Veterinario");
         });
 
-        colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        // ESTADO
+        colEstado.setCellValueFactory(cellData ->
+                new SimpleStringProperty(
+                        cellData.getValue().getEstado() != null
+                                ? cellData.getValue().getEstado().toString()
+                                : ""
+                )
+        );
 
-        // Servicios Realizados: junta los nombres de todos los servicios prestados del turno
+        // SERVICIOS
         colServicios.setCellValueFactory(cellData -> {
-            // 1. Usamos el getter correcto que vimos en la clase Turno
-            List<com.poo.modelo.ServicioPrestado> serviciosPrestados = cellData.getValue().getServiciosPrestados();
-            
-            if (serviciosPrestados != null && !serviciosPrestados.isEmpty()) {
+
+            List<ServicioPrestado> serviciosPrestados =
+                    cellData.getValue().getServiciosPrestados();
+
+            if (serviciosPrestados != null
+                    && !serviciosPrestados.isEmpty()) {
+
                 String nombresServicios = serviciosPrestados.stream()
+                        .filter(sp -> sp.getServicio() != null)
                         .map(sp -> sp.getServicio().getNombre())
                         .collect(Collectors.joining(", "));
-                return new SimpleStringProperty(nombresServicios);
+
+                if (!nombresServicios.isEmpty()) {
+                    return new SimpleStringProperty(nombresServicios);
+                }
             }
+
             return new SimpleStringProperty("Sin servicios registrados");
         });
+
+        // Al abrir el historial se muestran todos los turnos.
+        cargarHistorial(null);
     }
 
     private void cargarHistorial(String ficha) {
@@ -98,10 +163,16 @@ public class HistorialControlador {
         List<Turno> turnos;
 
         if (ficha == null || ficha.trim().isEmpty()) {
+
             turnos = turnoServicio.listar();
+
         } else {
-            turnos = turnoServicio.buscarPorFicha(ficha);
+
+            turnos = turnoServicio.buscarPorFicha(
+                    ficha.trim()
+            );
         }
+
         listaObservableTurnos =
                 FXCollections.observableArrayList(turnos);
 
@@ -110,12 +181,15 @@ public class HistorialControlador {
 
     @FXML
     public void buscarHistorialAccion(ActionEvent event) {
-        cargarHistorial(txtBuscarMascota.getText());
+
+        cargarHistorial(txtBuscarFicha.getText());
     }
 
     @FXML
     public void limpiarBusquedaAccion(ActionEvent event) {
-        txtBuscarMascota.clear();
+
+        txtBuscarFicha.clear();
+
         cargarHistorial(null);
     }
 }
