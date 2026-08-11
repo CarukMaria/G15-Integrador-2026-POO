@@ -66,7 +66,28 @@ public class TurnoRepositorio {
             em.close();
         }
     }
+    
+    public List<Turno> buscarPorFicha(String ficha) {
 
+        EntityManager em = JPAUtil.getEntityManager();
+        
+        try {
+            TypedQuery<Turno> query =
+                    em.createQuery(
+                            "SELECT t FROM Turno t " +
+                            "WHERE t.mascota.numeroFicha = :ficha",
+                            Turno.class
+                    );
+            query.setParameter("ficha", ficha);
+
+            List<Turno> resultado = query.getResultList();
+
+            return resultado;
+
+        } finally {
+            em.close();
+        }
+    }
 
     public void eliminar(Turno turno) {
 

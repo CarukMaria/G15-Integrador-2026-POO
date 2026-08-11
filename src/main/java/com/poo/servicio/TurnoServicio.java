@@ -142,6 +142,17 @@ public class TurnoServicio {
         return turnoRepositorio.listarTodos();
     }
 
+    public List<Turno> buscarPorFicha(String numeroFicha) {
+
+        if (numeroFicha == null || numeroFicha.trim().isEmpty()) {
+            throw new IllegalArgumentException(
+                "La ficha no puede estar vacía"
+            );
+        }
+
+        return turnoRepositorio.buscarPorFicha(numeroFicha.trim());
+    }
+
     public Turno buscarPorId(Long id) {
 
         if (id == null) {

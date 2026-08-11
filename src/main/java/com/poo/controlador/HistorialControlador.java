@@ -93,18 +93,18 @@ public class HistorialControlador {
         });
     }
 
-    private void cargarHistorial(String filtroMascota) {
-        List<Turno> todosLosTurnos = turnoServicio.listar();
+    private void cargarHistorial(String ficha) {
 
-        // Si hay un texto en el buscador, filtramos ignorando mayúsculas/minúsculas
-        if (filtroMascota != null && !filtroMascota.trim().isEmpty()) {
-            String busqueda = filtroMascota.trim().toLowerCase();
-            todosLosTurnos = todosLosTurnos.stream()
-                    .filter(t -> t.getMascota() != null && t.getMascota().getNombre().toLowerCase().contains(busqueda))
-                    .collect(Collectors.toList());
+        List<Turno> turnos;
+
+        if (ficha == null || ficha.trim().isEmpty()) {
+            turnos = turnoServicio.listar();
+        } else {
+            turnos = turnoServicio.buscarPorFicha(ficha);
         }
+        listaObservableTurnos =
+                FXCollections.observableArrayList(turnos);
 
-        listaObservableTurnos = FXCollections.observableArrayList(todosLosTurnos);
         tablaHistorial.setItems(listaObservableTurnos);
     }
 
