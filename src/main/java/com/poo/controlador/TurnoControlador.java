@@ -423,16 +423,37 @@ public class TurnoControlador {
     }
 
     private void buscarTurno() {
-        String textoBusqueda = txtBuscarTurno.getText().toLowerCase();
+
+        String textoBusqueda = txtBuscarTurno.getText().trim().toLowerCase();
+
         if (textoBusqueda.isEmpty()) {
             tablaTurnos.setItems(listaObservableTurnos);
-        } else {
-            List<Turno> filtrados = listaObservableTurnos.stream()
-                    .filter(t -> t.getMascota().getNombre().toLowerCase().contains(textoBusqueda) || 
-                                 t.getFechaHora().toLocalDate().toString().contains(textoBusqueda))
-                    .collect(Collectors.toList());
-            tablaTurnos.setItems(FXCollections.observableArrayList(filtrados));
+            return;
         }
+
+        List<Turno> filtrados = listaObservableTurnos.stream()
+                .filter(t -> {
+
+                    // Buscar por estado
+                    boolean coincideEstado =
+                            t.getEstado().name()
+                                    .toLowerCase()
+                                    .contains(textoBusqueda);
+
+                   // Buscar por fecha
+                    boolean coincideFecha =
+                            t.getFechaHora()
+                                    .toLocalDate()
+                                    .toString()
+                                    .contains(textoBusqueda);
+
+                    return coincideEstado || coincideFecha;
+                })
+                .collect(Collectors.toList());
+
+        tablaTurnos.setItems(
+                FXCollections.observableArrayList(filtrados)
+        );
     }
 
     private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {

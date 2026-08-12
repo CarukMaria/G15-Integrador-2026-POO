@@ -17,10 +17,19 @@ public class VeterinarioRepositorio {
         try {
             em.getTransaction().begin();
 
-            em.persist(veterinario);
+            if (veterinario.getIdVeterinario() == null) {
+                em.persist(veterinario);
+            } else {
+                veterinario = em.merge(veterinario);
+            }
 
             em.getTransaction().commit();
 
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw e;
         } finally {
             em.close();
         }

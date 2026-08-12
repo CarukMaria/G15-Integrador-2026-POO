@@ -22,7 +22,7 @@
    <top>
       <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <TextField prefHeight="25.0" prefWidth="211.0" text="Ingrese fecha o nombre de mascota..." />
+            <TextField fx:id="txtBuscarTurno" prefHeight="25.0" prefWidth="211.0"  promptText="Buscar por fecha o estado..." />
             <Button fx:id="btnBuscarTurno" mnemonicParsing="false" text="Buscar" />
             <Button fx:id="btnNuevoTurno" mnemonicParsing="false" text="+ Nuevo turno" />
          </children>
