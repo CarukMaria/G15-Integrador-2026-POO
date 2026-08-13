@@ -7,6 +7,7 @@ import com.poo.modelo.Turno;
 import com.poo.modelo.Vacunacion;
 import com.poo.repositorio.TurnoRepositorio;
 
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class TurnoServicio {
     public void guardar(Turno turno) {
 
         validarDatosBasicos(turno);
+        validarModificacion(turno);
         validarSolapamiento(turno);
         validarVacunas(turno);
 
@@ -57,6 +59,33 @@ public class TurnoServicio {
         if (turno.getVeterinario() == null) {
             throw new IllegalArgumentException(
                 "El turno debe tener un veterinario"
+            );
+        }
+    }
+
+    private void validarModificacion(Turno turno) {
+
+        if (turno.getIdTurno() == null) {
+            return; // Es un turno nuevo
+        }
+
+        Turno existente = turnoRepositorio.buscarPorId(turno.getIdTurno());
+
+        if (existente == null) {
+            throw new IllegalArgumentException(
+                "El turno que se intenta modificar no existe."
+            );
+        }
+
+        if (existente.getEstado() == EstadoTurno.ATENDIDO) {
+            throw new IllegalArgumentException(
+                "No se puede modificar un turno que ya fue atendido."
+            );
+        }
+
+        if (existente.getEstado() == EstadoTurno.CANCELADO) {
+            throw new IllegalArgumentException(
+                "No se puede modificar un turno cancelado."
             );
         }
     }
