@@ -1,0 +1,421 @@
+CORRECCIONES EN EL ÚLTIMO ESTADO DEL PROYECTO
+
+En el controlador no deben crearse objetos. El controlador debe enviar a Service los datos para que el mismo cree el objeto. 
+
+En Service no se debe recibir una entidad ya creada. 
+
+Que "Service deba ser lo más pequeño posible" es en el siguiente sentido:
+- Las reglas de negocio deben estar posicionadas en el Modelo, siempre que la regla se refiera a información que conozca la clase.
+Excepciones: Reglas que necesiten conocer datos de las diferentes instancias.
+- Eso no significa que no deba crear las Instancias.
+
+
+
+
+
+
+
+
+
+
+
+
+
+CORRECCIONES DE LA PRIMERA PRESENTACIÓN (Los errores fueron corregidos)
+
+
+Separé lo que aparece en el audio en **puntos concretos**, incluso cuando el profe lo mencionó de pasada o quedó medio mezclado con otros temas.
+
+## Correcciones y observaciones del profesor
+
+### 1. Modelo de dominio / diagrama de clases
+
+* El **modelo de dominio estaba desactualizado respecto del código.*
+* El modelo debe representar correctamente la
+* Había algunos **atributos que comenzaban con mayúscula**, cuando deberían comenzar con minúscula.
+* Hay que respetar las convenciones de nombres de Java también en el modelo. Los enums se definen junto al tipo como es llamado en la clase del modelo, y se anexa una tabla como si fuera a una clase con las opciones posibles. 
+* Había una relación entre **Vacuna y Vacunación** que estaba mal representada.
+* El nombre/atributo de `Vacuna` aparecía tanto en `Vacuna` como en `Vacunación`, cuando eso no correspondía.
+* Revisar que los nombres de atributos y relaciones no estén duplicados innecesariamente. (Fecha ?)
+* Había algunos nombres escritos incorrectamente / errores de tipeo.
+* Las **cardinalidades** de las relaciones deben representar lo que realmente permite hacer el sistema.
+* No hay que elegir una cardinalidad solamente por cómo conceptualmente parecen relacionarse dos clases.
+* Hay que analizar qué puede existir independientemente y qué depende de qué.
+* El profesor observó que había una relación cuya cardinalidad no coincidía con la forma en que realmente se pueden crear las entidades.
+* El modelo de dominio no debería quedar cerrado de una manera que contradiga lo que después requiere la implementación.
+
+---
+
+### 2. Enumeraciones (`enum`)
+
+* Un `enum` representa un conjunto **cerrado de valores posibles**.
+
+* En código, el `enum` declara explícitamente cuáles 
+* El `enum` debe aparecer en el modelo de clases.
+* Se representa indicando el tipo correspondiente, por ejemplo:
+
+  * `enum Especialidad`
+* Dentro del `enum` se deben mostrar los **valores posibles**.
+* El `enum` aparece en el modelo como un tipo, pero **no es una entidad**.
+* No hay que confundir un `enum` con una clase entidad.
+* La finalidad de mostrar sus valores en el modelo es dejar claro cuáles son las alternativas válidas.
+* Si `Especialidad` es un `enum`, el modelo debe permitir ver qué especialidades pueden existir.
+
+---
+
+### 3. Métodos del modelo de dominio
+ 
+* Lo importante en el modelo es mostrar las operaciones relevantes del dominio.
+* Los métodos de negocio sí tienen importancia para demostrar que el modelo es **rico**.
+* Hay que diferenciar:
+
+  * getters/setters;
+  * métodos de negocio;
+  * validaciones;
+  * comportamiento propio de las entidades.
+
+---
+
+### 4. Modelo rico
+
+* El profesor esperaba un **modelo rico**, no simplemente clases que funcionen como contenedores de atributos.
+* Las entidades deberían contener comportamiento propio del dominio.
+* Las reglas que pertenecen naturalmente a una entidad deberían estar implementadas en esa entidad.
+* Los métodos de negocio deben estar en las clases del modelo cuando la regla puede resolverse con la información que tiene esa entidad.
+* No todo debe terminar en el Controller.
+* No todo debe terminar en el Service.
+* Hay que pensar **qué objeto tiene la información necesaria para hacer cumplir cada regla**.
+
+---
+
+### 5. Validaciones en getters y setters
+
+* En las clases del modelo había validaciones asociadas a getters y setters.
+* El profesor señaló que los **getters y setters no deberían tener ese tipo de validaciones de reglas de negocio**. (POSIBLEMENTE LA IA TRANSCRIBIÓ MAL ESTO PORQUE NO RECUERDO QUE HAYA OERO ESTÁ BUENO PARA REVISAR)
+* Los getters y setters deberían encargarse fundamentalmente de acceder o modificar los atributos.
+* Las validaciones de negocio deben estar en los métodos correspondientes del modelo.
+* No corresponde meter una regla de negocio dentro de un setter solamente porque el atributo se está modificando.
+* Hay que separar:
+
+  * acceso/modificación de atributos;
+  * validaciones de datos; (ESTO SÍ VA)
+  * reglas de negocio.
+* Esto estaba relacionado con la exigencia de que el modelo fuera rico.
+
+---
+
+### 6. Validaciones y `null`
+
+* Había validaciones relacionadas con que determinados valores fueran distintos de `null`.
+* El hecho de tener restricciones de `nullable=false` en JPA **no reemplaza las validaciones del programa** (ESTAS DEBERIAN ESTAR EN EL MODELO)
+* No se debería depender de que la base de datos detecte un error.
+* La validación debería hacerse antes de que el dato llegue hasta la base de datos.
+* Si se deja que el dato inválido llegue a JPA y recién ahí aparezca el error, se está "capturando" demasiado tarde.
+* La base de datos tiene que funcionar como última barrer.
+* Hay que evitar que un dato inválido llegue hasta la persistencia cuando se puede detectar previamente.
+* Por ejemplo, un `id` nulo o un dato obligatorio faltante debería poder detectarse antes de intentar persistir.
+* Las restricciones de la base de datos son necesarias, pero **no son suficientes como validación de la aplicación**.
+
+---
+
+### 7. Validaciones en Controller
+
+* En el Controller sí puede haber **validaciones relacionadas con la vista**.
+* El Controller puede comprobar cosas necesarias para interactuar correctamente con la interfaz.
+* Por ejemplo, comprobar que se haya seleccionado un valor en un ComboBox o que un campo requerido de la interfaz no esté vacío.
+* Esas validaciones son distintas de las reglas de negocio.
+* El Controller **no debería contener las reglas de negocio**.
+* No corresponde que el Controller decida si una operación está permitida según las reglas del dominio.
+* La documentación había quedado ambigua al decir que había “validaciones en el Controller”.
+* Había que especificar (Y VERIFICRA EN CÓDIGO) que esas validaciones son **validaciones de la vista / entrada de usuario**, no validaciones de reglas de negocio.
+* Las reglas de negocio deben ubicarse principalmente en el modelo.
+
+---
+### 8. Reglas de negocio en el modelo
+
+* Una entidad debería validar sus propias reglas cuando tiene toda la información necesaria para hacerlo.
+* Si una regla se refiere a un único objeto, normalmente tiene sentido que esté en esa entidad.
+* El modelo debe ser responsable del comportamiento que corresponde naturalmente a sus objetos.
+
+---
+
+### 9. Excepciones: reglas que necesitan conocer varias entidades
+
+* Hay algunas reglas de negocio que **no pueden estar dentro de una única entidad**.
+* Esto ocurre cuando una regla necesita información sobre un conjunto de objetos.
+* El ejemplo más claro fue el de los **turnos superpuestos**.
+* Un `Turno` individual no conoce necesariamente todos los demás turnos existentes.
+* Por lo tanto, un turno por sí solo no puede determinar si existe otro turno que se superpone.
+* Para validar esa regla se necesita consultar un listado de turnos.
+* Esa es una de las situaciones donde tiene sentido que la validación esté en la **capa de servicio**.
+* El Service funciona como intermediario entre los Controllers y los Repositories.
+* No es correcto decir que el Service es simplemente “la capa intermedia con la base de datos”.
+* La arquitectura se puede entender aproximadamente como:
+
+  * Controller → Service → Repository → Base de datos.
+* El modelo también participa en la lógica, pero el Service coordina operaciones que requieren información de varias entidades.
+* El Service puede encargarse de reglas que necesitan consultar información que una entidad aislada no posee.
+* El ejemplo del solapamiento de turnos es una justificación válida para tener una regla en `TurnoService`.
+* No hay que poner **todas** las reglas de negocio en Service.
+* El Service debe utilizarse como excepción cuando la regla requiere coordinación o información externa a una única entidad.
+* La justificación para una regla ubicada en Service debería ser: **la regla necesita conocer un conjunto de entidades / información externa a la entidad individual**. (EL PROFE MENCIONÓ: LA ALTERNATIVA QUE EN ESTE CASO NO MANEJAMOS PORQUE SERIA DEMASIADO FÁCIL PONER TODO AHÍ, ES LA CLASE "SISTEMA")
+* No sirve justificar que una regla está en Service simplemente porque “es una validación”.
+
+---
+
+### 10. Rol de la capa Service
+
+* La capa Service está entre el Controller y el Repository dentro de la arquitectura.
+* El Controller no debería acceder directamente a la persistencia para resolver reglas complejas.
+* El Service coordina las operaciones de la aplicación.
+* Puede utilizar los Repositories para obtener la información que necesita.
+* Puede aplicar reglas que requieren información de varias entidades.
+* Puede coordinar operaciones que involucran más de un objeto.
+* La existencia de Service no significa que el modelo deje de tener comportamiento.
+
+---
+
+### 11. JPA y restricciones de base de datos
+
+* El profesor insistió en tener cuidado con confiar demasiado en las restricciones de JPA.
+* `nullable=false` genera restricciones en la persistencia, pero no reemplaza la validación previa.
+* La aplicación debería detectar los errores antes de llegar a la base de datos.
+* Hay que diferenciar:
+
+  * validación de la aplicación;
+  * restricción de persistencia;
+  * error producido por la base de datos.
+* Una aplicación correctamente validada no debería esperar a que la base de datos le diga que un dato era inválido.
+
+---
+
+### 12. Tipos de datos: `String` para DNI / identificadores
+
+* El profesor cuestionó el uso de `String` para determinados identificadores como DNI o ID.
+* Insistió en prestar atención al **tipo de dato elegido**.
+* La elección del tipo tiene relación con:
+
+  * cantidad de bits;
+  * espacio utilizado;
+  * representación del dato;
+  * características de la base de datos.
+* Hay que conocer el tamaño de los tipos de datos utilizados.
+* No elegir tipos de datos automáticamente sin pensar qué representan.
+* Hay que analizar si realmente corresponde utilizar `String` o un tipo numérico.
+* También hay que considerar cómo se almacena ese dato en la base de datos.
+* El profesor preguntó si habíamos analizado el tamaño que ocupan los tipos en la base de datos.
+* Para la corrección, conviene revisar los tipos de todos los atributos y justificar por qué se eligió cada uno. (Masomenos, CREO QUE ES ALGO QUE VOY A REVISAR MEJOR EN CUANTO A LOS VALORES DE LOS METODOS)
+
+---
+
+### 13. Criterios de búsqueda
+
+* También se habló de la calidad de los criterios de búsqueda.
+* Un criterio de búsqueda únicamente por **ID** puede no ser un criterio especialmente útil para el usuario.
+* Hay que pensar los criterios de búsqueda desde la funcionalidad real del sistema.
+* No basta con implementar cualquier filtro porque técnicamente funciona. EJ: NOMBRE.
+* Hay que evaluar qué búsquedas tienen sentido para el usuario.
+* La calidad del diseño también incluye pensar qué información necesita realmente consultar el usuario.
+
+---
+
+### 14. Constructor vacío de las entidades
+
+* Se preguntó por el **constructor vacío** que necesita cada clase del modelo para trabajar con JPA.
+* El constructor vacío es necesario para que JPA pueda instanciar las entidades.
+* El profesor señaló que no necesariamente tiene que ser `public`.
+* Puede tener visibilidad **`protected`**.
+* La idea es permitir que JPA pueda utilizarlo sin exponer innecesariamente ese constructor al resto de la aplicación.
+* Hay que revisar la visibilidad de los constructores vacíos de las entidades.
+
+---
+
+### 15. JPA como conexión entre Java y la base de datos
+
+* Se habló de JPA como mecanismo que permite trabajar desde Java con una base de datos.
+* JPA permite trabajar de manera más genérica con la persistencia.
+* Dependiendo de la base de datos utilizada y de la configuración, se pueden generar las estructuras correspondientes.
+* Hay que entender qué hace JPA y qué hace específicamente el motor de base de datos.
+* No basta con saber utilizar las anotaciones: hay que poder explicar qué ocurre entre las entidades Java y la base de datos. (ESTO NO SÉ SI ES ASÍ)
+
+---
+
+### 16. Creación automática de la base de datos
+
+* El profesor cuestionó la idea de que el sistema genere la base de datos desde cero cada vez que se ejecuta.
+* En un sistema real, **no tiene sentido regenerar toda la base de datos cada vez que se inicia el programa**.
+* Hay que tener cuidado con utilizar una estrategia de generación que destruya/recree estructuras innecesariamente.
+* Primero se utilizó una configuración de creación (`create`) y posteriormente se pasó a `update`.
+* La estrategia de `update` también tiene cuestiones que hay que analizar.
+* `update` puede generar problemas o “basura” en determinadas situaciones.
+* Hay que revisar qué hace exactamente la estrategia de generación elegida.
+* No hay que elegir `create`, `update`, etc. simplemente porque “funciona”.
+* Hay que poder justificar la estrategia de generación del esquema de base de datos.
+* En un sistema real, la evolución de la base de datos debería manejarse de manera controlada.
+* Conviene revisar si la estrategia elegida es adecuada para desarrollo y cuál sería adecuada para producción.
+
+### 17. Justificación de las decisiones técnicas
+
+* El profesor hizo varias preguntas donde **la respuesta tenía sentido**, pero faltaba una justificación técnica más profunda.
+* No basta con que el código funcione.
+* Hay que poder explicar por qué una decisión fue tomada.
+* Hay que poder justificar:
+
+  * ubicación de las validaciones;
+  * elección de tipos;
+  * relaciones;
+  * cardinalidades;
+  * uso de enums;
+  * arquitectura;
+  * persistencia;
+  * constructores;
+  * estrategia de generación de base de datos.
+* Si una decisión se tomó simplemente porque “funcionaba”, no alcanza como justificación.
+* Hay que demostrar que se entiende qué está haciendo el código y por qué está diseñado de esa manera.
+
+---
+
+### 18. Documentación
+
+* La documentación fue revisada.
+* El profesor había indicado aproximadamente **dos hojas**, pero eso no significa que haya que dejar aspectos importantes sin explicar.
+* En algunas partes pidió mayor especificidad.
+* La documentación debería permitir que alguien pueda entender el sistema sin tener que adivinar cómo funciona.
+* El profesor espera que al mirar **la documentación + el diagrama** se pueda entender suficientemente el código.
+* La documentación debería ser coherente con la implementación.
+* No debería haber ambigüedades entre lo que dice la documentación y lo que realmente hace el programa.
+* Hay que especificar mejor las decisiones que puedan generar dudas. Ej: clases.
+* No alcanza con describir superficialmente las capas.
+* Si existe una regla de negocio, debería quedar claro dónde está implementada y por qué.
+* La documentación debería ayudar a justificar las decisiones arquitectónicas.
+
+---
+
+### 19. Coherencia entre documentación, modelo y código
+
+* Tiene que existir correspondencia entre:
+
+  * documentación;
+  * modelo de dominio;
+  * código.
+* Si el código cambió, hay que actualizar el modelo.
+* Si el modelo cambió, hay que revisar la documentación.
+* No conviene desarrollar una cosa y dejar el diagrama/documentación atrasados.
+* El profesor puede usar el modelo como referencia para evaluar el código.
+* Un modelo incorrecto puede generar una mala primera impresión aunque el código esté funcionando.
+* La documentación debería servir como una especie de mapa para comprender la implementación.
+
+---
+
+### 20. Formalismo y presentación
+
+* El profesor parece darle bastante importancia al **formalismo**.
+* Cosas que pueden parecer “pavaditas” también son parte de la calidad del proyecto.
+* Ejemplos:
+
+  * nombres correctamente escritos;
+  * atributos en minúscula;
+  * tipos adecuados;
+  * cardinalidades correctas;
+  * relaciones correctamente representadas;
+  * constructores con visibilidad apropiada;
+  * validaciones correctamente ubicadas.
+* No necesariamente son errores que por sí solos hagan que el sistema deje de funcionar.
+* Pero muestran si el proyecto está formalmente bien construido.
+* Hay que aprovechar la corrección para revisar todos esos detalles.
+
+---
+
+### 21. La interfaz no fue el centro del examen
+
+* La expectativa inicial era que el profesor pudiera centrarse bastante en las pantallas y funcionalidades.
+* En realidad, las preguntas fueron mucho más **estructurales y arquitectónicas**.
+* El foco estuvo más en:
+
+  * modelo;
+  * arquitectura;
+  * validaciones;
+  * reglas de negocio;
+  * JPA;
+  * tipos de datos;
+  * diseño;
+  * justificaciones.
+* No parece que el primer criterio de evaluación haya sido simplemente “¿funciona la pantalla?”.
+* Una funcionalidad puede funcionar y aun así recibir observaciones por problemas de diseño.
+* Hay que priorizar el entendimiento de la estructura interna, no solamente de la interfaz.
+
+---
+
+### 22. No confiarse porque “funciona”
+
+* Que el programa funcione no significa que el diseño esté correctamente hecho.
+* El profesor evalúa también la calidad estructural.
+* Hay que revisar el proyecto desde el punto de vista de:
+
+  * POO;
+  * arquitectura;
+  * persistencia;
+  * diseño;
+  * validaciones;
+  * modelado.
+* No alcanza con que el resultado visible sea correcto.
+* Hay que poder explicar qué ocurre internamente.
+
+---
+
+## Lo que yo tomaría como **checklist de corrección antes de volver a presentar**
+
+### Modelo
+
+* [ ] Actualizar el modelo para que coincida exactamente con el código.
+* [ ] Revisar mayúsculas/minúsculas de todos los atributos.
+* [ ] Revisar nombres mal escritos.
+* [ ] Revisar relaciones duplicadas.
+* [ ] Revisar relación `Vacuna` ↔ `Vacunación`.
+* [ ] Revisar todas las cardinalidades.
+* [ ] Verificar que las cardinalidades representen lo que realmente permite el sistema.
+* [ ] Revisar enums.
+* [ ] Mostrar los valores posibles de cada enum.
+ No representar enums como entidades.
+ Sacar getters/setters del diagrama.
+ Dejar visibles los métodos de negocio importantes.
+ Verificar que el modelo sea rico.
+Validaciones
+ Sacar reglas de negocio de los Controllers.
+ Dejar en Controller solamente validaciones relacionadas con la vista/entrada.
+ Llevar al modelo las reglas que corresponden a una entidad.
+ Dejar en Service solamente las reglas que necesitan información de varias entidades.
+ Justificar el solapamiento de turnos como regla de Service.
+ Revisar validaciones de getters/setters.
+ No depender de nullable=false para validar la aplicación.
+ Validar antes de llegar a la base de datos.
+ Revisar nulos y datos obligatorios.
+ Revisar límites de valores cuando corresponda.
+JPA
+ Revisar constructores vacíos.
+ Verificar que tengan visibilidad protected cuando corresponda.
+ Entender por qué JPA necesita constructor vacío.
+ Revisar estrategia create.
+ Revisar estrategia update.
+ Entender problemas potenciales de update.
+ Poder justificar la estrategia utilizada.
+ Revisar qué hace JPA y qué hace la base de datos.
+Tipos
+ Revisar todos los String usados para IDs/DNI.
+ Analizar si corresponde usar tipos numéricos.
+ Conocer tamaño/ocupación de los tipos.
+ Poder justificar cada tipo de dato.
+Búsquedas
+ Revisar criterios de búsqueda.
+ No quedarse solamente con búsquedas por ID si no son útiles para el usuario.
+ Pensar qué criterios de búsqueda tienen sentido funcionalmente.
+Documentación
+ Actualizar documentación según el código final.
+ Hacerla más específica donde haya ambigüedades.
+ Explicar dónde están las validaciones.
+ Explicar por qué están en esa capa.
+ Explicar el papel del Service.
+ Explicar las excepciones donde una regla está en Service.
+ Asegurar coherencia entre documentación, modelo y código.
+ Revisar nombres y errores de tipeo.
+ Hacer que documentación + diagrama permitan entender la implementación
