@@ -11,18 +11,28 @@ import java.io.IOException;
 
 public class MainControlador {
 
+   
+    private static MainControlador instancia;
+
     @FXML
     private StackPane panelCentral;
 
+    public MainControlador() {
+        instancia = this;
+    }
+
+    public static MainControlador getInstancia() {
+        return instancia;
+    }
+    // -----------------------------------------------------------------------------------------
+
     @FXML
     public void initialize() {
-        // Opcional: Cargar la vista de Turnos por defecto al abrir la aplicación
         abrirTurnos(null);
     }
 
     @FXML
     public void abrirTurnos(ActionEvent event) {
-        // Asegurate de que el nombre del archivo coincida exactamente con tu FXML
         cargarVista("TurnosVista.fxml");
     }
 
@@ -51,16 +61,30 @@ public class MainControlador {
         cargarVista("HistorialVista.fxml");
     }
 
-    /**
-     * Método auxiliar que se encarga de leer el archivo FXML y colocarlo en el centro de la pantalla.
-     */
+    public void abrirHistorialFiltrado(String numeroFicha) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/HistorialVista.fxml"));
+            Parent vista = loader.load();
+            
+ 
+            HistorialControlador controlador = loader.getController();
+            controlador.recibirFichaDesdeAfuera(numeroFicha);
+            
+            panelCentral.getChildren().clear();
+            panelCentral.getChildren().add(vista);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlertaError("No se pudo cargar la pantalla prefiltrada de Historial.");
+        }
+    }
+    // ---------------------------------------------------------------------------
+
     private void cargarVista(String archivoFxml) {
         try {
-            // La ruta asume que tus archivos .fxml están dentro de src/main/resources/vistas/
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/vistas/" + archivoFxml));
             Parent vista = loader.load();
             
-            // Limpiamos lo que haya en el panel central y agregamos la nueva vista
             panelCentral.getChildren().clear();
             panelCentral.getChildren().add(vista);
             

@@ -192,4 +192,14 @@ public class HistorialControlador {
 
         cargarHistorial(null);
     }
+
+
+    public void recibirFichaDesdeAfuera(String numeroFicha) {
+
+        txtBuscarFicha.setText(numeroFicha);
+        
+        cargarHistorial(numeroFicha);
+    }
+
+    
 }

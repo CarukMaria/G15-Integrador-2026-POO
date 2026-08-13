@@ -28,338 +28,140 @@
             <padding>
                 <Insets top="10" bottom="10" left="10" right="10"/>
             </padding>
-
             <children>
-
                 <Label text="Buscar cliente:"/>
-
-                <TextField fx:id="txtBuscarCliente"
-                           promptText="Ingrese DNI o Apellido"/>
-
-                <Button fx:id="btnBuscar"
-                        text="Buscar"/>
-
-                <Button fx:id="btnNuevoCliente"
-                        text="+ Nuevo cliente"/>
-
+                <TextField fx:id="txtBuscarCliente" promptText="Ingrese DNI o Apellido"/>
+                <Button fx:id="btnBuscar" text="Buscar"/>
+                <Button fx:id="btnNuevoCliente" text="+ Nuevo cliente"/>
             </children>
-
         </HBox>
     </top>
 
-
     <center>
-
         <SplitPane dividerPositions="0.3">
-
             <items>
 
-
                 <!-- TABLA CLIENTES -->
-
                 <AnchorPane>
-
                     <children>
-
                         <VBox spacing="10"
                               AnchorPane.topAnchor="0"
                               AnchorPane.bottomAnchor="0"
                               AnchorPane.leftAnchor="0"
                               AnchorPane.rightAnchor="0">
-
                             <children>
-
                                 <Label text="Listado de clientes"/>
-
-
-                                <TableView fx:id="tablaClientes"
-                                           VBox.vgrow="ALWAYS">
-
+                                <TableView fx:id="tablaClientes" VBox.vgrow="ALWAYS">
                                     <columns>
-
-                                        <TableColumn fx:id="colDni"
-                                                     text="DNI"/>
-
-                                        <TableColumn fx:id="colApellido"
-                                                     text="Apellido"/>
-
-                                        <TableColumn fx:id="colNombre"
-                                                     text="Nombre"/>
-
-                                        <TableColumn fx:id="colTelefono"
-                                                     text="Telefono"/>
-
+                                        <TableColumn fx:id="colDni" text="DNI"/>
+                                        <TableColumn fx:id="colApellido" text="Apellido"/>
+                                        <TableColumn fx:id="colNombre" text="Nombre"/>
+                                        <TableColumn fx:id="colTelefono" text="Telefono"/>
                                     </columns>
-
                                 </TableView>
-
                             </children>
-
                         </VBox>
-
                     </children>
-
                 </AnchorPane>
 
-
-
                 <!-- DETALLE CLIENTE -->
-
                 <AnchorPane>
-
                     <children>
-
-
                         <VBox spacing="15"
                               AnchorPane.topAnchor="0"
                               AnchorPane.bottomAnchor="0"
                               AnchorPane.leftAnchor="0"
                               AnchorPane.rightAnchor="0">
-
                             <padding>
-                                <Insets top="15"
-                                        bottom="15"
-                                        left="15"
-                                        right="15"/>
+                                <Insets top="15" bottom="15" left="15" right="15"/>
                             </padding>
-
-
                             <children>
 
-
                                 <!-- DATOS CLIENTE -->
-
-
                                 <GridPane>
-
                                     <columnConstraints>
-
                                         <ColumnConstraints prefWidth="120"/>
                                         <ColumnConstraints prefWidth="200"/>
-
                                     </columnConstraints>
-
-
                                     <children>
-
-
                                         <Label text="DNI"/>
+                                        <TextField fx:id="txtDni" GridPane.columnIndex="1"/>
 
-                                        <TextField fx:id="txtDni"
-                                                   GridPane.columnIndex="1"/>
+                                        <Label text="Nombre" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="txtNombre" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
+                                        <Label text="Apellido" GridPane.rowIndex="2"/>
+                                        <TextField fx:id="txtApellido" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                                        <Label text="Nombre"
-                                               GridPane.rowIndex="1"/>
-
-                                        <TextField fx:id="txtNombre"
-                                                   GridPane.rowIndex="1"
-                                                   GridPane.columnIndex="1"/>
-
-
-                                        <Label text="Apellido"
-                                               GridPane.rowIndex="2"/>
-
-                                        <TextField fx:id="txtApellido"
-                                                   GridPane.rowIndex="2"
-                                                   GridPane.columnIndex="1"/>
-
-
-                                        <Label text="Telefono"
-                                               GridPane.rowIndex="3"/>
-
-                                        <TextField fx:id="txtTelefono"
-                                                   GridPane.rowIndex="3"
-                                                   GridPane.columnIndex="1"/>
-
-
+                                        <Label text="Telefono" GridPane.rowIndex="3"/>
+                                        <TextField fx:id="txtTelefono" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
                                     </children>
-
                                 </GridPane>
 
-
-
                                 <HBox spacing="10">
-
                                     <children>
-
-                                        <Button fx:id="btnGuardarCliente"
-                                                onAction="#guardarClienteAccion"
-                                                text="Guardar cliente"/>
-
-
-                                        <Button fx:id="btnBajaCliente"
-                                                onAction="#darDeBajaClienteAccion"
-                                                text="Dar de baja"/>
-
-
-                                        <Button fx:id="btnCancelar"
-                                                onAction="#limpiarFormulario"
-                                                text="Cancelar"/>
-
+                                        <Button fx:id="btnGuardarCliente" onAction="#guardarClienteAccion" text="Guardar cliente"/>
+                                        <Button fx:id="btnBajaCliente" onAction="#darDeBajaClienteAccion" text="Dar de baja"/>
+                                        <Button fx:id="btnCancelar" onAction="#limpiarFormulario" text="Cancelar"/>
                                     </children>
-
                                 </HBox>
-
-
 
                                 <Label text="Mascotas registradas"/>
 
-
-
                                 <!-- TABLA MASCOTAS -->
-
-                                <TableView fx:id="tablaMascotas"
-                                           prefHeight="150">
-
-
+                                <TableView fx:id="tablaMascotas" prefHeight="150">
                                     <columns>
-
-
-                                        <TableColumn fx:id="colMascotaNumFicha"
-                                                     text="Ficha"/>
-
-
-                                        <TableColumn fx:id="colMascotaNombre"
-                                                     text="Nombre"/>
-
-
-                                        <TableColumn fx:id="colMascotaRaza"
-                                                     text="Raza"/>
-
-
-                                        <TableColumn fx:id="colMascotaFechaNac"
-                                                     text="Nacimiento"/>
-
-
-                                        <TableColumn fx:id="colMascotaEspecie"
-                                                     text="Especie"/>
-
-
+                                        <TableColumn fx:id="colMascotaNumFicha" text="Ficha"/>
+                                        <TableColumn fx:id="colMascotaNombre" text="Nombre"/>
+                                        <TableColumn fx:id="colMascotaRaza" text="Raza"/>
+                                        <TableColumn fx:id="colMascotaFechaNac" text="Nacimiento"/>
+                                        <TableColumn fx:id="colMascotaEspecie" text="Especie"/>
                                     </columns>
-
-
                                 </TableView>
 
-
-
                                 <HBox spacing="10">
-
                                   <children>
-
-                                      <Button fx:id="btnAgregarMascota"
-                                              onAction="#agregarMascotaAccion"
-                                              text="+ Agregar mascota"/>
-
-
-                                      <Button fx:id="btnEditarMascota"
-                                              onAction="#editarMascotaAccion"
-                                              text="Editar mascota"/>
-
+                                      <Button fx:id="btnAgregarMascota" onAction="#agregarMascotaAccion" text="+ Agregar mascota"/>
+                                      <Button fx:id="btnEditarMascota" onAction="#editarMascotaAccion" text="Editar mascota"/>
+                                      <!-- AQUÍ ESTÁ EL BOTÓN NUEVO -->
+                                      <Button fx:id="btnIrHistorial" mnemonicParsing="false" onAction="#irAHistorialAccion" text="Ir a Historial" disable="true" />
                                   </children>
-
                                  </HBox>
 
-
-
-
                                 <!-- FORMULARIO MASCOTA -->
-
-
                                 <Label text="Datos de mascota"/>
-
-
                                 <GridPane>
-
-
                                     <columnConstraints>
-
                                         <ColumnConstraints prefWidth="120"/>
                                         <ColumnConstraints prefWidth="200"/>
-
                                     </columnConstraints>
-
-
                                     <children>
-
-
                                         <Label text="Nombre"/>
+                                        <TextField fx:id="txtMascotaNombre" GridPane.columnIndex="1"/>
 
-                                        <TextField fx:id="txtMascotaNombre"
-                                                   GridPane.columnIndex="1"/>
+                                        <Label text="Raza" GridPane.rowIndex="1"/>
+                                        <TextField fx:id="txtMascotaRaza" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
+                                        <Label text="Fecha nacimiento" GridPane.rowIndex="2"/>
+                                        <DatePicker fx:id="dpMascotaFecha" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-                                        <Label text="Raza"
-                                               GridPane.rowIndex="1"/>
-
-                                        <TextField fx:id="txtMascotaRaza"
-                                                   GridPane.rowIndex="1"
-                                                   GridPane.columnIndex="1"/>
-
-
-                                        <Label text="Fecha nacimiento"
-                                               GridPane.rowIndex="2"/>
-
-                                        <DatePicker fx:id="dpMascotaFecha"
-                                                    GridPane.rowIndex="2"
-                                                    GridPane.columnIndex="1"/>
-
-
-                                        <Label text="Especie"
-                                               GridPane.rowIndex="3"/>
-
-
-                                        <ComboBox fx:id="cbMascotaEspecie"
-                                                  GridPane.rowIndex="3"
-                                                  GridPane.columnIndex="1"/>
-
-
+                                        <Label text="Especie" GridPane.rowIndex="3"/>
+                                        <ComboBox fx:id="cbMascotaEspecie" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
                                     </children>
-
-
                                 </GridPane>
 
-
-
                                 <HBox spacing="10">
-
                                     <children>
-
-
-                                        <Button fx:id="btnGuardarMascota"
-                                                onAction="#guardarMascotaAccion"
-                                                text="Guardar mascota"/>
-
-
-                                        <Button fx:id="btnCancelarMascota"
-                                                onAction="#cancelarMascotaAccion"
-                                                text="Cancelar"/>
-
-
+                                        <Button fx:id="btnGuardarMascota" onAction="#guardarMascotaAccion" text="Guardar mascota"/>
+                                        <Button fx:id="btnCancelarMascota" onAction="#cancelarMascotaAccion" text="Cancelar"/>
                                     </children>
-
                                 </HBox>
 
-
                             </children>
-
-
                         </VBox>
-
-
                     </children>
-
-
                 </AnchorPane>
-
-
             </items>
-
-
         </SplitPane>
-
-
     </center>
-
-
 </BorderPane>
