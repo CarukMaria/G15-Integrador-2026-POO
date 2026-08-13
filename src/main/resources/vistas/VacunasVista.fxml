@@ -30,63 +30,197 @@
          </children>
       </HBox>
    </top>
-   <center>
-      <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-        <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <VBox layoutX="62.0" layoutY="67.0" prefHeight="498.0" prefWidth="265.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <Label text="Listado de vacunas:" />
-                        <TableView fx:id="tablaVacunas" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
-                          <columns>
-                            <TableColumn fx:id="colNombre" prefWidth="81.0" text="Nombre" />
-                            <TableColumn fx:id="colEnfermedad" prefWidth="101.0" text="Enfermedad" />
-                              <TableColumn fx:id="colPeriodicidad" prefWidth="82.0" text="Periodicidad" />
-                          </columns>
-                        </TableView>
-                     </children>
-                  </VBox>
-               </children>
-            </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-               <children>
-                  <VBox layoutX="134.0" layoutY="49.0" prefHeight="498.0" prefWidth="627.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <padding>
-                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-                     </padding>
-                     <children>
-                        <GridPane>
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
+      <center>
+       <VBox spacing="10.0" BorderPane.alignment="CENTER">
+           <children>
+
+               <!-- GESTIÓN DE VACUNAS -->
+               <SplitPane dividerPositions="0.29797979797979796"
+                          prefHeight="350.0"
+                          VBox.vgrow="SOMETIMES">
+
+                   <items>
+
+                       <AnchorPane minHeight="0.0"
+                                   minWidth="0.0">
+
                            <children>
-                              <Label text="Nombre" />
-                              <Label text="Enfermedad" GridPane.rowIndex="1" />
-                              <Label text="Periocididad" GridPane.rowIndex="2" />
-                              <TextField fx:id="txtNombre" GridPane.columnIndex="1" />
-                              <TextField fx:id="txtEnfermedad" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Spinner fx:id="spPeriodicidad" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                               <VBox spacing="5.0"
+                                     AnchorPane.bottomAnchor="0.0"
+                                     AnchorPane.leftAnchor="0.0"
+                                     AnchorPane.rightAnchor="0.0"
+                                     AnchorPane.topAnchor="0.0">
+
+                                   <children>
+
+                                       <Label text="Listado de vacunas:" />
+
+                                       <TableView fx:id="tablaVacunas"
+                                                  VBox.vgrow="ALWAYS">
+
+                                           <columns>
+                                               <TableColumn fx:id="colNombre"
+                                                            prefWidth="81.0"
+                                                            text="Nombre" />
+
+                                               <TableColumn fx:id="colEnfermedad"
+                                                            prefWidth="101.0"
+                                                            text="Enfermedad" />
+
+                                               <TableColumn fx:id="colPeriodicidad"
+                                                            prefWidth="82.0"
+                                                            text="Periodicidad" />
+                                           </columns>
+
+                                       </TableView>
+
+                                   </children>
+                               </VBox>
                            </children>
-                        </GridPane>
-                        <HBox prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+
+                       </AnchorPane>
+
+
+                       <AnchorPane minHeight="0.0"
+                                   minWidth="0.0">
+
                            <children>
-                              <Button fx:id="btnGuardarVacuna" mnemonicParsing="false" text="Guardar vacuna" />
-                              <Button fx:id="btnEliminar" mnemonicParsing="false" text="Eliminar" />
-                              <Button fx:id="btnCancelar" mnemonicParsing="false" text="Cancelar" />
+
+                               <VBox spacing="15.0"
+                                     AnchorPane.bottomAnchor="0.0"
+                                     AnchorPane.leftAnchor="0.0"
+                                     AnchorPane.rightAnchor="0.0"
+                                     AnchorPane.topAnchor="0.0">
+
+                                   <padding>
+                                       <Insets bottom="15.0"
+                                               left="15.0"
+                                               right="15.0"
+                                               top="15.0" />
+                                   </padding>
+
+                                   <children>
+
+                                       <GridPane>
+
+                                          <columnConstraints>
+                                             <ColumnConstraints hgrow="SOMETIMES"
+                                                                   minWidth="10.0"
+                                                                   prefWidth="100.0" />
+
+                                               <ColumnConstraints hgrow="SOMETIMES"
+                                                                   minWidth="10.0"
+                                                                   prefWidth="100.0" />
+                                           </columnConstraints>
+
+                                          <rowConstraints>
+                                               <RowConstraints minHeight="10.0"
+                                                                prefHeight="30.0" />
+
+                                               <RowConstraints minHeight="10.0"
+                                                                prefHeight="30.0" />
+
+                                               <RowConstraints minHeight="10.0"
+                                                                prefHeight="30.0" />
+                                           </rowConstraints>
+
+                                           <children>
+
+                                               <Label text="Nombre" />
+
+                                               <Label text="Enfermedad"
+                                                      GridPane.rowIndex="1" />
+
+                                               <Label text="Periodicidad"
+                                                      GridPane.rowIndex="2" />
+
+                                               <TextField fx:id="txtNombre"
+                                                          GridPane.columnIndex="1" />
+
+                                               <TextField fx:id="txtEnfermedad"
+                                                          GridPane.columnIndex="1"
+                                                          GridPane.rowIndex="1" />
+
+                                               <Spinner fx:id="spPeriodicidad"
+                                                        GridPane.columnIndex="1"
+                                                        GridPane.rowIndex="2" />
+
+                                           </children>
+
+                                       </GridPane>
+
+
+                                       <HBox spacing="10.0">
+
+                                           <children>
+
+                                               <Button fx:id="btnGuardarVacuna"
+                                                       mnemonicParsing="false"
+                                                       text="Guardar vacuna" />
+
+                                             <Button fx:id="btnEliminar"
+                                                       mnemonicParsing="false"
+                                                       text="Eliminar" />
+
+                                               <Button fx:id="btnCancelar"
+                                                       mnemonicParsing="false"
+                                                       text="Cancelar" />
+
+                                           </children>
+
+                                       </HBox>
+
+                                   </children>
+
+                               </VBox>
+
                            </children>
-                        </HBox>
-                     </children>
-                  </VBox>
-               </children>
-            </AnchorPane>
-        </items>
-      </SplitPane>
+
+                       </AnchorPane>
+
+                   </items>
+
+               </SplitPane>
+
+
+               <!-- SEGUIMIENTO DE VACUNAS -->
+               <Label text="Seguimiento de vacunas" />
+
+               <TableView fx:id="tablaSeguimientoVacunas"
+                          prefHeight="200.0"
+                          VBox.vgrow="ALWAYS">
+
+                   <columns>
+
+                       <TableColumn fx:id="colFichaSeguimiento"
+                                    prefWidth="100.0"
+                                    text="Ficha mascota" />
+
+                       <TableColumn fx:id="colDniSeguimiento"
+                                    prefWidth="100.0"
+                                    text="DNI dueño" />
+
+                       <TableColumn fx:id="colVacunaSeguimiento"
+                                    prefWidth="150.0"
+                                    text="Vacuna" />
+
+                       <TableColumn fx:id="colVencimientoSeguimiento"
+                                    prefWidth="120.0"
+                                    text="Vencimiento" />
+
+                       <TableColumn fx:id="colDiasSeguimiento"
+                                    prefWidth="100.0"
+                                    text="Días" />
+
+                       <TableColumn fx:id="colEstadoSeguimiento"
+                                    prefWidth="150.0"
+                                    text="Estado" />
+
+                   </columns>
+
+               </TableView>
+
+           </children>
+       </VBox>
    </center>
 </BorderPane>

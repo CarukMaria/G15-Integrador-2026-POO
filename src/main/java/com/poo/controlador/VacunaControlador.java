@@ -2,6 +2,10 @@ package com.poo.controlador;
 
 import com.poo.modelo.Vacuna;
 import com.poo.servicio.VacunaServicio;
+import com.poo.modelo.SeguimientoVacuna;
+import com.poo.servicio.MascotaServicio;
+
+import java.time.LocalDate;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,12 +19,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class VacunaControlador {
 
     private VacunaServicio servicio;
+    private MascotaServicio mascotaServicio;
+    private ObservableList<SeguimientoVacuna> listaObservableSeguimiento;
     private Vacuna vacunaSeleccionada; // Para saber si estamos editando o creando una nueva
     private ObservableList<Vacuna> listaObservableVacunas;
 
@@ -33,6 +40,14 @@ public class VacunaControlador {
     @FXML private TableColumn<Vacuna, String> colNombre;
     @FXML private TableColumn<Vacuna, String> colEnfermedad;
     @FXML private TableColumn<Vacuna, Integer> colPeriodicidad;
+
+    @FXML private TableView<SeguimientoVacuna> tablaSeguimientoVacunas;
+    @FXML private TableColumn<SeguimientoVacuna, String> colFichaSeguimiento;
+    @FXML private TableColumn<SeguimientoVacuna, String> colDniSeguimiento;
+    @FXML private TableColumn<SeguimientoVacuna, String> colVacunaSeguimiento;
+    @FXML private TableColumn<SeguimientoVacuna, LocalDate> colVencimientoSeguimiento;
+    @FXML private TableColumn<SeguimientoVacuna, Long> colDiasSeguimiento;
+    @FXML private TableColumn<SeguimientoVacuna, String> colEstadoSeguimiento;
     
     @FXML private TextField txtNombre;
     @FXML private TextField txtEnfermedad;
@@ -44,6 +59,7 @@ public class VacunaControlador {
 
     public VacunaControlador() {
         servicio = new VacunaServicio();
+        mascotaServicio = new MascotaServicio();
     }
 
     @FXML
@@ -52,6 +68,12 @@ public class VacunaControlador {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colEnfermedad.setCellValueFactory(new PropertyValueFactory<>("enfermedad"));
         colPeriodicidad.setCellValueFactory(new PropertyValueFactory<>("periodicidad"));
+        colFichaSeguimiento.setCellValueFactory(new PropertyValueFactory<>("numeroFicha"));
+        colDniSeguimiento.setCellValueFactory(new PropertyValueFactory<>("dniCliente"));
+        colVacunaSeguimiento.setCellValueFactory(new PropertyValueFactory<>("nombreVacuna"));
+        colVencimientoSeguimiento.setCellValueFactory(new PropertyValueFactory<>("fechaVencimiento"));
+        colDiasSeguimiento.setCellValueFactory(new PropertyValueFactory<>("dias"));
+        colEstadoSeguimiento.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
         // Configurar el Spinner de periodicidad (valores de 1 a 120 meses, valor inicial 12)
         SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 120, 12);
@@ -59,6 +81,8 @@ public class VacunaControlador {
 
         // Cargar los datos iniciales en la tabla
         cargarTabla();
+
+        cargarSeguimientoVacunas();
 
         // Escuchar cuando se hace clic en una fila de la tabla para editarla
         tablaVacunas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -90,7 +114,7 @@ public class VacunaControlador {
         spPeriodicidad.getValueFactory().setValue(vacuna.getPeriodicidad());
     }
 
-private void guardarVacuna() {
+    private void guardarVacuna() {
         // Validar que los campos no estén vacíos visualmente antes de enviar al modelo
         if (txtNombre.getText().isEmpty() || txtEnfermedad.getText().isEmpty()) {
             mostrarAlerta("Error", "Los campos Nombre y Enfermedad son obligatorios.", Alert.AlertType.WARNING);
@@ -111,6 +135,7 @@ private void guardarVacuna() {
             servicio.guardar(vacunaSeleccionada);
             
             cargarTabla();
+            cargarSeguimientoVacunas();
             //cargarAlertas(); // Si ya tenés implementado el método de alertas
             limpiarFormulario();
             mostrarAlerta("Éxito", "La vacuna se guardó correctamente.", Alert.AlertType.INFORMATION);
@@ -126,6 +151,7 @@ private void guardarVacuna() {
             try {
                 servicio.eliminar(vacunaSeleccionada);
                 cargarTabla();
+                cargarSeguimientoVacunas();
                 limpiarFormulario();
             } catch (Exception e) {
                 // Capturamos el error por si la vacuna ya está registrada en el historial de alguna mascota
@@ -142,6 +168,17 @@ private void guardarVacuna() {
         txtEnfermedad.clear();
         spPeriodicidad.getValueFactory().setValue(12);
         tablaVacunas.getSelectionModel().clearSelection();
+    }
+
+    private void cargarSeguimientoVacunas() {
+
+        List<SeguimientoVacuna> seguimiento =
+                mascotaServicio.obtenerSeguimientoVacunas();
+
+        listaObservableSeguimiento =
+                FXCollections.observableArrayList(seguimiento);
+
+        tablaSeguimientoVacunas.setItems(listaObservableSeguimiento);
     }
 
     private void buscarVacuna() {
