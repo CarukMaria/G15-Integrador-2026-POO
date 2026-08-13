@@ -17,7 +17,11 @@ public class VacunaRepositorio {
         try {
             em.getTransaction().begin();
 
-            em.persist(vacuna);
+            if (vacuna.getIdVacuna() == null) {
+                em.persist(vacuna);
+            } else {
+                em.merge(vacuna);
+            }
 
             em.getTransaction().commit();
 
