@@ -31,6 +31,11 @@ public class Vacuna {
         setPeriodicidad(periodicidad);
     }
 
+    @Override
+    public String toString() {
+        return this.nombre; 
+    }
+
     // --- MÉTODO DE NEGOCIO ---
 
     public boolean estaVigente(
