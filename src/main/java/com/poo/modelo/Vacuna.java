@@ -68,6 +68,18 @@ public class Vacuna {
         return valor.trim();
     }
 
+    private String validarTextoCapitalizado(String valor, String nombreCampo) {
+        String valorLimpio = validarCadenaNoVacia(valor, nombreCampo);
+        
+        String regex = "^[A-ZÁÉÍÓÚÑ][a-zA-ZáéíóúñÁÉÍÓÚÑ\\s'-]*[a-záéíóúñ]$";
+        
+        if (!valorLimpio.matches(regex)) {
+            throw new IllegalArgumentException("El campo " + nombreCampo + " debe empezar con mayúscula, terminar con minúscula y no contener números ni símbolos inválidos.");
+        }
+        
+        return valorLimpio;
+    }
+
     // --- GETTERS Y SETTERS ---
 
     public Long getIdVacuna() {
@@ -83,8 +95,7 @@ public class Vacuna {
     }
 
     public void setNombre(String nombre) {
-        this.nombre =
-                validarCadenaNoVacia(nombre, "Nombre");
+        this.nombre = validarTextoCapitalizado(nombre, "Nombre");
     }
 
     public String getEnfermedad() {
@@ -92,8 +103,7 @@ public class Vacuna {
     }
 
     public void setEnfermedad(String enfermedad) {
-        this.enfermedad =
-                validarCadenaNoVacia(enfermedad, "Enfermedad");
+        this.enfermedad = validarTextoCapitalizado(enfermedad, "Enfermedad");
     }
 
     public int getPeriodicidad() {

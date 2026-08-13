@@ -48,7 +48,7 @@ public class Mascota {
 
     // Constructor con parámetros que pasa por las validaciones
     public Mascota(String numeroFicha, String nombre, String raza,
-                   LocalDate fechaNacimiento, Especie especie) {
+                     LocalDate fechaNacimiento, Especie especie) {
 
         setNumeroFicha(numeroFicha);
         setNombre(nombre);
@@ -74,7 +74,7 @@ public class Mascota {
 
     // Valida si un nuevo turno se choca con los que ya tiene la mascota
     public boolean tieneTurnoSolapado(LocalDateTime fechaHoraNuevo,
-                                      int duracionMinutosNuevo) {
+                                       int duracionMinutosNuevo) {
 
         LocalDateTime finNuevo =
                 fechaHoraNuevo.plusMinutes(duracionMinutosNuevo);
@@ -142,6 +142,17 @@ public class Mascota {
         return valor.trim();
     }
 
+    private String validarTextoCapitalizado(String valor, String nombreCampo) {
+        String valorLimpio = validarCadenaNoVacia(valor, nombreCampo);
+        String regex = "^[A-ZÁÉÍÓÚÑ][a-zA-ZáéíóúñÁÉÍÓÚÑ\\s'-]*[a-záéíóúñ]$";
+        
+        if (!valorLimpio.matches(regex)) {
+            throw new IllegalArgumentException("El campo " + nombreCampo + " debe empezar con mayúscula, terminar con minúscula y no contener números ni símbolos inválidos.");
+        }
+        
+        return valorLimpio;
+    }
+
     // --- GETTERS Y SETTERS PROTEGIDOS ---
 
     public Long getIdMascota() {
@@ -161,7 +172,7 @@ public class Mascota {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = validarCadenaNoVacia(nombre, "Nombre");
+        this.nombre = validarTextoCapitalizado(nombre, "Nombre");
     }
 
     public String getRaza() {
@@ -169,8 +180,12 @@ public class Mascota {
     }
 
     public void setRaza(String raza) {
-        // La raza podría ser opcional ("Mestizo"), pero si la pasan, que no sean espacios.
-        this.raza = raza != null ? raza.trim() : "Mestizo";
+        // La raza es opcional por defecto ("Mestizo"), pero si la pasan, validamos formato o dejamos pasar el valor por defecto
+        if (raza == null || raza.trim().isEmpty()) {
+            this.raza = "Mestizo";
+        } else {
+            this.raza = validarTextoCapitalizado(raza, "Raza");
+        }
     }
 
     public LocalDate getFechaNacimiento() {

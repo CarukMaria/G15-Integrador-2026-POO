@@ -70,6 +70,18 @@ public class Cliente {
         return valor.trim();
     }
 
+    private String validarNombreApellido(String valor, String nombreCampo) {
+        String valorLimpio = validarCadenaNoVacia(valor, nombreCampo);
+        
+        String regex = "^[A-ZÁÉÍÓÚÑ][a-zA-ZáéíóúñÁÉÍÓÚÑ\\s'-]*[a-záéíóúñ]$";
+        
+        if (!valorLimpio.matches(regex)) {
+            throw new IllegalArgumentException("El campo " + nombreCampo + " debe empezar con mayúscula, terminar con minúscula y no contener números ni símbolos inválidos.");
+        }
+        
+        return valorLimpio;
+    }
+
 
     // --- GETTERS Y SETTERS PROTEGIDOS ---
 
@@ -98,7 +110,7 @@ public class Cliente {
     }
 
     public void setApellido(String apellido) {
-        this.apellido = validarCadenaNoVacia(apellido, "Apellido");
+        this.apellido = validarNombreApellido(apellido, "Apellido");
     }
 
     public String getNombre() {
@@ -106,7 +118,7 @@ public class Cliente {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = validarCadenaNoVacia(nombre, "Nombre");
+        this.nombre = validarNombreApellido(nombre, "Nombre");
     }
 
     public String getTelefono() {

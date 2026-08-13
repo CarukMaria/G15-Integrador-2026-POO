@@ -91,14 +91,24 @@ public class Veterinario {
         return valor.trim();
     }
 
+    private String validarTextoCapitalizado(String valor, String nombreCampo) {
+        String valorLimpio = validarCadenaNoVacia(valor, nombreCampo);
+        
+        String regex = "^[A-ZÁÉÍÓÚÑ][a-zA-ZáéíóúñÁÉÍÓÚÑ\\s'-]*[a-záéíóúñ]$";
+        
+        if (!valorLimpio.matches(regex)) {
+            throw new IllegalArgumentException("El campo " + nombreCampo + " debe empezar con mayúscula, terminar con minúscula y no contener números ni símbolos inválidos.");
+        }
+        
+        return valorLimpio;
+    }
+
 
     // ----- GETTERS Y SETTERS PROTEGIDOS -----
     
     public Long getIdVeterinario() {
         return idVeterinario;
     }
-    
-    // Eliminamos setIdVeterinario para proteger la Primary Key
 
     public String getMatricula() {
         return matricula;
@@ -113,7 +123,7 @@ public class Veterinario {
     }
 
     public void setNombre(String nombre) {
-        this.nombre = validarCadenaNoVacia(nombre, "Nombre");
+        this.nombre = validarTextoCapitalizado(nombre, "Nombre");
     }
 
     public String getApellido() {
@@ -121,7 +131,7 @@ public class Veterinario {
     }
 
     public void setApellido(String apellido) {
-        this.apellido = validarCadenaNoVacia(apellido, "Apellido");
+        this.apellido = validarTextoCapitalizado(apellido, "Apellido");
     }
 
     public List<Especialidad> getEspecialidades() {
@@ -129,8 +139,6 @@ public class Veterinario {
         return Collections.unmodifiableList(especialidades);
     }
     
-    // Eliminamos setEspecialidades(List) para que no pisen la lista gestionada por JPA
-
     @Override
     public String toString() {
         return "Dr. " + nombre + " " + apellido + " (Matrícula: " + matricula + ")";

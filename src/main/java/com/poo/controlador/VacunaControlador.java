@@ -90,29 +90,35 @@ public class VacunaControlador {
         spPeriodicidad.getValueFactory().setValue(vacuna.getPeriodicidad());
     }
 
-    private void guardarVacuna() {
-        // Validar que los campos no estén vacíos
+private void guardarVacuna() {
+        // Validar que los campos no estén vacíos visualmente antes de enviar al modelo
         if (txtNombre.getText().isEmpty() || txtEnfermedad.getText().isEmpty()) {
             mostrarAlerta("Error", "Los campos Nombre y Enfermedad son obligatorios.", Alert.AlertType.WARNING);
             return;
         }
 
-        // Si no hay vacuna seleccionada, creamos una nueva
         if (vacunaSeleccionada == null) {
             vacunaSeleccionada = new Vacuna();
         }
 
-        // Actualizamos los datos
-        vacunaSeleccionada.setNombre(txtNombre.getText());
-        vacunaSeleccionada.setEnfermedad(txtEnfermedad.getText());
-        vacunaSeleccionada.setPeriodicidad(spPeriodicidad.getValue());
+        // Usamos un bloque try-catch para atrapar las excepciones del modelo (como las validaciones de mayúsculas/minúsculas)
+        try {
+            vacunaSeleccionada.setNombre(txtNombre.getText());
+            vacunaSeleccionada.setEnfermedad(txtEnfermedad.getText());
+            vacunaSeleccionada.setPeriodicidad(spPeriodicidad.getValue());
 
-        // Guardamos en la base de datos
-        servicio.guardar(vacunaSeleccionada);
-        
-        cargarTabla();
-        limpiarFormulario();
-        mostrarAlerta("Éxito", "La vacuna se guardó correctamente.", Alert.AlertType.INFORMATION);
+            // Guardamos en la base de datos
+            servicio.guardar(vacunaSeleccionada);
+            
+            cargarTabla();
+            //cargarAlertas(); // Si ya tenés implementado el método de alertas
+            limpiarFormulario();
+            mostrarAlerta("Éxito", "La vacuna se guardó correctamente.", Alert.AlertType.INFORMATION);
+
+        } catch (IllegalArgumentException e) {
+            // Aquí atrapamos el error del modelo y lo mostramos en una alerta bonita
+            mostrarAlerta("Error de validación", e.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
     private void eliminarVacuna() {
