@@ -1,5 +1,6 @@
 package com.poo.servicio;
 
+import com.poo.modelo.Consulta;
 import com.poo.modelo.EstadoTurno;
 import com.poo.modelo.ServicioPrestado;
 import com.poo.modelo.Turno;
@@ -126,16 +127,36 @@ public class TurnoServicio {
         }
     }
 
+
+    private void validarConsultas(Turno turno) {
+
+        for (ServicioPrestado servicio : turno.getServiciosPrestados()) {
+
+            if (servicio.getServicio() instanceof Consulta
+                    && !servicio.estaCompletada()) {
+
+                throw new IllegalArgumentException(
+                    "No se puede atender el turno: "
+                    + "la consulta debe tener diagnóstico y tratamiento."
+                );
+            }
+        }
+    }
+
     /*
      * Cambia el estado del turno. (Simplificado al delegar la fecha al turno)
      */
     public void cambiarEstado(
-            Turno turno,
-            EstadoTurno nuevoEstado) {
+        Turno turno,
+        EstadoTurno nuevoEstado) {
 
-        turno.cambiarEstado(nuevoEstado);
+            if (nuevoEstado == EstadoTurno.ATENDIDO) {
+                validarConsultas(turno);
+            }
 
-        turnoRepositorio.guardar(turno);
+            turno.cambiarEstado(nuevoEstado);
+
+            turnoRepositorio.guardar(turno);
     }
 
     public List<Turno> listar() {
